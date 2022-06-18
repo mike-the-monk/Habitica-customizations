@@ -1,0 +1,1474 @@
+// This code is licensed under the same terms as Habitica:
+  // https://raw.githubusercontent.com/HabitRPG/habitrpg/develop/LICENSE
+
+/* ========================================== */
+/* [Users] Required script data to fill in    */
+/* ========================================== */
+const USER_ID = "PasteYourUserIdHere";
+const API_TOKEN = "PasteYourApiTokenHere"; // Do not share this to anyone
+const WEB_APP_URL = "PasteGeneratedWebAppUrlHere";
+
+/* ========================================== */
+/* [Users] Required customizations to fill in */
+/* ========================================== */
+
+/* ========================================== */
+/* [Users] Optional customizations to fill in */
+/* ========================================== */
+
+// Do you want to get private message notifications when your duel starts?
+// If you don't want them, change the 1 to a 0 in the line below. Regardless, you'll still get notifications if errors occur.
+const NOTIFICATIONS_ON = 1; 
+
+/* ========================================== */
+/* [Users] Do not edit code below this line   */
+/* ========================================== */
+const AUTHOR_ID = "0034eb14-b4d8-494e-8386-d3f33cff7922";
+const SCRIPT_NAME = "Dueling Script - score";
+const HEADERS = {
+  "x-client" : AUTHOR_ID + " - " + SCRIPT_NAME,
+  "x-api-user" : USER_ID,
+  "x-api-key" : API_TOKEN,
+}
+
+const scriptProperties = PropertiesService.getScriptProperties(); // Constants can have properties changed
+
+// All messages
+const MSG_CONTACT_AUTHOR1 = " contact the author of this script (@mike_the_monk)";
+const MSG_CONTACT_AUTHOR2 = " by posting in the [Aspiring Comrades Guild](https://habitica.com/groups/guild/2ff9822b-27f2-4774-98da-db349b57a38e).";
+const MSG_WIKI_PAGE_STARTING_DUEL = " [wiki page](https://habitica.fandom.com/wiki/Dueling_Script#Starting_your_duel)";
+const MSG_WIKI_PAGE_SCORE = " [wiki page](https://habitica.fandom.com/wiki/Dueling_Script#Checking_your_score)";
+const MSG_WIKI_PAGE_ENDING_DUEL = " [wiki page](https://habitica.fandom.com/wiki/Dueling_Script#Ending_your_duel)";
+const MSG_INSUFFICIENT_GP = "You don't have enough GP for your wager. Please increase your GP and then click the button to start the duel.";
+const MSG_DUEL_SCORE_PART1 = "Your duel score is ";
+const MSG_DUEL_SCORE_PART2 = " points out of ";
+const MSG_DUEL_SCORE_PART3 = ". *Accurate as of when you most recently clicked this button.*";
+const MSG_DUEL_SCORE_VICTORY1 = "You won! Check your [Guild]("; 
+const MSG_DUEL_SCORE_VICTORY2 = ") for instructions for your duel's announcer bot (";
+const MSG_DUEL_SCORE_VICTORY3 = ") for how to end the duel.";
+const ERROR_MSG_SWITCH_CASE_FAILURE1 = "Error with function `createCase`, variable `caseDuel` resolved to ";
+const ERROR_MSG_SWITCH_CASE_FAILURE2 = ". Please" + MSG_CONTACT_AUTHOR1 + " to troubleshoot" + MSG_CONTACT_AUTHOR2;
+const PARTIAL_ERROR_MSG_INVALID_BUTTON_CLICK_END1 = " If you think you've received this message in error, please see the"
+const PARTIAL_ERROR_MSG_INVALID_BUTTON_CLICK_END2 = " or" + MSG_CONTACT_AUTHOR1 + " to troubleshoot" + MSG_CONTACT_AUTHOR2;
+const ERROR_MSG_DUEL_ALREADY_ACTIVE = "You are already participating in a duel and cannot start another one yet." + PARTIAL_ERROR_MSG_INVALID_BUTTON_CLICK_END1 + MSG_WIKI_PAGE_STARTING_DUEL + PARTIAL_ERROR_MSG_INVALID_BUTTON_CLICK_END2;
+const ERROR_MSG_NOT_IN_DUEL_SCORE = "You are not currently participating in a duel and therefore don't have a score to show." + PARTIAL_ERROR_MSG_INVALID_BUTTON_CLICK_END1 + MSG_WIKI_PAGE_SCORE + PARTIAL_ERROR_MSG_INVALID_BUTTON_CLICK_END2;
+const ERROR_MSG_NOT_IN_DUEL_END = "You are not currently participating in a duel and therefore don't have a duel to end." + PARTIAL_ERROR_MSG_INVALID_BUTTON_CLICK_END1 + MSG_WIKI_PAGE_ENDING_DUEL + PARTIAL_ERROR_MSG_INVALID_BUTTON_CLICK_END2;
+const ERROR_MSG_SINGULAR_START = "There was 1 error in trying to start the duel (in the Notes section of the button), and it occurred at ";
+const ERROR_MSG_SINGULAR_END = ". Please check formatting and try again. If you need help, consult the" + MSG_WIKI_PAGE_STARTING_DUEL + "."; 
+const ERROR_MSG_WAGER = "Wager";
+const ERROR_MSG_SCORE_NEEDED = "Score Needed to win";
+const ERROR_MSG_TIMESTAMP_IDENTIFIER = "Timestamp Identifier for duel (which is given to you by the announcer bot)";
+const ERROR_MSG_GUILD_ID = "Guild ID";
+const ERROR_MSG_AND = ", and ";
+const ERROR_MSG_PLURAL_START = "There were ";
+const ERROR_MSG_PLURAL_MID = " errors in in trying to start the duel (in the Notes section of the button), and they occurred at the following locations: "; 
+const ERROR_MSG_PLURAL_END = ERROR_MSG_SINGULAR_END;
+const ERROR_MSG_SEMICOLONS_START = "There was an error when trying to start the duel. The Notes section of the button is supposed to have 7 semicolons. Yours has ";
+const ERROR_MSG_SEMICOLONS_END = ERROR_MSG_SINGULAR_END;
+const ERROR_MSG_INVALID_END_STRING_BEGINNING = "There was an error when trying to end the duel. ";
+const ERROR_MSG_INVALID_END_STRING_ENDING = "Please make sure you copied/pasted the correct thing from the duel announcer bot and try again.";
+const ERROR_MSG_INVALID_END_STRING_SEARCH_TERM = "The Notes section of the button needs to contain the phrase `ENDING DUEL;`\n\n";
+const ERROR_MSG_INVALID_END_STRING_HASH1 = "What you pasted in the Notes section of the button did not match what the script was expecting. ";
+const ERROR_MSG_INVALID_END_STRING_HASH2 = " \n\nIf the problem persists and you can't figure out why, please" + MSG_CONTACT_AUTHOR1 + " to troubleshoot" + MSG_CONTACT_AUTHOR2 + "\n\nYou can also manually end the duel by pasting `ENDING DUEL: DEBUG END` into the Notes section of the button that ends the duel, which will end the duel but not declare you the winner.";
+const ERROR_MSG_VALIDITY = "Error with variable `validity`, it resolved to an unexpected number" + ERROR_MSG_SWITCH_CASE_FAILURE2;
+const ERROR_MSG_AUTOMATED_SELF = "This script posted the following error message to the Guild where you are dueling, but in case it failed to post there, you are receiving it as a private message also:\n\n";
+const ERROR_MSG_AUTOMATED_START = "*This is an automated message generated by the duel script.*\n\nERROR DETECTED: ";
+const ERROR_MSG_AUTOMATED_MESSAGE_DIDNT_POST = "The script shows I triggered the victory condition, but could not find the automated message that is supposed to post to the Guild when that happens. Please" + MSG_CONTACT_AUTHOR1 + " to troubleshoot" + MSG_CONTACT_AUTHOR2;
+const ERROR_MSG_AUTOMATED_BOT_DIDNT_REPLY = "The script shows that the bot didn't respond to my automated message earlier (victory condition), which means there is likely an issue with how the script saved the bot username. Please" + MSG_CONTACT_AUTHOR1 + " to troubleshoot" + MSG_CONTACT_AUTHOR2;
+const ERROR_MSG_AUTOMATED_BOT_FOUND_INVALID = "The script shows I triggered the victory condition but the bot found the generated string invalid, which means there is likely an issue with how the script saved the duel parameters. Please" + MSG_CONTACT_AUTHOR1 + " to troubleshoot" + MSG_CONTACT_AUTHOR2;
+
+// Info to save/load
+const DUEL_CURRENTLY_ACTIVE_KEY = "DUEL_CURRENTLY_ACTIVE_KEY";
+const DUEL_SCORE_KEY = "DUEL_SCORE_KEY";
+const SELF_USERNAME_KEY = "SELF_USERNAME_KEY";
+const OPPONENT_USERNAME_KEY = "OPPONENT_USERNAME_KEY";
+const WAGER_KEY = "WAGER_KEY";
+const SCORE_NEEDED_GOAL_KEY = "SCORE_NEEDED_GOAL_KEY";
+const GUILD_ID_KEY = "GUILD_ID_KEY";
+const ANNOUNCER_BOT_USERNAME_KEY = "ANNOUNCER_BOT_USERNAME_KEY";
+const TIMESTAMP_IDENTIFIER_KEY = "TIMESTAMP_IDENTIFIER_KEY";
+const TROUBLESHOOTING_KEY = "TROUBLESHOOTING_KEY";
+
+var duelCurrentlyActiveKey = "";
+var duelScoreKey = "";
+var selfUsernameKey = "";
+var opponentUsernameKey = "";
+var wagerKey = "";
+var scoreNeededGoalKey = "";
+var guildIdKey = "";
+var announcerBotUsernameKey = "";
+var timestampIdentifierKey = "";
+var troubleshootingKey = "";
+
+// Search terms the script is listening for
+const TASK_ALIAS_PLACEHOLDER = "placeholder";
+const DUEL_END = "ENDING DUEL:";
+const DUEL_END_DEBUG = "DEBUG END";
+const AUTOMATED_MSG_END_DUEL = "END DUEL";
+const AUTOMATED_MSG_BOT_DECLARES_WINNER = "We have a winner!";
+const AUTOMATED_MSG_BOT_INVALID_END_STRING = "there was an error trying to end the duel";
+
+// Prior to this message, the first letter will either be Y or y
+const BUTTON_NOTES_DUEL_START_AND_END = "our Guild's duel announcer bot will tell you what to paste here. Then, click this button";
+
+// Button that starts a duel
+const DUEL_START_TEXT = "Click to start a duel";
+const DUEL_START_ALIAS = "duelStartButton";
+const DUEL_START_NOTES = "Y" + BUTTON_NOTES_DUEL_START_AND_END + " to start your duel. For more info, see the" + MSG_WIKI_PAGE_STARTING_DUEL + " for instructions.";
+const DUEL_VALUE = "0";
+
+// Once a duel is in progress, button to get score
+const DUEL_SCORE_TEXT = "To see your current duel score, click this button and refresh the page"
+const DUEL_SCORE_ALIAS = "duelScoreButton";
+const DUEL_SCORE_NOTES = MSG_DUEL_SCORE_PART1 + "0 points" + MSG_DUEL_SCORE_PART3;
+// value is the same as the other buttons
+
+// Once a duel is in progress, button to end duel
+const DUEL_END_TEXT = "Click to end a duel";
+const DUEL_END_ALIAS = "duelEndButton";
+const DUEL_END_NOTES = "When your duel ends, y" + BUTTON_NOTES_DUEL_START_AND_END + ", which ends the duel and awards GP to the winner. For more info, see the" + MSG_WIKI_PAGE_ENDING_DUEL + " for instructions.";
+// value is the same as the other buttons
+
+const DUEL_START_BUTTON = {
+    "text": DUEL_START_TEXT,
+    "type": "reward",
+    "alias": DUEL_START_ALIAS,
+    "notes": DUEL_START_NOTES,
+    "value": DUEL_VALUE,
+}
+
+const DUEL_SCORE_BUTTON = {
+    "text": DUEL_SCORE_TEXT,
+    "type": "reward",
+    "alias": DUEL_SCORE_ALIAS,
+    "notes": DUEL_SCORE_NOTES,
+    "value": DUEL_VALUE,
+}
+
+const DUEL_END_BUTTON = {
+    "text": DUEL_END_TEXT,
+    "type": "reward",
+    "alias": DUEL_END_ALIAS,
+    "notes": DUEL_END_NOTES,
+    "value": DUEL_VALUE,
+}
+
+function doOneTimeSetup() {
+  // Create the button
+  api_createNewTaskForUser([DUEL_START_BUTTON]);
+  
+  // Create the webhook
+  const options = {
+    "scored" : true,
+  }
+  const payload = {
+    "url" : WEB_APP_URL,
+    "label" : SCRIPT_NAME + " Webhook",
+    "type" : "taskActivity",
+    "options" : options,
+  }
+  apiMult_createNewWebhookNoDuplicates(payload);
+  
+  // set script properties so they carry over to next session
+  initScriptProperties();
+}
+
+// do things when the webhook runs
+function doPost(e) {  
+  const dataContents = JSON.parse(e.postData.contents);
+  const task = dataContents.task;
+  
+  var duelCurrentlyActiveKey = DUEL_CURRENTLY_ACTIVE_KEY;
+  var duelScoreKey = DUEL_SCORE_KEY;
+  var selfUsernameKey = SELF_USERNAME_KEY;
+  var opponentUsernameKey = OPPONENT_USERNAME_KEY;
+  var wagerKey = WAGER_KEY;
+  var scoreNeededGoalKey = SCORE_NEEDED_GOAL_KEY;
+  var guildIdKey = GUILD_ID_KEY;
+  var announcerBotUsernameKey = ANNOUNCER_BOT_USERNAME_KEY;
+  var timestampIdentifierKey = TIMESTAMP_IDENTIFIER_KEY;
+  var troubleshootingKey = TROUBLESHOOTING_KEY;
+  
+  var duelCurrentlyActive = Number(scriptProperties.getProperty(duelCurrentlyActiveKey));
+  
+  // If task alias is blank, function "createCase" won't work, so use a placeholder if needed.
+  var taskAliasOrPlaceholder = "";
+  if ((task.alias == undefined) || (task.alias == null)) {
+    taskAliasOrPlaceholder = TASK_ALIAS_PLACEHOLDER;
+  } else {
+    taskAliasOrPlaceholder = task.alias;
+  }
+  
+  // Create cases based on which button was pushed and whether currently in a duel
+  let caseDuel = 0;
+  caseDuel = createCase(taskAliasOrPlaceholder, task.type, duelCurrentlyActive, duelScoreKey, scoreNeededGoalKey);
+  
+  switch (caseDuel) {
+    case 0: // Error condition for if the function failed
+      api_sendPrivateMessageAlways({"message" : ERROR_MSG_SWITCH_CASE_FAILURE1 + 0 + ERROR_MSG_SWITCH_CASE_FAILURE2, "toUserId" : USER_ID});
+      break;
+    case 1: // Victory condition – checks to see if the correct automated messages were posted
+      victoryCondition(troubleshootingKey, guildIdKey, announcerBotUsernameKey, timestampIdentifierKey);
+      break;
+    case 2: // Do nothing (usually due to user not being in a duel)
+      break;
+    case 3: // Increasing duel points while in a duel
+      increaseDuelScore(duelScoreKey, scoreNeededGoalKey, guildIdKey, selfUsernameKey, opponentUsernameKey, wagerKey, announcerBotUsernameKey, timestampIdentifierKey, troubleshootingKey, task.priority, dataContents.delta, task.type);
+      break;
+    case 10: // Error condition that shouldn't be possible to reach
+      api_sendPrivateMessageAlways({"message" : ERROR_MSG_SWITCH_CASE_FAILURE1 + 10 + ERROR_MSG_SWITCH_CASE_FAILURE2, "toUserId" : USER_ID});
+      break;
+    case 11: // Error, clicked the button to start a duel but are already in a duel
+      api_sendPrivateMessageAlways({"message" : ERROR_MSG_DUEL_ALREADY_ACTIVE, "toUserId" : USER_ID});
+      break;
+    case 12: // Normal use of Duel Start button
+      duelStartButton(task.notes, task._id, duelCurrentlyActiveKey, duelScoreKey, selfUsernameKey, opponentUsernameKey, wagerKey, scoreNeededGoalKey, guildIdKey, announcerBotUsernameKey, timestampIdentifierKey);
+      break;
+    case 21: // Error, clicked the button to see duel score but not currently in a duel
+      api_sendPrivateMessageAlways({"message" : ERROR_MSG_NOT_IN_DUEL_SCORE, "toUserId" : USER_ID});
+      break;
+    case 22: // Normal use of the Duel Score button
+      duelScoreButton(duelScoreKey, scoreNeededGoalKey);
+      break;
+    case 31: // Error, clicked the button to end duel but not currently in a duel
+      api_sendPrivateMessageAlways({"message" : ERROR_MSG_NOT_IN_DUEL_END, "toUserId" : USER_ID});
+      break;
+    case 32: // Normal use of the Duel End button
+      duelEndButton(task.notes, selfUsernameKey, opponentUsernameKey, wagerKey, scoreNeededGoalKey, timestampIdentifierKey, troubleshootingKey, guildIdKey, announcerBotUsernameKey);
+      break;
+    case 40: // Error condition that shouldn't be possible to reach
+      api_sendPrivateMessageAlways({"message" : ERROR_MSG_SWITCH_CASE_FAILURE1 + 40 + ERROR_MSG_SWITCH_CASE_FAILURE2, "toUserId" : USER_ID});
+      break;
+  }
+}
+
+// Create custom reward buttons
+function api_createNewTaskForUser(payload) {
+  var params = {
+    "method" : "post",
+    "headers" : HEADERS,
+    "contentType" : "application/json",
+    "payload" : JSON.stringify(payload), // Rightmost button goes on top
+    "muteHttpExceptions" : true,
+  }
+
+  var url = "https://habitica.com/api/v3/tasks/user";
+  UrlFetchApp.fetch(url, params);
+}
+
+// Create a webhook if no duplicate exists
+function apiMult_createNewWebhookNoDuplicates(payload) {
+  const response = api_getWebhooks();
+  const webhooks = JSON.parse(response).data;
+  var duplicateExists = 0;
+    
+  for (var i in webhooks) {
+    if (webhooks[i].label == payload.label) {
+      duplicateExists = 1;
+    }
+  }
+  // If webhook to be created doesn't exist yet
+  if (!duplicateExists) {
+    api_createNewWebhook(payload);
+  }
+}
+
+// Used to see existing webhooks, and therefore if there's a duplicate
+function api_getWebhooks() {
+  const params = {
+    "method" : "get",
+    "headers" : HEADERS,
+    "muteHttpExceptions" : true,
+  }
+  
+  const url = "https://habitica.com/api/v3/user/webhook";
+  return UrlFetchApp.fetch(url, params);
+}
+
+// Creates a webhook (as part of the "don't make it if there's a duplicate" function)
+function api_createNewWebhook(payload) {
+  const params = {
+    "method" : "post",
+    "headers" : HEADERS,
+    "contentType" : "application/json",
+    "payload" : JSON.stringify(payload),
+    "muteHttpExceptions" : true,
+  }
+   
+  const url = "https://habitica.com/api/v3/user/webhook";
+  return UrlFetchApp.fetch(url, params);
+}
+
+// Sets initial properties that will be used/saved later.
+function initScriptProperties() {
+  resetDuelValues();
+}
+
+// Resets saved duel values
+function resetDuelValues(){
+  scriptProperties.setProperty(DUEL_CURRENTLY_ACTIVE_KEY, 0);
+  scriptProperties.setProperty(DUEL_SCORE_KEY, 0);
+  scriptProperties.setProperty(SELF_USERNAME_KEY, "self");
+  scriptProperties.setProperty(OPPONENT_USERNAME_KEY, "name");
+  scriptProperties.setProperty(WAGER_KEY, 0);
+  scriptProperties.setProperty(SCORE_NEEDED_GOAL_KEY, 0);
+  scriptProperties.setProperty(GUILD_ID_KEY, "string");
+  scriptProperties.setProperty(ANNOUNCER_BOT_USERNAME_KEY, "name");
+  scriptProperties.setProperty(TIMESTAMP_IDENTIFIER_KEY, 0);
+  scriptProperties.setProperty(TROUBLESHOOTING_KEY, 0);
+}
+
+// Creates cases based on which button was pushed and whether you are currently in a duel
+function createCase(taskAliasOrPlaceholder, taskType, duelCurrentlyActive, duelScoreKey, scoreNeededGoalKey) {  
+  if (taskAliasOrPlaceholder == DUEL_START_ALIAS) {
+    if (duelCurrentlyActive == 1) {
+      return 11; // Error, clicked the button to start a duel but are already in a duel
+    } else if (duelCurrentlyActive == 0) {
+      return 12; // Normal use of Duel Start button
+    } else {
+      return 10; // Error condition that shouldn't be possible to reach
+    }
+  } else if (taskAliasOrPlaceholder == DUEL_END_ALIAS) {
+    if (duelCurrentlyActive == 0) {
+      return 31; // Error, clicked the button to end duel but not currently in a duel
+    } else if (duelCurrentlyActive == 1) {
+      return 32; // Normal use of the Duel End button
+    } else {
+      return 30; // Error condition that shouldn't be possible to reach
+    }
+  } else { // If any button other than Duel Start/End is pressed, check if user has already achieved victory (if a duel is in progress)
+    if (duelCurrentlyActive == 1) {
+      // Retrieve saved values
+      let duelScore = Number(scriptProperties.getProperty(duelScoreKey));
+      let scoreNeededGoal = Number(scriptProperties.getProperty(scoreNeededGoalKey));
+      
+      if (duelScore >= scoreNeededGoal) {
+        return 1; // Victory condition – checks to see if the correct automated messages were posted
+      } else { // If not victory, see which button was pressed and do appropriate actions.
+        if (taskAliasOrPlaceholder == DUEL_SCORE_ALIAS) {
+          return 22; // Normal use of the Duel Score button
+        } else { // Only increase duel score if a non-Reward task was clicked
+          if ( ( taskType == "habit" ) || ( taskType == "daily") || ( taskType == "todo") ) {
+            return 3; // Increasing duel score while in a duel
+          } else {
+            return 2; // Do nothing
+          }
+        }
+      }
+    } else if (duelCurrentlyActive == 0) { // If a duel is not currently active, see which button was pressed and do appropriate actions.
+      if (taskAliasOrPlaceholder == DUEL_SCORE_ALIAS) {
+        return 21; // Error, clicked the button to see duel score but not currently in a duel
+      } else {
+        return 2; // Do nothing since user is not in a duel
+      }
+    } else {
+      return 40; // Error condition that shouldn't be possible to reach
+    }
+  }
+}
+
+// Send a notification as a private message regardless of if they're enabled
+function api_sendPrivateMessageAlways(payload) {
+  const params = {
+    "method" : "post",
+    "headers" : HEADERS,
+    "contentType" : "application/json",
+    "payload" : JSON.stringify(payload),
+    "muteHttpExceptions" : true,
+  }
+  const url = "https://habitica.com/api/v3/members/send-private-message";
+  return UrlFetchApp.fetch(url, params);
+}
+
+// Once you've achieved victory, checks if the correct message posted and does other error-checking actions.
+function victoryCondition(troubleshootingKey, guildIdKey, announcerBotUsernameKey, timestampIdentifierKey){
+  var troubleshootingFlag = Number(scriptProperties.getProperty(troubleshootingKey));
+  
+  // If troubleshooting flag is active, do nothing. Only do things if it is equal to 0
+  if (troubleshootingFlag == 0) {
+    var guildId = scriptProperties.getProperty(guildIdKey);
+    var timestampIdentifier = Number(scriptProperties.getProperty(timestampIdentifierKey));
+    var announcerBotUsername = scriptProperties.getProperty(announcerBotUsernameKey);
+    
+    // Update Duel Score button to indicate victory (and do this regardless of any of the conditions below)
+    if (guildId != "") {
+      let guildUrl = "https://habitica.com/groups/guild/" + guildId;
+      var newDuelScoreNotes = MSG_DUEL_SCORE_VICTORY1 + guildUrl + MSG_DUEL_SCORE_VICTORY2 + announcerBotUsername + MSG_DUEL_SCORE_VICTORY3;
+      api_updateTask(DUEL_SCORE_ALIAS, {"notes" : newDuelScoreNotes});
+    }
+    
+    // Check if the automated Duel End message successfully posted or not
+    var msgIdAuto = findAutomatedDuelEndMessages("user", guildId, "not needed", timestampIdentifier, announcerBotUsername, AUTOMATED_MSG_END_DUEL);
+    if (msgIdAuto == "nope") {
+      // User message was supposed to post but didn't.
+      
+      // Flip the troubleshooting flag
+      troubleshootingFlag = 1;
+      scriptProperties.setProperty(TROUBLESHOOTING_KEY, troubleshootingFlag);
+      
+      // Post error message to the Guild and also send it as a private message to the user in case posting to the Guild fails
+      api_postChatMessageToGroup({"message": ERROR_MSG_AUTOMATED_START + ERROR_MSG_AUTOMATED_MESSAGE_DIDNT_POST});
+      api_sendPrivateMessageAlways({"message" : ERROR_MSG_AUTOMATED_SELF + ERROR_MSG_AUTOMATED_START + ERROR_MSG_AUTOMATED_MESSAGE_DIDNT_POST, "toUserId" : USER_ID});
+    } else {
+      // Find announcer bot response to the automated post. First, check the "valid" automated message
+      let msgIdBotValid = findAutomatedDuelEndMessages("bot", guildId, msgIdAuto, timestampIdentifier, announcerBotUsername, AUTOMATED_MSG_BOT_DECLARES_WINNER);
+      if (msgIdBotValid == "nope") {
+        // Next, check the  "invalid" automated meessage
+        let msgIdBotInvalid = findAutomatedDuelEndMessages("bot", guildId, msgIdAuto, timestampIdentifier, announcerBotUsername, AUTOMATED_MSG_BOT_INVALID_END_STRING);
+        if (msgIdBotInvalid == "nope") {
+          // This condition shouldn't be possible. It means the user message posted but the bot didn't resppond either way (valid or invalid)
+          // This means that was probably an issue with the bot username (possibly saving incorrectly or not tagging the bot).
+          
+          // Flip the troubleshooting flag
+          troubleshootingFlag = 1;
+          scriptProperties.setProperty(TROUBLESHOOTING_KEY, troubleshootingFlag);
+          
+          // Post error message to the Guild and also send it as a private message to the user in case posting to the Guild fails
+          api_postChatMessageToGroup({"message": ERROR_MSG_AUTOMATED_START + ERROR_MSG_AUTOMATED_BOT_DIDNT_REPLY});
+          api_sendPrivateMessageAlways({"message" : ERROR_MSG_AUTOMATED_SELF + ERROR_MSG_AUTOMATED_START + ERROR_MSG_AUTOMATED_BOT_DIDNT_REPLY, "toUserId" : USER_ID});
+        } else {
+          // This condition means the bot found the users automated message as invalid. But, user's duel score indicates they should've won.
+          // Therefore, it's most likely that the string generated by the user's script messed up.
+          
+          // Flip the troubleshooting flag
+          troubleshootingFlag = 1;
+          scriptProperties.setProperty(TROUBLESHOOTING_KEY, troubleshootingFlag);
+          
+          // Post error message to the Guild and also send it as a private message to the user in case posting to the Guild fails
+          api_postChatMessageToGroup({"message": ERROR_MSG_AUTOMATED_START + ERROR_MSG_AUTOMATED_BOT_DIDNT_REPLY});
+          api_sendPrivateMessageAlways({"message" : ERROR_MSG_AUTOMATED_SELF + ERROR_MSG_AUTOMATED_START + ERROR_MSG_AUTOMATED_BOT_FOUND_INVALID, "toUserId" : USER_ID});
+        }
+      } else {
+        // Message posted and bot found it valid. User message is no longer needed, so delete.
+        api_deleteChatMessage(guildId, msgIdAuto);
+        
+        // Flip the troubleshooting flag so that this script does not post additional automated messages
+        // A 2 indicates victory, unlike 1, which indicates error
+        troubleshootingFlag = 2;
+        scriptProperties.setProperty(TROUBLESHOOTING_KEY, troubleshootingFlag);
+        
+      }
+    }
+  }
+}
+
+// Updates a task
+function api_updateTask(taskIdOrAlias, payload) {
+  const params = {
+    "method" : "put",
+    "headers" : HEADERS,
+    "contentType" : "application/json",
+    "payload" : JSON.stringify(payload),
+    "muteHttpExceptions" : true,
+  }
+
+  const url = "https://habitica.com/api/v3/tasks/" + taskIdOrAlias;
+  return UrlFetchApp.fetch(url, params);
+}
+
+// Finds if the automated message was posted or not
+function findAutomatedDuelEndMessages(version, guildId, msgIdEarliestAllowed, earliestAllowedTimestamp, announcerBotUsername, searchTerm, ){
+  // Initialize so it defaults to the error condition
+  let msgId = "nope";
+  
+  // Grab messages from Guild
+  let response = api_getChatMessagesFromGroup(guildId);
+  let chatMessages = JSON.parse(response).data;
+  
+  let earliestTimestamp = earliestAllowedTimestamp;
+  
+  // For "bot" version, I need to find timestamp of the user's automated chat message
+  if (version == "bot") {
+    for (var i in chatMessages) {
+      if (chatMessages[i]._id == msgIdEarliestAllowed) {
+        earliestAllowedTimestamp = chatMessages[i].timestamp;
+      }
+    }
+  }
+  
+  // Look for messages posted at or after the earliest allowed timestamp
+  for (var i in chatMessages) {
+    if (chatMessages[i].timestamp >= earliestAllowedTimestamp) {
+      // This version is to look for the automated message from the user
+      if (version == "user") {
+        // Look for messages the user posted
+        if (chatMessages[i].uuid == USER_ID) {
+          let text = chatMessages[i].text;
+          
+          // See if both search terms are found (automated message and bot username)
+          let autoMsgIndex = findIndex(searchTerm, text);
+          let botIndex = findIndex(announcerBotUsername, text);
+          
+          if ( (botIndex != -1) && (autoMsgIndex != -1) ) {
+            msgId = chatMessages[i]._id;
+          } 
+        }
+      } else if (version == "bot") {
+        // For this one, I need to remove the @ symbol from announcer bot username
+        let untaggedAnnouncerBotUsername = checkFirstCharacter(announcerBotUsername);
+        let text = chatMessages[i].text;
+        
+        // Look for messages the bot posted
+        if (chatMessages[i].username == untaggedAnnouncerBotUsername) {
+          // See if search term is found
+          let botMsgIndex = findIndex(searchTerm, text);
+          if (botMsgIndex != -1) {
+            msgId = chatMessages[i]._id;
+          }
+        }
+      } 
+    }
+  }
+  
+  return msgId;
+}
+
+// Gets chat messages given a Guild ID
+function api_getChatMessagesFromGroup(guildId) {
+  const params = {
+    "method" : "get",
+    "headers" : HEADERS,
+    "muteHttpExceptions" : true,
+  }
+  
+  const url = "https://habitica.com/api/v3/groups/" + guildId + "/chat";
+
+  return UrlFetchApp.fetch(url, params);
+}
+
+
+// Returns the first character of the search term within the string you are searching
+function findIndex(searchTerm, stringToSearch) {
+  return stringToSearch.indexOf(searchTerm);
+}
+
+// Check it first character is @ or [, remove if yes
+function checkFirstCharacter(stringToCheck){
+  // initialize
+  let result = stringToCheck;
+  
+  // When grabbing a username string, it might instead grab [@username](URL). I want username only.
+  let indexUrlOpen = findIndex("[@", stringToCheck);
+  let indexUrlMid = findIndex("](", stringToCheck);
+  let indexUrlClose = findIndex(")", stringToCheck);
+  
+  // Check if all of them are found. Initiate Boolean it false, flip it if all indices are not -1
+  // Also check if they are in the right order.
+  let allFound = false;
+  let rightOrder = false;
+  if ( (indexUrlOpen != -1) && (indexUrlMid != -1) && (indexUrlClose != -1) ) {
+    allFound = true;
+    if ( (indexUrlOpen < indexUrlMid) && (indexUrlMid < indexUrlClose) ) {
+      rightOrder = true;
+    }
+  }
+  
+  // If all are found and it's in the right order, trim string so it's just username.
+  if (allFound && rightOrder) {
+    result = createSubstring(stringToCheck, indexUrlOpen + 2, indexUrlMid);
+    return result;
+  } else { // Check if the first character is @
+    if (stringToCheck.charAt(0) == "@") {
+      result = stringToCheck.substring(1);
+      return result;
+    } else {
+      return result;
+    }
+  }
+}
+
+// Trims a string
+function createSubstring(string, startingIndex, endingIndex) {
+  var untrimmed = string.substring(startingIndex,endingIndex);
+  var trimmed = untrimmed.trim();
+  return trimmed;
+}
+
+function api_postChatMessageToGroup(payload, guildId) {
+  const params = {
+    "method" : "post",
+    "headers" : HEADERS,
+    "contentType" : "application/json",
+    "payload" : JSON.stringify(payload),
+    "muteHttpExceptions" : true,
+  }
+  const url = "https://habitica.com/api/v3/groups/" + guildId + "/chat";
+  return UrlFetchApp.fetch(url, params);
+}
+
+// Deletes a chat message
+function api_deleteChatMessage(groupId, chatId) {
+  const params = {
+    "method" : "delete",
+    "headers" : HEADERS,
+    "muteHttpExceptions" : true,
+  }
+
+  var url = "https://habitica.com/api/v3/groups/";
+  if (groupId != "") {
+    url += groupId;
+    url += "/chat/";
+    if (chatId != "") {
+      url += chatId;
+    }
+  }
+  return UrlFetchApp.fetch(url, params);
+}
+
+// Increases duel score while duel is running. Also checks to see if user has won.
+function increaseDuelScore(duelScoreKey, scoreNeededGoalKey, guildIdKey, selfUsernameKey, opponentUsernameKey, wagerKey, announcerBotUsernameKey, timestampIdentifierKey, troubleshootingKey, taskDifficulty, taskDelta, taskType){
+  // Retrieve saved values
+  let duelScore = Number(scriptProperties.getProperty(duelScoreKey));
+  let scoreNeededGoal = Number(scriptProperties.getProperty(scoreNeededGoalKey));
+  
+  var multiplier = 1; // If Daily or To-Do.
+  if ( taskType == "habit" ) {
+    multiplier = 0.5; // Habits score half the points of Daily or To-Do.
+  }
+  
+  // Calculate duel points for this task
+  let duelPointsRaw = taskDelta * taskDifficulty * multiplier;
+  
+  // If it's not a number, then set it to 0
+  if (Number.isNaN(duelPointsRaw)) {
+    duelPointsRaw = 0;
+  }
+  
+  // Round to two decimal points
+  let duelPoints = ( Math.round( duelPointsRaw * 100 ) / 100 );
+  
+  // Add to running total. Round. Save.
+  let duelScoreRaw = duelScore + duelPoints;
+  duelScore = ( Math.round( duelScoreRaw * 100 ) / 100 );
+  scriptProperties.setProperty(duelScoreKey, duelScore);
+  
+  // Check against Score Needed / Goal. If victory, create Duel End string for duel bot to check/evaluate.
+  if (duelScore >= scoreNeededGoal) {
+    let DUEL_END_MSG = createDuelEndString(selfUsernameKey, opponentUsernameKey, wagerKey, scoreNeededGoalKey, announcerBotUsernameKey, timestampIdentifierKey)
+    var guildId = scriptProperties.getProperty(guildIdKey);
+    api_postChatMessageToGroup({"message": DUEL_END_MSG}, guildId);
+    
+    // Wait 5 seconds
+    Utilities.sleep(5000);
+    
+    // Check to see if automated message posted correctly
+    victoryCondition(troubleshootingKey, guildIdKey, announcerBotUsernameKey, timestampIdentifierKey);
+  }
+}
+
+// Creates Duel End string for duel bot to check/evaluate
+function createDuelEndString(selfUsernameKey, opponentUsernameKey, wagerKey, scoreNeededGoalKey, announcerBotUsernameKey, timestampIdentifierKey){
+  // Retrieve saved values
+  var selfUsername = scriptProperties.getProperty(selfUsernameKey); 
+  var opponentUsername = scriptProperties.getProperty(opponentUsernameKey);
+  var wager = Number(scriptProperties.getProperty(wagerKey));
+  var scoreNeededGoal = Number(scriptProperties.getProperty(scoreNeededGoalKey));
+  var announcerBotUsername = scriptProperties.getProperty(announcerBotUsernameKey);
+  var timestampIdentifier = Number(scriptProperties.getProperty(timestampIdentifierKey));
+  
+  // Combine self&opponent usernames, then sort characters alphabetically.
+  // This will ensure it's the same regardless of which participant is "self" and which is "opponent"
+  let alphabeticalCombinedUsernames = alphabetizeString(selfUsername, opponentUsername);
+  
+  // Create string of all duel parameters.
+  let SEMICOLON = ";";
+  let ALL_PARAMETERS = alphabeticalCombinedUsernames + SEMICOLON + wager + SEMICOLON + scoreNeededGoal + SEMICOLON
+  + timestampIdentifier + SEMICOLON;
+  
+  // Create a string of both the usernames. Ends in a period for easier parsing.
+  let bothUsernames = selfUsername + SEMICOLON + opponentUsername + SEMICOLON + ".";
+  
+  // Create hashes
+  let hashAll = createHash(ALL_PARAMETERS);
+  let hashSelfUserId = createHash(USER_ID); // for indicating who won
+  let hashSum = hashAll + hashSelfUserId; // So I don't directly expose the hash of the user ID (mostly for anti-cheating purposes)
+  
+  // Create string of hashes. Ends in a period for easier parsing.
+  let HASHES = hashAll + SEMICOLON + hashSum + SEMICOLON +  ".";
+  
+  // Generate victory string. Post message to guild and tag bot. Bot will be the one to declare victory (after checking if the string is valid)
+  let DUEL_END_MSG = announcerBotUsername + "\nEND DUEL\n." + ALL_PARAMETERS + "." + bothUsernames + HASHES;
+  
+  return DUEL_END_MSG;
+}
+
+
+// Alphabetically sorts self&opponent usernames. That way, it's the same no matter which user does it.
+function alphabetizeString(selfUsername, opponentUsername) {
+  let str1 = selfUsername;
+  let str2 = opponentUsername;
+  
+  // Combine/concatenate
+  let combinedString = str1.concat(str2);
+  
+  // Split by character, sort alphabetically, join back together.
+  return combinedString.split('').sort().join('').trim();
+}
+
+// A good hash function is deterministic, fast, uniformally distributed, and non-invertible. See for more info: https://www.educba.com/javascript-hash/
+// I don't need a powerful cryptographic hash like SHA1 or SHA256, that would be overkill for me (not to mention, too slow)
+function createHash(string) {
+  // Initialize at 0
+  var hash = 0;
+  
+  // If the length of the string is 0, return 0
+  if (string.length == 0) {
+    return hash;
+  }
+  else {
+    for (var i = 0 ; i<string.length ; i++) {
+      let ch = string.charCodeAt(i);
+      hash = ((hash << 5) - hash) + ch;
+      hash = hash & hash; // Convert to 32bit integer
+    }
+    return hash;
+  }
+}
+
+// Does correct actions when Duel Start button is pressed
+function duelStartButton(taskNotes, taskIdStart, duelCurrentlyActiveKey, duelScoreKey, selfUsernameKey, opponentUsernameKey, wagerKey, scoreNeededGoalKey, guildIdKey, announcerBotUsernameKey, timestampIdentifierKey){
+  // Check if valid string, send error message if not, and if valid, parse and save values and start duel and deletes Duel Start button.
+  parseDuelStartString(taskNotes, taskIdStart, duelCurrentlyActiveKey, duelScoreKey, selfUsernameKey, opponentUsernameKey, wagerKey, scoreNeededGoalKey, guildIdKey, announcerBotUsernameKey, timestampIdentifierKey);
+}
+
+// Checks if string is valid, returns error messages if not. Same with GP for wager. If valid, saves all duel values and starts duel.
+function parseDuelStartString(inputString, buttonToDeleteTaskId, duelCurrentlyActiveKey, duelScoreKey, selfUsernameKey, opponentUsernameKey, wagerKey, scoreNeededGoalKey, guildIdKey, announcerBotUsernameKey, timestampIdentifierKey) { 
+  // Count number of semicolons. 7 are expected.
+  var countSemicolons = ( inputString.match(/\;/g) || [] ).length;
+  
+  // Send error message if there aren't 7 semicolons. Otherwise, parse string.
+  if ( countSemicolons != 7 ) {
+    api_sendPrivateMessageAlways({"message" : ERROR_MSG_SEMICOLONS_START + countSemicolons + ERROR_MSG_SEMICOLONS_END, "toUserId" : USER_ID});
+  } else if ( countSemicolons == 7 ) {
+    
+    // Initialize some values so I can use them later
+    let length = inputString.length;
+    let semicolonIndex = 0;
+    let smallerSubstringAsNumber = 0;
+    
+    // Initialize error counter, and error location flags
+    let errorCount = 0;
+    let wagerIsError = false;
+    let scoreNeededGoalIsError = false;
+    let timestampIdentifierIsError = false;
+  
+    // Use first semicolon to parse out self username
+    semicolonIndex = findIndexOfSemicolon(inputString);
+    let selfUsernameTemp = createSubstring(inputString, 0, semicolonIndex);
+    
+    // Check if first character is @. If not, add it.
+    let selfUsername = checkNameFormatting(selfUsernameTemp);
+    
+    // Remove that section from the input string, save as a smaller substring
+    let inputStringTemp = createSubstring(inputString, semicolonIndex + 1, length);
+    inputString = inputStringTemp;
+    length = inputString.length;
+    
+    // Repeat to parse out opponent username
+    semicolonIndex = findIndexOfSemicolon(inputString);
+    let opponentUsernameTemp = createSubstring(inputString, 3, semicolonIndex); // Start at index 3 because of "vs."
+    
+    // Check if first character is @. If not, add it.
+    let opponentUsername = checkNameFormatting(opponentUsernameTemp);
+    
+    // Remove that section from the input string, save as a smaller substring
+    inputStringTemp = createSubstring(inputString, semicolonIndex + 1, length);
+    inputString = inputStringTemp;
+    length = inputString.length;
+    
+    // Repeat to parse out wager
+    semicolonIndex = findIndexOfSemicolon(inputString);
+    let wagerTemp = createSubstring(inputString, 0, semicolonIndex);
+    
+    // If it's not a number, the function will return -2
+    let wager = checkIfNumber(wagerTemp);
+    
+    // I'll keep parsing the substring in case there are other errors.
+    
+    // Remove that section from the input string, save as a smaller substring
+    inputStringTemp = createSubstring(inputString, semicolonIndex + 1, length);
+    inputString = inputStringTemp;
+    length = inputString.length;
+    
+    // Repeat to parse out Score Needed / Goal
+    semicolonIndex = findIndexOfSemicolon(inputString);
+    let scoreNeededGoalTemp = createSubstring(inputString, 0, semicolonIndex);
+    
+    // If it's not a number, the function will return -2
+    let scoreNeededGoal = checkIfNumber(scoreNeededGoalTemp);
+
+    // I'll keep parsing the substring in case there are other errors.
+    
+    // Remove that section from the input string, save as a smaller substring
+    inputStringTemp = createSubstring(inputString, semicolonIndex + 1, length);
+    inputString = inputStringTemp;
+    length = inputString.length;
+    
+    // Repeat to parse out Timestamp identifier
+    semicolonIndex = findIndexOfSemicolon(inputString);
+    let timestampIdentifierTemp = createSubstring(inputString, 0, semicolonIndex);
+    
+    // If it's not a number, the function will return -2
+    let timestampIdentifier = checkIfNumber(timestampIdentifierTemp);
+    
+    // Remove that section from the input string, save as a smaller substring
+    inputStringTemp = createSubstring(inputString, semicolonIndex + 1, length);
+    inputString = inputStringTemp;
+    length = inputString.length;
+    
+    // Repeat to parse out Guild ID
+    semicolonIndex = findIndexOfSemicolon(inputString);
+    let guildId = createSubstring(inputString, 0, semicolonIndex);
+    
+    // Check to make sure it's a valid format for a Guild ID
+    let guildIdFormatCheck = checkGuildIdFormat(guildId);
+    
+    // Remove that section from the input string, save as a smaller substring
+    inputStringTemp = createSubstring(inputString, semicolonIndex + 1, length);
+    inputString = inputStringTemp;
+    length = inputString.length;
+    
+    // Repeat to parse out Bot Announcer ID
+    semicolonIndex = findIndexOfSemicolon(inputString);
+    let announcerBotUsernameTemp = createSubstring(inputString, 0, semicolonIndex);
+    
+    // Check if first character is @. If not, add it.
+    let announcerBotUsername = checkNameFormatting(announcerBotUsernameTemp);
+
+    // If there are any errors, let user know by sending messages.
+    let errorsNotPresent = checkDuelStartErrors(wager, scoreNeededGoal, timestampIdentifier, guildIdFormatCheck);
+    
+    // If no errors, check GP and start duel
+    if (errorsNotPresent) {
+      checkGpAndStartDuel(buttonToDeleteTaskId, duelCurrentlyActiveKey, duelScoreKey, selfUsernameKey, selfUsername, opponentUsernameKey, opponentUsername, wagerKey, wager, scoreNeededGoalKey, scoreNeededGoal, guildIdKey, guildId, announcerBotUsernameKey, announcerBotUsername, timestampIdentifierKey, timestampIdentifier);
+    }
+  }
+}
+
+// Finds the first semicolon
+function findIndexOfSemicolon(stringToSearch) {
+  return stringToSearch.indexOf(";");
+}
+
+// Makes sure the first character in a username is @
+function checkNameFormatting(inputString) {
+  var newString = inputString;
+  if ( inputString.charAt(0) == "@") {
+    return newString;
+  } else {
+    newString = "@" + inputString;
+    return newString;
+  }
+}
+
+// Checks if input is a number
+function checkIfNumber(input){
+  // Turn it into a number
+  let inputAsNumber = parseFloat(input);
+  
+  // If it's not a number, return -2
+  let isNan = Number.isNaN(inputAsNumber);
+  if (isNan) {
+    return -2;
+  } else {
+    let parameter = sanitizePositive(inputAsNumber); // Ensure that it is greater than 1
+    return parameter;
+  } 
+}
+
+// Ensure that the input is greater than the minimum (normally 0, but for this script, minimum is 1).
+function sanitizePositive(value) {
+  if (value < 1) {
+    return 1;
+  } else {
+    return value;
+  }
+}
+
+// Checks if a Guild ID is in the correct formatting: 00000000-0000-4000-A000-000000000000
+function checkGuildIdFormat(guildIdToCheck){
+  // Trim, just in case there was extra whitespace
+  let stringTemp = guildIdToCheck.trim();
+  
+  // Total length of string should be 36 (Four total dashes and 32 other hexadecimal characters)
+  let length = stringTemp.length;
+  if (length != 36) {
+    return false;
+  } else {
+    // I'm going to slightly cheat here: if I alphabetize the characters, I can sort out the dashes. 
+    let stringTemp2 = stringTemp.split('').sort().join('').trim();
+    
+    // Checks that total number of dashes is only 4, and ensures that the first 4 characters are dashes
+    let dashCount = checkDashes(stringTemp2);
+    if (dashCount != 4) {
+      return false;
+    } else {     
+      // Remove the first four characters from the string, we already know they are dashes
+      let stringShorter = createSubstring(stringTemp2, 4, length);
+      
+      // Check if the other characters are valid for hexadecimal
+      let isHex = isHexadecimal(stringShorter);
+      if (!isHex){
+        return false;
+      } else {
+        // The character counts are valid, exactly 4 dashes and the rest are hexadecimal (and total lenggth is valid)
+        // The final thing to do is ensure that the string follows the right pattern of hexadecimal and dashes
+        // Parsing the string at the dashes would be the hard way to do it. The easy way is to ensure that the dashes appear at the correct character index
+        
+        let dashLocationsConfirmed = checkDashLocations(stringTemp); // I no longer need the alphabetized string, I need to use the original one
+        if (dashLocationsConfirmed) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+  }
+}
+
+// Checks that total number of dashes is only 4, and ensures that the first 4 characters are dashes
+function checkDashes(stringToCheck){
+  // First, count them
+  let count = 0;
+  for (let i = 0; i < 36; i++) {
+    if (stringToCheck.charAt(i) == "-" ) {
+      count++;
+    }
+  }
+  
+  // Since the string is alphabetized, I probably don't have to do this, but I will anyway: confirm each of the first four are dashes
+  if (count != 4) { // If more than 4 are dashes, I catch it here
+    return count;
+  } else if (count == 4) {
+    for (let j = 0; j < 4; j++) {
+      if (stringToCheck.charAt(j) != "-" ) { // If any of the first 4 characters are not a dash, it fails. End the loop.
+        count = -1;
+        break;
+      }
+    }
+    return count;
+  }
+}
+
+// Checks if each of the characters are valid for hexadecimal
+function isHexadecimal(stringToCheck) {
+ regexp = /^[0-9a-fA-F]+$/;
+  
+  if (regexp.test(stringToCheck)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+// Checks that dashes occur at the correct character index locations. Format is 00000000-0000-4000-A000-000000000000
+function checkDashLocations(stringToCheck) {
+  let count = 0;
+  
+  // Dashes should be at character index 8, 13, 18, and 23. Jump over the loop at other iterations.
+  for (let i = 0; i < 36; i++) {
+    if ( (i == 8) || (i == 13) || (i == 18) || (i == 23) ) {
+      if (stringToCheck.charAt(i) == "-") {
+        count++;
+      }
+    } else {
+      continue;
+    }
+  }
+  
+  if (count == 4) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+// If errors exist in Duel Start string, sends messages.
+function checkDuelStartErrors(wager, scoreNeededGoal, timestampIdentifier, guildIdFormatCheck) {
+  // Initialize Booleans
+  let wagerIsError = false;
+  let scoreNeededGoalIsError = false;
+  let timestampIdentifierIsError = false;
+  let guildIdError = false;
+  
+  let errorCount = 0;
+  
+  if (wager == -2) {
+    wagerIsError = true;
+    errorCount++;
+  }
+  if (scoreNeededGoal == -2) {
+    scoreNeededGoalIsError = true;
+    errorCount++;
+  }
+  if (timestampIdentifier == -2) {
+    timestampIdentifierIsError = true;
+    errorCount++;
+  }
+  if (!guildIdFormatCheck) { // This one was already a Boolean
+    guildIdError = true;
+    errorCount++;
+  }
+  
+  if (errorCount == 0) {
+    return true; // Indicates no errors
+  } 
+  else { // Message differs if there's one error or multiple.
+    if ( errorCount == 1 ) {
+      // Message tells user location of error
+      if (wagerIsError) {
+        api_sendPrivateMessageAlways({"message" : ERROR_MSG_SINGULAR_START + ERROR_MSG_WAGER + ERROR_MSG_SINGULAR_END, "toUserId" : USER_ID});
+      } else if (scoreNeededGoalIsError) {
+        api_sendPrivateMessageAlways({"message" : ERROR_MSG_SINGULAR_START + ERROR_MSG_SCORE_NEEDED + ERROR_MSG_SINGULAR_END, "toUserId" : USER_ID});
+      } else if (timestampIdentifierIsError) {
+        api_sendPrivateMessageAlways({"message" : ERROR_MSG_SINGULAR_START + ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_SINGULAR_END, "toUserId" : USER_ID});
+      } else if (guildIdError) {
+        api_sendPrivateMessageAlways({"message" : ERROR_MSG_SINGULAR_START + ERROR_MSG_GUILD_ID + ERROR_MSG_SINGULAR_END, "toUserId" : USER_ID});
+      } else {
+        api_sendPrivateMessageAlways({"message" : ERROR_MSG_SINGULAR_START + "UNKNOWN" + ERROR_MSG_SINGULAR_END, "toUserId" : USER_ID});
+      }
+    } 
+    else {
+      // If 4 errors, all 4 locations are the cause.
+      if ( errorCount == 4 ) {
+        api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID
+                                      + ERROR_MSG_WAGER + ERROR_MSG_AND + ERROR_MSG_SCORE_NEEDED + ERROR_MSG_AND 
+                                      + ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_AND + ERROR_MSG_GUILD_ID
+                                      + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+      } else if ( errorCount == 3 ) { // If three errors, figure out which one is not an error
+        if (!wagerIsError) {
+          api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID
+                                        + ERROR_MSG_SCORE_NEEDED + ERROR_MSG_AND + ERROR_MSG_TIMESTAMP_IDENTIFIER 
+                                        + ERROR_MSG_AND + ERROR_MSG_GUILD_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+        } else if (!scoreNeededGoalIsError) {
+          api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID
+                                        + ERROR_MSG_WAGER + ERROR_MSG_AND + ERROR_MSG_TIMESTAMP_IDENTIFIER 
+                                        + ERROR_MSG_AND + ERROR_MSG_GUILD_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+        } else if (!timestampIdentifierIsError) {
+          api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID
+                                        + ERROR_MSG_WAGER + ERROR_MSG_AND + ERROR_MSG_SCORE_NEEDED + ERROR_MSG_AND 
+                                        + ERROR_MSG_GUILD_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+        } else if (!guildIdError) {
+          api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID
+                                        + ERROR_MSG_WAGER + ERROR_MSG_AND + ERROR_MSG_SCORE_NEEDED + ERROR_MSG_AND 
+                                        + ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+        } else {
+          api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + "UNKNOWN" + ERROR_MSG_SINGULAR_END, "toUserId" : USER_ID}); 
+        }
+      } else if ( errorCount == 2 ) { // If two errors, figure out which two
+        if (wagerIsError) { // This section is for the errors being Wager and something else
+          if (scoreNeededGoalIsError){
+            api_sendPrivateMessageAlways({"message" :  ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + ERROR_MSG_WAGER + ERROR_MSG_AND + ERROR_MSG_SCORE_NEEDED + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+          }
+          else if (timestampIdentifierIsError) {
+            api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + ERROR_MSG_WAGER + ERROR_MSG_AND + ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+          }
+          else if (guildIdError) {
+            api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + ERROR_MSG_WAGER + ERROR_MSG_AND + ERROR_MSG_GUILD_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+          }
+          else {
+            api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + ERROR_MSG_WAGER + ERROR_MSG_AND + "UNKNOWN" + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+          }
+        } else if (scoreNeededGoalIsError) {  // This section is for the errors being Score Needed Goal and something else 
+          if (timestampIdentifierIsError) {
+            api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + ERROR_MSG_SCORE_NEEDED + ERROR_MSG_AND + ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+          }
+          else if (guildIdError) {
+            api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + ERROR_MSG_SCORE_NEEDED + ERROR_MSG_AND + ERROR_MSG_GUILD_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+          }
+          else {
+            api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID +  ERROR_MSG_SCORE_NEEDED + ERROR_MSG_AND + "UNKNOWN" + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+          }
+        } else if (timestampIdentifierIsError) { // This section is for the errors being Timestamp Identifier and something else
+          if (guildIdError) {
+            api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_AND + ERROR_MSG_GUILD_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+          }
+          else {
+            api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID +  ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_AND + "UNKNOWN" + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+          }
+        } else if (guildIdError) {
+          api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID +  ERROR_MSG_GUILD_ID + ERROR_MSG_AND + "UNKNOWN" + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+        }
+      } else {
+        api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + "UNKNOWN" + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+      }
+    }
+    return false; // Indicates errors
+  }
+}
+
+// Checks GP and starts duel
+function checkGpAndStartDuel(buttonToDeleteTaskId, duelCurrentlyActiveKey, duelScoreKey, selfUsernameKey, selfUsername, opponentUsernameKey, opponentUsername, wagerKey, wager, scoreNeededGoalKey, scoreNeededGoal, guildIdKey, guildId, announcerBotUsernameKey, announcerBotUsername, timestampIdentifierKey, timestampIdentifier){
+  const responseUser = api_getAuthenticatedUserProfile("stats");
+  const user = JSON.parse(responseUser).data;
+  
+  let gp = user.stats.gp;
+  
+  // If not enough GP, send error message. If enough, deduct wager and start duel.
+  if ( gp < wager ) {
+    api_sendPrivateMessageAlways({"message" : MSG_INSUFFICIENT_GP, "toUserId" : USER_ID});
+  } else {
+    api_updateUser({"stats.gp" : gp - wager});
+    
+    // Start duel
+    let duelCurrentlyActive = 1;
+    let duelScore = 0;
+    
+    // Save values
+    scriptProperties.setProperty(duelCurrentlyActiveKey, duelCurrentlyActive);
+    scriptProperties.setProperty(duelScoreKey, duelScore);
+    scriptProperties.setProperty(selfUsernameKey, selfUsername);
+    scriptProperties.setProperty(opponentUsernameKey, opponentUsername);
+    scriptProperties.setProperty(wagerKey, wager);
+    scriptProperties.setProperty(scoreNeededGoalKey, scoreNeededGoal);
+    scriptProperties.setProperty(guildIdKey, guildId);
+    scriptProperties.setProperty(announcerBotUsernameKey, announcerBotUsername);
+    scriptProperties.setProperty(timestampIdentifierKey, timestampIdentifier);
+    
+    api_sendPrivateMessage({"message" : "Your duel against " + opponentUsername + " begins now!", "toUserId" : USER_ID});
+    
+    // Create the other two buttons (Duel Score and Duel End)
+    api_createNewTaskForUser([DUEL_END_BUTTON, DUEL_SCORE_BUTTON]);
+    
+    // Delete the Duel Start button
+    api_deleteTask(buttonToDeleteTaskId);
+  }
+}
+
+// Gets user info so I can use it, especially stats like mana, experience, and level
+function api_getAuthenticatedUserProfile(userFields) {
+  const params = {
+    "method" : "get",
+    "headers" : HEADERS,
+    "muteHttpExceptions" : true,
+  }
+  
+  var url = "https://habitica.com/api/v3/user";
+  if (userFields != "") {
+    url += "?userFields=" + userFields;
+  }
+
+  return UrlFetchApp.fetch(url, params);
+}
+
+function api_updateUser(payload) { 
+  const params = {
+    "method" : "put",
+    "headers" : HEADERS,
+    "contentType" : "application/json",
+    "payload" : JSON.stringify(payload),
+    "muteHttpExceptions" : true,
+  }
+  
+  const url = "https://habitica.com/api/v3/user";
+  return UrlFetchApp.fetch(url, params);
+}
+
+// Send a notification as a private message, only if they're enabled
+function api_sendPrivateMessage(payload) {
+  switch (NOTIFICATIONS_ON){ // Check if notifications are on, send message if yes
+    case 0:
+      break;        
+    case 1:
+        const params = {
+          "method" : "post",
+          "headers" : HEADERS,
+          "contentType" : "application/json",
+          "payload" : JSON.stringify(payload),
+          "muteHttpExceptions" : true,
+        }
+        const url = "https://habitica.com/api/v3/members/send-private-message";
+        return UrlFetchApp.fetch(url, params);
+      break;
+  }
+}
+
+// Deletes a task
+function api_deleteTask(taskId) {
+  const params = {
+    "method" : "delete",
+    "headers" : HEADERS,
+    "muteHttpExceptions" : true,
+  }
+
+  var url = "https://habitica.com/api/v3/tasks/";
+  if (taskId != "") {
+    url += taskId;
+  }
+  return UrlFetchApp.fetch(url, params);
+}
+
+// Does correct actions when Duel Score button is pressed
+function duelScoreButton(duelScoreKey, scoreNeededGoalKey){
+  // Retrieve saved values
+  let duelScore = Number(scriptProperties.getProperty(duelScoreKey));
+  let scoreNeededGoal = Number(scriptProperties.getProperty(scoreNeededGoalKey));
+  
+  let updatedNotes = MSG_DUEL_SCORE_PART1 + duelScore + MSG_DUEL_SCORE_PART2 + scoreNeededGoal + MSG_DUEL_SCORE_PART3;
+  
+  // Tell user their duel score by updating the button
+  api_updateTask(DUEL_SCORE_ALIAS, {"notes" : updatedNotes});
+}
+
+// Does correct actions when Duel End button is pressed
+function duelEndButton(taskNotes, selfUsernameKey, opponentUsernameKey, wagerKey, scoreNeededGoalKey, timestampIdentifierKey, troubleshootingKey, guildIdKey, announcerBotUsernameKey){
+  // Initialize value. -2 indicates some kind of invalid string, so default to that.
+  let validity = -2;
+  
+  // Check if search terms are found
+  let duelEndIndex = findIndex(DUEL_END, taskNotes); // Since the user will be copy/pasting, I want this to be case-sensitive
+  let duelEndDebugIndex = findIndexCaseInsensitive(DUEL_END_DEBUG, taskNotes); // Since the user will type this one, I don't want to be case-sensitive
+  
+  // Set "validity" to the correct value
+  if (duelEndIndex == -1) {
+    validity = -3; // User didn't paste in a new message at all into the Notes section
+  } else {
+    if (duelEndDebugIndex != -1) {
+      validity = 3; // 3 indicates you aren't the winner, i.e. the override command won't make you win the duel.
+    } else {
+      // Create hashes for duel parameters
+      let hashAllExpected = createDuelHash(selfUsernameKey, opponentUsernameKey, wagerKey, scoreNeededGoalKey, timestampIdentifierKey);
+      let hashSelfUserId = createHash(USER_ID); // for indicating who won
+      let hashSumIfWinner = hashAllExpected + hashSelfUserId;
+      
+      // Remove search term from beginning of Notes
+      let inputStringTemp = taskNotes; 
+      let length = inputStringTemp.length;
+      inputStringTemp = createSubstring(taskNotes, duelEndIndex + 12, length); // offset is 12 since "ENDING DUEL:" has 12 characters
+      taskNotes = inputStringTemp;
+      
+      // -2 is used to indicate an invalid string, 3 to indicate you didn't win, 5 to indicate you did.
+      validity = parseDuelEndString(taskNotes, hashAllExpected, hashSumIfWinner);
+    }
+  }
+  // Now that "validity" is correct, do the appropriate actions
+  if (validity == -3) {
+    // Error message tells them that the search term "ENDING DUEL: DEBUG END" was not found.
+    api_sendPrivateMessageAlways({"message" : ERROR_MSG_INVALID_END_STRING_BEGINNING + ERROR_MSG_INVALID_END_STRING_SEARCH_TERM + ERROR_MSG_INVALID_END_STRING_ENDING, "toUserId" : USER_ID});
+  } else if (validity == -2) {
+    // Error message tells them that what they entered did not match with the scrippt was expecting.
+    // Also tells them about the manual override command "ENDING DUEL: DEBUG END".
+    api_sendPrivateMessageAlways({"message" : ERROR_MSG_INVALID_END_STRING_BEGINNING + ERROR_MSG_INVALID_END_STRING_HASH1 + ERROR_MSG_INVALID_END_STRING_ENDING + ERROR_MSG_INVALID_END_STRING_HASH2, "toUserId" : USER_ID});
+  } else if ( (validity == 3) || (validity == 5) ) { // If valid
+    // Grab Notes field from the Duel End button, and grab its Task ID also, and ID for Duel Score buton
+    const responseTasks2 = api_getUserTasks("rewards");
+    const tasksRewards2 = JSON.parse(responseTasks2).data;
+    for (var i in tasksRewards2) {
+      if (tasksRewards2[i].alias == DUEL_END_ALIAS ) {
+        var notes2 = tasksRewards2[i].notes;
+        var taskIdEnd = tasksRewards2[i]._id;
+      } else if (tasksRewards2[i].alias == DUEL_SCORE_ALIAS ) {
+        var taskIdScore = tasksRewards2[i]._id;
+      }
+    }
+    
+    // Retrieve saved values
+    var guildId = scriptProperties.getProperty(guildIdKey);
+    var timestampIdentifier = Number(scriptProperties.getProperty(timestampIdentifierKey));
+    var announcerBotUsername = scriptProperties.getProperty(announcerBotUsernameKey);   
+    
+    // If you didn't win
+    if (validity == 3) {
+      // Reset values, create new Duel Start button, delete Duel Score and Duel End buttons, delete automated message if it hasn't happened yet.
+      endDuel(taskIdEnd, taskIdScore, troubleshootingKey, guildId, timestampIdentifier, announcerBotUsername);
+    } 
+    // If you did win, do the same thing but first gain your GP winnings.
+    else if (validity == 5) { 
+      // Calculate winnings
+      let wagerWinner = Number(scriptProperties.getProperty(wagerKey));
+      let gpWon = wagerWinner * 2;
+      
+      // Grab current GP
+      const responseUserWinner = api_getAuthenticatedUserProfile("stats");
+      const userWinner = JSON.parse(responseUserWinner).data;
+      var gp = userWinner.stats.gp;
+      
+      // Gain GP
+      api_updateUser({"stats.gp" : gp + gpWon});
+      
+      // Reset values, create new Duel Start button, delete Duel Score and Duel End buttons, delete automated message if it hasn't happened yet.
+      endDuel(taskIdEnd, taskIdScore, troubleshootingKey, guildId, timestampIdentifier, announcerBotUsername);
+    }
+  } else { // This condition shouldn't be possible
+    api_sendPrivateMessageAlways({"message" : ERROR_MSG_VALIDITY, "toUserId" : USER_ID});
+  }
+}
+
+
+// Finds index of a search term, not case-sensitive
+function findIndexCaseInsensitive(searchTerm, stringToSearch){
+  let uppercaseStringToSearch = stringToSearch.toUpperCase();
+  let index = findIndex(searchTerm, uppercaseStringToSearch);
+  
+  return index;
+}
+
+// Creates hash of the duel parameters
+function createDuelHash(selfUsernameKey, opponentUsernameKey, wagerKey, scoreNeededGoalKey, timestampIdentifierKey) {
+  // Retrieve saved values
+  var selfUsername = scriptProperties.getProperty(selfUsernameKey); 
+  var opponentUsername = scriptProperties.getProperty(opponentUsernameKey);
+  var wager = Number(scriptProperties.getProperty(wagerKey));
+  var scoreNeededGoal = Number(scriptProperties.getProperty(scoreNeededGoalKey));
+  var timestampIdentifier = Number(scriptProperties.getProperty(timestampIdentifierKey));
+  
+  // Combine self&opponent usernames, then sort characters alphabetically.
+  // This will ensure it's the same regardless of which participant is "self" and which is "opponent"
+  let alphabeticalCombinedUsernames = alphabetizeString(selfUsername, opponentUsername);
+  
+  // Create string of all duel parameters.
+  let SEMICOLON = ";";
+  let ALL_PARAMETERS = alphabeticalCombinedUsernames + SEMICOLON + wager + SEMICOLON + scoreNeededGoal + SEMICOLON
+  + timestampIdentifier + SEMICOLON;
+  
+  // Create hash
+  let hashAll = createHash(ALL_PARAMETERS);
+  
+  return hashAll;
+}
+
+// Parses the Duel End string received from the announcer bot script. Check if valid. Declare winner.
+function parseDuelEndString(string, hashAllExpected, hashSumIfWinner){
+  // Count number of semicolons (2 are expected).
+  let countSemicolons = ( string.match(/\;/g) || [] ).length;
+  if (countSemicolons != 2) {
+    return -2; // To indicate it's an invalid string
+  } else {
+    // Parse out first hash
+    let semicolonIndex = findIndexOfSemicolon(string);
+    let hashAllTemp = createSubstring(string, 0, semicolonIndex);
+    let hashAllParsed = parseFloat(hashAllTemp);
+
+    // Parse out second hash
+    let length = string.length;
+    let substringTemp = createSubstring(string, semicolonIndex + 1, length);
+    semicolonIndex = findIndexOfSemicolon(substringTemp);
+    let hashSumTemp = createSubstring(substringTemp, 0, semicolonIndex);
+    let hashSumParsed = parseFloat(hashSumTemp);
+
+    // Compare the first hash to what's expected (given the duel parameters)
+    if (hashAllParsed != hashAllExpected) {
+      return -2; // To indicate it's an invalid string, the hashes don't match
+    } else { // If it's a valid string, check if winner
+      if (hashSumParsed == hashSumIfWinner) {
+        return 5; // To indicate winner
+      } else {
+        return 3; // To indicate you didn't win
+      }
+    }
+  }
+}
+
+function api_getUserTasks(type) {
+  const params = {
+    "method" : "get",
+    "headers" : HEADERS,
+    "muteHttpExceptions" : true,
+  }
+  
+  var url = "https://habitica.com/api/v3/tasks/user";
+  if (type != "") {
+    url += "?type=" + type;
+  }
+
+  return UrlFetchApp.fetch(url, params);
+}
+
+// Resets duel values, creates a new instance of the Duel Start button, and deletes the Duel Score and Duel End buttons.
+function endDuel(taskIdEnd, taskIdScore, troubleshootingKey, guildId, timestampIdentifier, announcerBotUsername){
+  // Check to see if the automated message was deleted or not. If not, delete it.
+  var troubleshootingFlag = Number(scriptProperties.getProperty(troubleshootingKey));
+  if (troubleshootingFlag != 2) {
+    let msgIdAuto = findAutomatedDuelEndMessages("user", guildId, "not needed", timestampIdentifier, announcerBotUsername, AUTOMATED_MSG_END_DUEL);
+    if (msgIdAuto == "nope") {
+      // If the message can't be found, do nothing
+    } else {
+      api_deleteChatMessage(guildId, msgIdAuto);
+    }
+  }
+  
+  // Reset all saved values
+  resetDuelValues();
+  
+  // Create the Duel Start button
+  api_createNewTaskForUser([DUEL_START_BUTTON]);
+  
+  // Delete the Duel Score and Duel End buttons
+  api_deleteTask(taskIdEnd);
+  api_deleteTask(taskIdScore);  
+}
+
+// FUNCTIONS FOR DEBUGGING. SCRIPT DOES NOT USE THEM, THEY MUST BE TRIGGERED MANUALLY
+
+// If duelCurrentlyActive is stuck at 1, this function resets it to 0
+function debugResetFlagDuelCurrentlyActive() {
+  var duelCurrentlyActiveKey = DUEL_CURRENTLY_ACTIVE_KEY;
+  var duelCurrentlyActive = Number(scriptProperties.getProperty(duelCurrentlyActiveKey));
+  duelCurrentlyActive = 0;
+  scriptProperties.setProperty(duelCurrentlyActiveKey, duelCurrentlyActive);
+}
+
+// Clears troubleshooting flag and therefore allows this script to post automated messages to the Guild
+// A value of 0 allows automated messages to be posted. 1 and 2 to not. 1 indicates an error, 2 indicates valid/victory
+function debugClearTroubleshootingFlag(){
+  scriptProperties.setProperty(TROUBLESHOOTING_KEY, 0);
+}
+
+// Clears troubleshooting flag and therefore allows this script to post automated messages to the Guild.
+// Reposts the automated message. Runs "victory condition" function again to see if new post is now valid.
+function debugClearTroubleshootingFlagAndThenRetry(){
+  scriptProperties.setProperty(TROUBLESHOOTING_KEY, 0);
+  
+  // Now, run (most of) incrementDuelScore. Since there's no actual task, assign it a difficulty of 0 and a delta of 0
+  // Running this function will show that the user won, and therefore post the automated message again
+  
+  increaseDuelScore(DUEL_SCORE_KEY, SCORE_NEEDED_GOAL_KEY, GUILD_ID_KEY, SELF_USERNAME_KEY, OPPONENT_USERNAME_KEY, WAGER_KEY, ANNOUNCER_BOT_USERNAME_KEY, TIMESTAMP_IDENTIFIER_KEY, 0, 0, "habit");
+}
+
+// Retrieves expected hashes for duel parameter and user ID and some
+function debugGetExpectedHashes(){
+  let hashAllExpected = createDuelHash(SELF_USERNAME_KEY, OPPONENT_USERNAME_KEY, WAGER_KEY, SCORE_NEEDED_GOAL_KEY, TIMESTAMP_IDENTIFIER_KEY);
+  let hashSelfExpected = createHash(USER_ID);
+  let hashSumExpected = hashAllExpected + hashSelfExpected;
+  
+  api_sendPrivateMessageAlways({"message" : "Hashes are " + hashAllExpected + ", " + hashSelfExpected + ", " + hashSumExpected, "toUserId" : USER_ID});
+}
+
+// Retrieves saved values and post them
+function debugGetSavedValues(){
+  let duelCurrentlyActive = Number(scriptProperties.getProperty(DUEL_CURRENTLY_ACTIVE_KEY));
+  let duelScore = Number(scriptProperties.getProperty(DUEL_SCORE_KEY));
+  let selfUsername = scriptProperties.getProperty(SELF_USERNAME_KEY);
+  let opponentUsername = scriptProperties.getProperty(OPPONENT_USERNAME_KEY);
+  let wager = Number(scriptProperties.getProperty(WAGER_KEY));
+  let scoreNeededGoal = Number(scriptProperties.getProperty(SCORE_NEEDED_GOAL_KEY));
+  let timestampIdentifier = Number(scriptProperties.getProperty(TIMESTAMP_IDENTIFIER_KEY));
+  let guildId = scriptProperties.getProperty(GUILD_ID_KEY);
+  let announcerBotUsername = scriptProperties.getProperty(ANNOUNCER_BOT_USERNAME_KEY);
+  let troubleshootingFlag = Number(scriptProperties.getProperty(TROUBLESHOOTING_KEY));
+  
+  // saving these values will make my life easier
+  let MSG_JOINER_BEFORE = " is `";
+  let MSG_JOINER_AFTER = "`, "; 
+  
+  api_sendPrivateMessageAlways({"message" : "Saved values are as follows: duelCurrentlyActive is `" + duelCurrentlyActive + MSG_JOINER_AFTER
+                                + "duelScore" + MSG_JOINER_BEFORE + duelScore + MSG_JOINER_AFTER
+                                + "selfUsername" + MSG_JOINER_BEFORE + selfUsername + MSG_JOINER_AFTER
+                                + "opponentUsername" + MSG_JOINER_BEFORE + opponentUsername + MSG_JOINER_AFTER
+                                + "wager" + MSG_JOINER_BEFORE + wager + MSG_JOINER_AFTER
+                                + "scoreNeededGoal" + MSG_JOINER_BEFORE + scoreNeededGoal + MSG_JOINER_AFTER
+                                + "timestampIdentifier" + MSG_JOINER_BEFORE + timestampIdentifier + MSG_JOINER_AFTER
+                                + "guildId" + MSG_JOINER_BEFORE + guildId + MSG_JOINER_AFTER
+                                + "announcerBotUsername" + MSG_JOINER_BEFORE + announcerBotUsername + MSG_JOINER_AFTER
+                                + "troubleshootingFlag" + MSG_JOINER_BEFORE + troubleshootingFlag + "`", "toUserId" : USER_ID});
+}
+
+// Mannually edits and saves the selected value (in case it saved incorrectly)
+function debugManuallyEditValue() {
+  // Fill them in below. Announcer Bot Username is shown as a sample.
+  let newValue = "@botUsername"; 
+  let key = ANNOUNCER_BOT_USERNAME_KEY;
+  
+  // Save
+  scriptProperties.setProperty(key, newValue);
+}
