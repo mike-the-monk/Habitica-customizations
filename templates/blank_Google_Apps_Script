@@ -1,0 +1,460 @@
+// This code is licensed under the same terms as Habitica:
+  // https://raw.githubusercontent.com/HabitRPG/habitrpg/develop/LICENSE
+
+/* ========================================== */
+/* [Users] Required script data to fill in    */
+/* ========================================== */
+const USER_ID = "PasteYourUserIdHere";
+const API_TOKEN = "PasteYourApiTokenHere"; // Do not share this to anyone
+const WEB_APP_URL = "PasteGeneratedWebAppUrlHere";
+
+/* ========================================== */
+/* [Users] Required customizations to fill in */
+/* ========================================== */
+
+
+/* ========================================== */
+/* [Users] Optional customizations to fill in */
+/* ========================================== */
+
+// Do you want to get private message notifications? 
+// If you don't want them, change the 1 to a 0 in the line below
+const NOTIFICATIONS_ON = 1; 
+
+/* ========================================== */
+/* [Users] Do not edit code below this line   */
+/* ========================================== */
+const AUTHOR_ID = "PasteYourUserIdHere";
+const SCRIPT_NAME = "nameYourScript";
+const HEADERS = {
+  "x-client" : AUTHOR_ID + " - " + SCRIPT_NAME,
+  "x-api-user" : USER_ID,
+  "x-api-key" : API_TOKEN,
+}
+
+// GLOBAL CONSTANTS AND VARIABLES GO HERE
+
+const scriptProperties = PropertiesService.getScriptProperties(); // Constants can have properties changed
+
+// Keys for values to save. Cron Count is filled in already, add others as needed.
+const CRON_COUNT_KEY = "CRON_COUNT_KEY";
+
+var cronCountKey = "";
+
+// ANY THINGS YOU WANT TO DO AT SETUP GO HERE
+function doOneTimeSetup() {
+  // First, create any buttons
+  
+  // Next, create the webhook
+  const options = {
+    "scored" : true,
+  }
+  const payload = {
+    "url" : WEB_APP_URL,
+    "label" : SCRIPT_NAME + " Webhook",
+    "type" : "taskActivity",
+    "options" : options,
+  }
+  apiMult_createNewWebhookNoDuplicates(payload);
+  
+  // set script properties so they carry over to next session
+  initScriptProperties();
+}
+
+// do things when the webhook runs
+function doPost(e) {
+  const dataContents = JSON.parse(e.postData.contents);
+  const type = dataContents.type;
+  const task = dataContents.task;
+  
+  // Sanitize task alias
+  if ((task.alias == undefined) || (task.alias == null)) {
+    task.alias = "";
+  }
+  
+  // You probably want to get user profile and equipment stats
+  const response = api_getAuthenticatedUserProfile("stats,items.gear.equipped");
+  user = JSON.parse(response).data;
+  
+  // Get equipment stats info
+  const responseContent = apiFree_getAllAvailableContentObjects();
+  content = JSON.parse(responseContent).data;
+  
+  // You probably will want these values
+  var hp = user.stats.hp;
+  var exp = user.stats.exp;
+  var mp = user.stats.mp;
+  var gp = user.stats.gp;
+  var lvl = user.stats.lvl;
+  
+  // IF THERE ARE OTHER PIECES OF INFO YOU WANT TO GRAB, YOU CAN DO IT HERE 
+  
+  // To check if Cron happened
+  var cronCountKey = CRON_COUNT_KEY;
+  var cronCount = Number(scriptProperties.getProperty(cronCountKey));
+  
+  if (cronCount != user.flags.cronCount) {
+    cronCount = user.flags.cronCount;
+    // If you want to do something at Cron, it goes here
+  }
+  
+  // TO KEEP THE MAIN FUNCTION CLEANER/SIMPLER, PUT SWITCH-CASE LOGIC HERE
+  // ONE OPTION IS TO SWITCH CASE BASED ON TASK ALIAS (SHOWN BELOW)
+  // ANOTHER OPTION IS TO CREATE A FUNCTION THAT DOES THE SWITCH CASE LOGIC FOR YOU (SHOWN IN DUEL ANNOUNCER BOT SCRIPT)
+  switch (task.alias) {
+    ALIAS1:
+      // stuff to do when ALIAS1 button is pressed (Probably do this as its own function)
+      break;
+    ALIAS2:
+     // stuff to do when ALIAS2 button is pressed (Probably do this as its own function)
+     break;
+    //other cases
+  }
+  
+  // DO OTHER THINGS IN MAIN BODY OF CODE - THOSE GO HERE
+  
+  // Save values
+  scriptProperties.setProperty(cronCountKey, cronCount);
+  
+  return HtmlService.createHtmlOutput();
+}
+
+// IF YOU HAVE FUNCTIONS BASED ON EACH BUTTON PRESS, THOSE GO HERE
+function doButton1(){
+  // THINGS THAT HAPPEN WHEN YOU PRESS BUTTON 1
+  // IF THIS BUTTON DOES THINGS THAT OTHER BUTTONS ALSO DO, MAKE THOSE THINGS INTO SEPARATE FUNCTIONS
+}
+
+// FUNCTIONS GO HERE, SOME COMMON ONES ARE FILLED IN ALREADY
+
+function api_createNewTaskForUser(payload) {
+  var params = {
+    "method" : "post",
+    "headers" : HEADERS,
+    "contentType" : "application/json",
+    "payload" : JSON.stringify(payload), // Rightmost button goes on top
+    "muteHttpExceptions" : true,
+  }
+
+  var url = "https://habitica.com/api/v3/tasks/user";
+  UrlFetchApp.fetch(url, params);
+}
+
+// Create a webhook if no duplicate exists
+function apiMult_createNewWebhookNoDuplicates(payload) {
+  const response = api_getWebhooks();
+  const webhooks = JSON.parse(response).data;
+  var duplicateExists = 0;
+    
+  for (var i in webhooks) {
+    if (webhooks[i].label == payload.label) {
+      duplicateExists = 1;
+    }
+  }
+  // If webhook to be created doesn't exist yet
+  if (!duplicateExists) {
+    api_createNewWebhook(payload);
+  }
+}
+
+// Used to see existing webhooks, and therefore if there's a duplicate
+function api_getWebhooks() {
+  const params = {
+    "method" : "get",
+    "headers" : HEADERS,
+    "muteHttpExceptions" : true,
+  }
+  
+  const url = "https://habitica.com/api/v3/user/webhook";
+  return UrlFetchApp.fetch(url, params);
+}
+
+// Creates a webhook (as part of the "don't make it if there's a duplicate" function)
+function api_createNewWebhook(payload) {
+  const params = {
+    "method" : "post",
+    "headers" : HEADERS,
+    "contentType" : "application/json",
+    "payload" : JSON.stringify(payload),
+    "muteHttpExceptions" : true,
+  }
+   
+  const url = "https://habitica.com/api/v3/user/webhook";
+  return UrlFetchApp.fetch(url, params);
+}
+
+// Sets initial properties that will be used/saved later.
+function initScriptProperties() {
+  scriptProperties.setProperty(CRON_COUNT_KEY, 0);
+  // SO FAR, IT ONLY HAS CRON COUNT, BUT FILL IN OTHERS IF NEEDED
+}
+
+// Gets user info so I can use it, especially stats like mana, experience, and level
+function api_getAuthenticatedUserProfile(userFields) {
+  const params = {
+    "method" : "get",
+    "headers" : HEADERS,
+    "muteHttpExceptions" : true,
+  }
+  
+  var url = "https://habitica.com/api/v3/user";
+  if (userFields != "") {
+    url += "?userFields=" + userFields;
+  }
+
+  return UrlFetchApp.fetch(url, params);
+}
+
+function apiFree_getAllAvailableContentObjects() {
+  const params = {
+    "method" : "get",
+    "muteHttpExceptions" : true,
+  }
+  
+  const url = "https://habitica.com/api/v3/content";
+  return UrlFetchApp.fetch(url, params);
+}
+
+// Changes stats
+function api_updateUser(payload) { 
+  const params = {
+    "method" : "put",
+    "headers" : HEADERS,
+    "contentType" : "application/json",
+    "payload" : JSON.stringify(payload),
+    "muteHttpExceptions" : true,
+  }
+  
+  const url = "https://habitica.com/api/v3/user";
+  return UrlFetchApp.fetch(url, params);
+}
+
+// Send a notification as a private message, only if they're enabled
+function api_sendPrivateMessage(payload) {
+  switch (NOTIFICATIONS_ON){ // Check if notifications are on, send message if yes
+        case 0:
+          break;        
+        case 1:
+            const params = {
+              "method" : "post",
+              "headers" : HEADERS,
+              "contentType" : "application/json",
+              "payload" : JSON.stringify(payload),
+              "muteHttpExceptions" : true,
+            }
+            const url = "https://habitica.com/api/v3/members/send-private-message";
+            return UrlFetchApp.fetch(url, params);
+          break;
+  }
+}
+
+// Send a notification as a private message regardless of if they're enabled
+function api_sendPrivateMessageAlways(payload) {
+  const params = {
+    "method" : "post",
+    "headers" : HEADERS,
+    "contentType" : "application/json",
+    "payload" : JSON.stringify(payload),
+    "muteHttpExceptions" : true,
+  }
+  const url = "https://habitica.com/api/v3/members/send-private-message";
+  return UrlFetchApp.fetch(url, params);
+}
+
+function api_postChatMessageToGroup(payload) {
+  const params = {
+    "method" : "post",
+    "headers" : HEADERS,
+    "contentType" : "application/json",
+    "payload" : JSON.stringify(payload),
+    "muteHttpExceptions" : true,
+  }
+  const url = "https://habitica.com/api/v3/groups/" + GROUP_ID + "/chat";
+  return UrlFetchApp.fetch(url, params);
+}
+
+function api_getChatMessagesFromGroup(groupId) {
+  const params = {
+    "method" : "get",
+    "headers" : HEADERS,
+    "muteHttpExceptions" : true,
+  }
+  
+  const url = "https://habitica.com/api/v3/groups/" + groupId + "/chat";
+  
+  return UrlFetchApp.fetch(url, params);
+}
+
+function api_getUserTasks(type) {
+  const params = {
+    "method" : "get",
+    "headers" : HEADERS,
+    "muteHttpExceptions" : true,
+  }
+  
+  var url = "https://habitica.com/api/v3/tasks/user";
+  if (type != "") {
+    url += "?type=" + type;
+  }
+
+  return UrlFetchApp.fetch(url, params);
+}
+
+// Updates a task
+function api_updateTask(taskIdOrAlias, payload) {
+  const params = {
+    "method" : "put",
+    "headers" : HEADERS,
+    "contentType" : "application/json",
+    "payload" : JSON.stringify(payload),
+    "muteHttpExceptions" : true,
+  }
+
+  const url = "https://habitica.com/api/v3/tasks/" + taskIdOrAlias;
+  return UrlFetchApp.fetch(url, params);
+}
+
+// Deletes a task
+function api_deleteTask(taskId) {
+  const params = {
+    "method" : "delete",
+    "headers" : HEADERS,
+    "muteHttpExceptions" : true,
+  }
+
+  var url = "https://habitica.com/api/v3/tasks/";
+  if (taskId != "") {
+    url += taskId;
+  }
+  return UrlFetchApp.fetch(url, params);
+}
+
+// Deletes a chat message
+function api_deleteChatMessage(groupId, chatId) {
+  const params = {
+    "method" : "delete",
+    "headers" : HEADERS,
+    "muteHttpExceptions" : true,
+  }
+
+  var url = "https://habitica.com/api/v3/groups/";
+  if (groupId != "") {
+    url += groupId;
+    url += "/chat/";
+    if (chatId != "") {
+      url += chatId;
+    }
+  }
+  return UrlFetchApp.fetch(url, params);
+}
+
+// Checks if a Guild ID is in the correct formatting: 00000000-0000-4000-A000-000000000000
+function checkGuildIdFormat(guildIdToCheck){
+  // Trim, just in case there was extra whitespace
+  let stringTemp = guildIdToCheck.trim();
+  
+  // Total length of string should be 36 (Four total dashes and 32 other hexadecimal characters)
+  let length = stringTemp.length;
+  if (length != 36) {
+    return false;
+  } else {
+    // I'm going to slightly cheat here: if I alphabetize the characters, I can sort out the dashes. 
+    let stringTemp2 = stringTemp.split('').sort().join('').trim();
+    
+    // Checks that total number of dashes is only 4, and ensures that the first 4 characters are dashes
+    let dashCount = checkDashes(stringTemp2);
+    if (dashCount != 4) {
+      return false;
+    } else {     
+      // Remove the first four characters from the string, we already know they are dashes
+      let stringShorter = createSubstring(stringTemp2, 4, length);
+      
+      // Check if the other characters are valid for hexadecimal
+      let isHex = isHexadecimal(stringShorter);
+      if (!isHex){
+        return false;
+      } else {
+        // The character counts are valid, exactly 4 dashes and the rest are hexadecimal (and total lenggth is valid)
+        // The final thing to do is ensure that the string follows the right pattern of hexadecimal and dashes
+        // Parsing the string at the dashes would be the hard way to do it. The easy way is to ensure that the dashes appear at the correct character index
+        
+        let dashLocationsConfirmed = checkDashLocations(stringTemp); // I no longer need the alphabetized string, I need to use the original one
+        if (dashLocationsConfirmed) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+  }
+}
+
+// Checks that total number of dashes is only 4, and ensures that the first 4 characters are dashes
+function checkDashes(stringToCheck){
+  // First, count them
+  let count = 0;
+  for (let i = 0; i < 36; i++) {
+    if (stringToCheck.charAt(i) == "-" ) {
+      count++;
+    }
+  }
+  
+  // Since the string is alphabetized, I probably don't have to do this, but I will anyway: confirm each of the first four are dashes
+  if (count != 4) { // If more than 4 are dashes, I catch it here
+    return count;
+  } else if (count == 4) {
+    for (let j = 0; j < 4; j++) {
+      if (stringToCheck.charAt(j) != "-" ) { // If any of the first 4 characters are not a dash, it fails. End the loop.
+        count = -1;
+        break;
+      }
+    }
+    return count;
+  }
+}
+
+// Checks if each of the characters are valid for hexadecimal
+function isHexadecimal(stringToCheck) {
+ regexp = /^[0-9a-fA-F]+$/;
+  
+  if (regexp.test(stringToCheck)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+
+// Checks that dashes occur at the correct character index locations. Format is 00000000-0000-4000-A000-000000000000
+function checkDashLocations(stringToCheck) {
+  let count = 0;
+  
+  // Dashes should be at character index 8, 13, 18, and 23. Jump over the loop at other iterations.
+  for (let i = 0; i < 36; i++) {
+    if ( (i == 8) || (i == 13) || (i == 18) || (i == 23) ) {
+      if (stringToCheck.charAt(i) == "-") {
+        count++;
+      }
+    } else {
+      continue;
+    }
+  }
+  
+  if (count == 4) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+// DEBUG FUNCTIONS GO HERE – THE SCRIPT DOESN'T USE THEM BUT YOU CAN TRIGGER THEM MANUALLY TO DEBUG
+
+// Mannually edits and saves the selected value (in case it saved incorrectly)
+function debugManuallyEditValue() {
+  // Fill them in below. Cron Count is shown as a sample.
+  let newValue = 3; 
+  let key = CRON_COUNT_KEY;
+  
+  // Save
+  scriptProperties.setProperty(key, newValue);
+}
