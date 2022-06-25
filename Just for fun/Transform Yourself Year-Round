@@ -1,0 +1,366 @@
+// This code is licensed under the same terms as Habitica:
+  // https://raw.githubusercontent.com/HabitRPG/habitrpg/develop/LICENSE
+
+/* ========================================== */
+/* [Users] Required script data to fill in    */
+/* ========================================== */
+const USER_ID = "PasteYourUserIdHere";
+const API_TOKEN = "PasteYourApiTokenHere"; // Do not share this to anyone
+const WEB_APP_URL = "PasteGeneratedWebAppUrlHere";
+
+/* ========================================== */
+/* [Users] Required customizations to fill in */
+/* ========================================== */
+const CREATE_RANDOM = 1; // Change this 1 to a 0 if you don't want the Random Transformation (self only) item
+
+const CREATE_SNOWBALL = 0; // Change this 0 to a 1 if you want the Snowball (self only) Transformation Item 
+const CREATE_SHINY_SEED = 0; // Change this 0 to a 1 if you want the Shiny Seed (self only) Transformation Item 
+const CREATE_SEAFOAM = 0; // Change this 0 to a 1 if you want the Seafoam (self only) Transformation Item 
+const CREATE_SPOOKY_SPARKLES = 0; // Change this 0 to a 1 if you want the Spooky Sparkles (self only) Transformation Item 
+
+/* ========================================== */
+/* [Users] Optional customizations to fill in */
+/* ========================================== */
+
+// Do you want to get private message notifications for having insufficient gold?
+// If you don't want them, change the 1 to a 0 in the line below
+const NOTIFICATIONS_ON = 1; 
+
+/* ========================================== */
+/* [Users] Do not edit code below this line   */
+/* ========================================== */
+const AUTHOR_ID = "0034eb14-b4d8-494e-8386-d3f33cff7922";
+const SCRIPT_NAME = "Transform Yourself Year-Round";
+const HEADERS = {
+  "x-client" : AUTHOR_ID + " - " + SCRIPT_NAME,
+  "x-api-user" : USER_ID,
+  "x-api-key" : API_TOKEN,
+}
+
+const scriptProperties = PropertiesService.getScriptProperties(); // Constants can have properties changed
+
+const SNOWBALL_TEXT = "**Snowball (self only)**";
+const SNOWBALL_ALIAS = "snowball";
+const SNOWBALL_NOTES = "Turn yourself into a cool snowman! Costs 15 GP, lasts until tomorrow. Click again to pay 5 GP and return to normal.";
+const SNOWBALL_VALUE = "0";
+
+const SNOWBALL_BUTTON = {
+    "text": SNOWBALL_TEXT,
+    "type": "reward",
+    "alias": SNOWBALL_ALIAS,
+    "notes": SNOWBALL_NOTES,
+    "value": SNOWBALL_VALUE,
+}
+
+const SHINY_SEED_TEXT = "**Shiny Seed (self only)**";
+const SHINY_SEED_ALIAS = "shiny_seed";
+const SHINY_SEED_NOTES = "Turn yourself into a joyous flower! Costs 15 GP, lasts until tomorrow. Click again to pay 5 GP and return to normal.";
+const SHINY_SEED_VALUE = "0";
+
+const SHINY_SEED_BUTTON = {
+    "text": SHINY_SEED_TEXT,
+    "type": "reward",
+    "alias": SHINY_SEED_ALIAS,
+    "notes": SHINY_SEED_NOTES,
+    "value": SHINY_SEED_VALUE,
+}
+
+const SEAFOAM_TEXT = "**Seafoam (self only)**";
+const SEAFOAM_ALIAS = "seafoam";
+const SEAFOAM_NOTES = "Turn yourself into a sea creature! Costs 15 GP, lasts until tomorrow. Click again to pay 5 GP and return to normal.";
+const SEAFOAM_VALUE = "0";
+
+const SEAFOAM_BUTTON = {
+    "text": SEAFOAM_TEXT,
+    "type": "reward",
+    "alias": SEAFOAM_ALIAS,
+    "notes": SEAFOAM_NOTES,
+    "value": SEAFOAM_VALUE,
+}
+
+const SPOOKY_SPARKLES_TEXT = "**Spooky Sparkles (self only)**";
+const SPOOKY_SPARKLES_ALIAS = "spooky_sparkles";
+const SPOOKY_SPARKLES_NOTES = "Turn yourself into a transparent pal! Costs 15 GP, lasts until tomorrow. Click again to pay 5 GP and return to normal.";
+const SPOOKY_SPARKLES_VALUE = "0";
+
+const SPOOKY_SPARKLES_BUTTON = {
+    "text": SPOOKY_SPARKLES_TEXT,
+    "type": "reward",
+    "alias": SPOOKY_SPARKLES_ALIAS,
+    "notes": SPOOKY_SPARKLES_NOTES,
+    "value": SPOOKY_SPARKLES_VALUE,
+}
+
+const RANDOM_TEXT = "**Random Transformation (self only)**";
+const RANDOM_ALIAS = "random";
+const RANDOM_NOTES = "Turn yourself into a snowman, flower, starfish, or ghost! Costs 15 GP, lasts until tomorrow. Click again to pay 5 GP and return to normal.";
+const RANDOM_VALUE = "0";
+
+const RANDOM_BUTTON = {
+    "text": RANDOM_TEXT,
+    "type": "reward",
+    "alias": RANDOM_ALIAS,
+    "notes": RANDOM_NOTES,
+    "value": RANDOM_VALUE,
+}
+
+const TIMESTAMP_KEY = "TIMESTAMP_KEY";
+var timestampKey = "";
+
+function doOneTimeSetup() {
+  // These are not "else if" statements on purpose
+  if (CREATE_SPOOKY_SPARKLES == 1) {
+    api_createNewTaskForUser([SPOOKY_SPARKLES_BUTTON]);
+  }
+  if (CREATE_SEAFOAM == 1) {
+    api_createNewTaskForUser([SEAFOAM_BUTTON]);
+  }
+  if (CREATE_SHINY_SEED == 1) {
+    api_createNewTaskForUser([SHINY_SEED_BUTTON]);
+  }
+  if (CREATE_SNOWBALL == 1) {
+    api_createNewTaskForUser([SNOWBALL_BUTTON]);
+  }
+  if (CREATE_RANDOM == 1) {
+    api_createNewTaskForUser([RANDOM_BUTTON]);
+  }
+  
+  // Next, create the webhook
+  const options = {
+    "scored" : true,
+  }
+  const payload = {
+    "url" : WEB_APP_URL,
+    "label" : SCRIPT_NAME + " Webhook",
+    "type" : "taskActivity",
+    "options" : options,
+  }
+  apiMult_createNewWebhookNoDuplicates(payload);
+  
+  // set script properties so they carry over to next session
+  initScriptProperties();
+}
+
+// do things when the webhook runs
+function doPost(e) {
+  const dataContents = JSON.parse(e.postData.contents);
+  const type = dataContents.type;
+  const task = dataContents.task;
+  
+  // Sanitize task alias
+  if ((task.alias == undefined) || (task.alias == null)) {
+    task.alias = "";
+  }
+  
+  if ( (type == "scored") && ( (task.alias == SNOWBALL_ALIAS) || (task.alias == SPOOKY_SPARKLES_ALIAS) || (task.alias == SHINY_SEED_ALIAS) || 
+    (task.alias == SEAFOAM_ALIAS) || (task.alias == RANDOM_ALIAS) ) ) {
+    
+    var timestampKey = TIMESTAMP_KEY;
+    var timeStart = Number(scriptProperties.getProperty(timestampKey));
+    if ( (timeStart == 0) || (timeStart == "") || (timeStart == undefined) || (timeStart == null) ) {
+      timeStart = Date.now();
+    }
+    var timeEnd = Date.now();
+    
+    // Rate limiting: If it's been less than 30 seconds since they last clicked one of these buttons, do nothing
+    if ( (timeEnd - timeStart) >= 30000 ) {
+    
+      const responseUser = api_getAuthenticatedUserProfile("stats");
+      user = JSON.parse(responseUser).data;
+      
+      var gp = user.stats.gp;
+      var isSnowball = user.stats.buffs.snowball;
+      var isSpookySparkles = user.stats.buffs.spookySparkles;
+      var isShinySeed = user.stats.buffs.shinySeed;
+      var isSeafoam = user.stats.buffs.seafoam;
+      
+      // If any of the Boolean search flipped, reset them and subtract 5 GP (if they don't have it, send error meesage)
+      if ( (isSnowball) || (isSpookySparkles) || (isShinySeed) || (isSeafoam) ) {
+        if ( gp >= 5 ) {
+          api_updateUser({"stats.buffs.snowball" : false, "stats.buffs.spookySparkles" : false, "stats.buffs.shinySeed" : false,
+            "stats.buffs.seafoam" : false, "stats.gp" : gp - 5});
+        }
+        else {
+          api_sendPrivateMessage({"message" : "Insufficient gold: you need at least 5 GP to transform back.", "toUserId" : USER_ID});
+        }
+      }
+      // Otherwise, subtract 15 GP and do the correct transformation (if they don't have it, send error meesage)
+      else {
+        if (task.alias == SNOWBALL_ALIAS) {
+          if ( gp >= 15) {
+            api_updateUser({"stats.buffs.snowball" : true, "stats.gp" : gp - 15});
+          }
+          else {
+            api_sendPrivateMessage({"message" : "Insufficient gold: you need at least 15 GP.", "toUserId" : USER_ID});
+          }
+        }
+      
+        else if (task.alias == SPOOKY_SPARKLES_ALIAS) {
+          if ( gp >= 15) {
+            api_updateUser({"stats.buffs.spookySparkles" : true, "stats.gp" : gp - 15});
+          }
+          else {
+            api_sendPrivateMessage({"message" : "Insufficient gold: you need at least 15 GP.", "toUserId" : USER_ID});
+          }
+        }
+          
+        else if (task.alias == SHINY_SEED_ALIAS) {
+          if ( gp >= 15) {
+            api_updateUser({"stats.buffs.shinySeed" : true, "stats.gp" : gp - 15});
+          }
+          else {
+            api_sendPrivateMessage({"message" : "Insufficient gold: you need at least 15 GP.", "toUserId" : USER_ID});
+          }
+        }
+          
+        else if (task.alias == SEAFOAM_ALIAS) {
+          if ( gp >= 15) {
+            api_updateUser({"stats.buffs.seafoam" : true, "stats.gp" : gp - 15});
+          }
+          else {
+            api_sendPrivateMessage({"message" : "Insufficient gold: you need at least 15 GP.", "toUserId" : USER_ID});
+          }
+        }
+          
+        else if (task.alias == RANDOM_ALIAS) {
+          if ( gp >= 15) {
+            var rand = Math.floor((Math.random() * 4) + 1);
+            switch (rand){
+              case 1:
+                api_updateUser({"stats.buffs.snowball" : true, "stats.gp" : gp - 15});
+                break;
+              case 2:
+                api_updateUser({"stats.buffs.spookySparkles" : true, "stats.gp" : gp - 15});
+                break;
+              case 3:
+                api_updateUser({"stats.buffs.shinySeed" : true, "stats.gp" : gp - 15});
+                break;
+              case 4:
+                api_updateUser({"stats.buffs.seafoam" : true, "stats.gp" : gp - 15});
+                break;
+            }
+          }
+          else {
+            api_sendPrivateMessage({"message" : "Insufficient gold: you need at least 15 GP.", "toUserId" : USER_ID});
+          }
+        }
+      }
+      // Save values to non-volatile memory, but only from within the rate-limited if-block (we don't want to save the timestamp unless the script ran)
+      timeStart = timeEnd;
+    scriptProperties.setProperty(timestampKey, timeStart);
+    }
+    return HtmlService.createHtmlOutput();
+  }
+}
+
+// Create custom reward buttons
+function api_createNewTaskForUser(payload) {
+  var params = {
+    "method" : "post",
+    "headers" : HEADERS,
+    "contentType" : "application/json",
+    "payload" : JSON.stringify(payload), // Rightmost button goes on top
+    "muteHttpExceptions" : true,
+  }
+
+  var url = "https://habitica.com/api/v3/tasks/user";
+  UrlFetchApp.fetch(url, params);
+}
+
+// Create a webhook if no duplicate exists
+function apiMult_createNewWebhookNoDuplicates(payload) {
+  const response = api_getWebhooks();
+  const webhooks = JSON.parse(response).data;
+  var duplicateExists = 0;
+    
+  for (var i in webhooks) {
+    if (webhooks[i].label == payload.label) {
+      duplicateExists = 1;
+    }
+  }
+  // If webhook to be created doesn't exist yet
+  if (!duplicateExists) {
+    api_createNewWebhook(payload);
+  }
+}
+
+// Used to see existing webhooks, and therefore if there's a duplicate
+function api_getWebhooks() {
+  const params = {
+    "method" : "get",
+    "headers" : HEADERS,
+    "muteHttpExceptions" : true,
+  }
+  
+  const url = "https://habitica.com/api/v3/user/webhook";
+  return UrlFetchApp.fetch(url, params);
+}
+
+// Creates a webhook (as part of the "don't make it if there's a duplicate" function)
+function api_createNewWebhook(payload) {
+  const params = {
+    "method" : "post",
+    "headers" : HEADERS,
+    "contentType" : "application/json",
+    "payload" : JSON.stringify(payload),
+    "muteHttpExceptions" : true,
+  }
+   
+  const url = "https://habitica.com/api/v3/user/webhook";
+  return UrlFetchApp.fetch(url, params);
+}
+
+// Sets initial properties that will be used/saved later.
+function initScriptProperties() {
+  var timestampInit = Date.now();
+  scriptProperties.setProperty(TIMESTAMP_KEY, timestampInit);
+}
+
+// Gets user info so I can use it, especially stats like mana, experience, and level
+function api_getAuthenticatedUserProfile(userFields) {
+  const params = {
+    "method" : "get",
+    "headers" : HEADERS,
+    "muteHttpExceptions" : true,
+  }
+  
+  var url = "https://habitica.com/api/v3/user";
+  if (userFields != "") {
+    url += "?userFields=" + userFields;
+  }
+
+  return UrlFetchApp.fetch(url, params);
+}
+
+// Changes stats
+function api_updateUser(payload) { 
+  const params = {
+    "method" : "put",
+    "headers" : HEADERS,
+    "contentType" : "application/json",
+    "payload" : JSON.stringify(payload),
+    "muteHttpExceptions" : true,
+  }
+  
+  const url = "https://habitica.com/api/v3/user";
+  return UrlFetchApp.fetch(url, params);
+}
+
+// Send a notification as a private message, only if they're enabled
+function api_sendPrivateMessage(payload) {
+  switch (NOTIFICATIONS_ON){ // Check if notifications are on, send message if yes
+        case 0:
+          break;        
+        case 1:
+            const params = {
+              "method" : "post",
+              "headers" : HEADERS,
+              "contentType" : "application/json",
+              "payload" : JSON.stringify(payload),
+              "muteHttpExceptions" : true,
+            }
+            const url = "https://habitica.com/api/v3/members/send-private-message";
+            return UrlFetchApp.fetch(url, params);
+          break;
+  }
+}
