@@ -1,10 +1,10 @@
-// ALL OF THESE ARE BASED ON HABITICA'S API DOCUMENTATION
+// ALL OF THESE FUNCTIONS ARE BASED ON HABITICA'S API DOCUMENTATION
   // https://habitica.com/apidoc/
-  // CATEGORIES HERE ARE BASED ON THE CATEGORIES IN THAT DOCUMENT
-
-  // These functions are deployed as a library in Google Apps. Script ID is AKfycbzoxB4Xp3NJYGWoGExHNvBleKmZJ19s9jQ5v6eckUVamuCFINTcsWjaBKJWVeb0McsV
-
+  // These functions are deployed as a library in Google Apps.
+    // Script ID is AKfycbzoxB4Xp3NJYGWoGExHNvBleKmZJ19s9jQ5v6eckUVamuCFINTcsWjaBKJWVeb0McsV
   // The functions are maintained in GitHub at 
+    // https://github.com/mike-the-monk/Habitica-customizations/blob/main/templates/function%20library%20for%20Google
+// CATEGORIES FOR FUNCTIONS ARE BELOW. THEY ARE BASED ON THE API DOCUMENTATION.
 
 // CHALLENGE
 
