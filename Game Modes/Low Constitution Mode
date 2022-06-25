@@ -1,0 +1,296 @@
+// This code is licensed under the same terms as Habitica:
+  // https://raw.githubusercontent.com/HabitRPG/habitrpg/develop/LICENSE
+
+/* ========================================== */
+/* [Users] Required script data to fill in    */
+/* ========================================== */
+const USER_ID = "PasteYourUserIdHere";
+const API_TOKEN = "PasteYourApiTokenHere"; // Do not share this to anyone
+const WEB_APP_URL = "PasteGeneratedWebAppUrlHere";
+
+/* ========================================== */
+/* [Users] Required customizations to fill in */
+/* ========================================== */
+
+/* ========================================== */
+/* [Users] Optional customizations to fill in */
+/* ========================================== */
+
+// Do you want to get private message notifications about when you enter or exit Low Constitution Mode?
+// Default is no notification. If you want them, change the 0 to a 1 in the line below
+const NOTIFICATIONS_ON = 0; 
+
+/* ========================================== */
+/* [Users] Do not edit code below this line   */
+/* ========================================== */
+const AUTHOR_ID = "0034eb14-b4d8-494e-8386-d3f33cff7922";
+const SCRIPT_NAME = "Low Constitution Mode";
+const HEADERS = {
+  "x-client" : AUTHOR_ID + " - " + SCRIPT_NAME,
+  "x-api-user" : USER_ID,
+  "x-api-key" : API_TOKEN,
+}
+
+const scriptProperties = PropertiesService.getScriptProperties(); // Constants can have properties changed
+
+const LOW_CON_MODE_TEXT = "**Low Constitution Mode**";
+const LOW_CON_MODE_ALIAS = "LOW_CON";
+const LOW_CON_MODE_NOTES = "Press once to enter Low Constitution Mode, creating an anti-buff that sets your CON to 1 until you Cron tomorrow. Press again to exit Low Constitution Mode.";
+const LOW_CON_MODE_VALUE = "0";
+
+const LOW_CON_MODE_BUTTON = {
+    "text": LOW_CON_MODE_TEXT,
+    "type": "reward",
+    "alias": LOW_CON_MODE_ALIAS,
+    "notes": LOW_CON_MODE_NOTES,
+    "value": LOW_CON_MODE_VALUE,
+}
+
+const CRON_COUNT_KEY = "CRON_COUNT_KEY";
+const ANTI_BUFF_AMOUNT_KEY = "ANTI_BUFF_AMOUNT_KEY";
+const ANTI_BUFF_USAGE_KEY = "ANTI_BUFF_USAGE_KEY";
+
+var cronCountKey = "";
+var antiBuffAmountKey = "";
+var antiBuffUsageKey = "";
+
+function doOneTimeSetup() {
+  api_createNewTaskForUser([LOW_CON_MODE_BUTTON]);
+  
+  // Next, create the webhook
+  const options = {
+    "scored" : true,
+  }
+  const payload = {
+    "url" : WEB_APP_URL,
+    "label" : SCRIPT_NAME + " Webhook",
+    "type" : "taskActivity",
+    "options" : options,
+  }
+  apiMult_createNewWebhookNoDuplicates(payload);
+  
+  // set script properties so they carry over to next session
+  initScriptProperties();
+}
+
+// do things when the webhook runs
+function doPost(e) {
+  const dataContents = JSON.parse(e.postData.contents);
+  const type = dataContents.type;
+  const task = dataContents.task;
+  
+  // Sanitize task alias
+  if ((task.alias == undefined) || (task.alias == null)) {
+    task.alias = "";
+  }
+  
+  if ((type == "scored") && (task.alias == LOW_CON_MODE_ALIAS)) {
+    const responseUser = api_getAuthenticatedUserProfile("stats,items.gear.equipped");
+    user = JSON.parse(responseUser).data;
+    
+    var cronCountKey = CRON_COUNT_KEY;
+    var antiBuffAmountKey = ANTI_BUFF_AMOUNT_KEY;
+    var antiBuffUsageKey = ANTI_BUFF_USAGE_KEY;
+    
+    var cronCount = Number(scriptProperties.getProperty(cronCountKey));
+    var antiBuffAmount = Number(scriptProperties.getProperty(antiBuffAmountKey));
+    var antiBuffUsage = Number(scriptProperties.getProperty(antiBuffUsageKey));
+    
+    // If they've Cronned, reset all counters
+    if (cronCount != user.flags.cronCount) {
+      cronCount = user.flags.cronCount;
+      antiBuffAmount = 0;
+      antiBuffUsage = 0;
+    }
+    
+    // If anti-buff usage is even, then user is currently not in Low Con Mode. Therefore, put them in it
+    if (antiBuffUsage % 2 == 0) {
+      const responseContent = apiFree_getAllAvailableContentObjects();
+      content = JSON.parse(responseContent).data;
+    
+      // Using these, calculate total constitution and how much the anti-buff should be to set CON to 1
+      var con = calcConstitution();
+      var antiBuffCon = 1 - con;
+      
+      // Anti-buff user, save value, increment counter
+      api_updateUser({"stats.buffs.con" : antiBuffCon});
+      antiBuffAmount = antiBuffCon;
+      antiBuffUsage++;
+      
+      api_sendPrivateMessage({"message" : "Currently in Low Constitution Mode.", "toUserId" : USER_ID});
+    }
+    // If anti-buff usage is odd, then user is in Low Con Mode. Therefore, remove them from it
+    else {
+      // Reverse the anti-buff, unsave anti-buff value, increment counter
+      api_updateUser({"stats.buffs.con" : 1 - antiBuffCon});
+      antiBuffAmount = 0;
+      antiBuffUsage++;
+      
+      api_sendPrivateMessage({"message" : "Not currently in Low Constitution Mode.", "toUserId" : USER_ID})
+    }
+  }
+  
+  // Save values to non-volatile memory
+  scriptProperties.setProperty(cronCountKey, cronCount)
+  scriptProperties.setProperty(antiBuffAmountKey, antiBuffAmount);
+  scriptProperties.setProperty(antiBuffUsageKey, antiBuffUsage);
+  
+  return HtmlService.createHtmlOutput();
+}
+
+// Create custom reward buttons
+function api_createNewTaskForUser(payload) {
+  var params = {
+    "method" : "post",
+    "headers" : HEADERS,
+    "contentType" : "application/json",
+    "payload" : JSON.stringify(payload), // Rightmost button goes on top
+    "muteHttpExceptions" : true,
+  }
+
+  var url = "https://habitica.com/api/v3/tasks/user";
+  UrlFetchApp.fetch(url, params);
+}
+
+// Create a webhook if no duplicate exists
+function apiMult_createNewWebhookNoDuplicates(payload) {
+  const response = api_getWebhooks();
+  const webhooks = JSON.parse(response).data;
+  var duplicateExists = 0;
+    
+  for (var i in webhooks) {
+    if (webhooks[i].label == payload.label) {
+      duplicateExists = 1;
+    }
+  }
+  // If webhook to be created doesn't exist yet
+  if (!duplicateExists) {
+    api_createNewWebhook(payload);
+  }
+}
+
+// Used to see existing webhooks, and therefore if there's a duplicate
+function api_getWebhooks() {
+  const params = {
+    "method" : "get",
+    "headers" : HEADERS,
+    "muteHttpExceptions" : true,
+  }
+  
+  const url = "https://habitica.com/api/v3/user/webhook";
+  return UrlFetchApp.fetch(url, params);
+}
+
+// Creates a webhook (as part of the "don't make it if there's a duplicate" function)
+function api_createNewWebhook(payload) {
+  const params = {
+    "method" : "post",
+    "headers" : HEADERS,
+    "contentType" : "application/json",
+    "payload" : JSON.stringify(payload),
+    "muteHttpExceptions" : true,
+  }
+   
+  const url = "https://habitica.com/api/v3/user/webhook";
+  return UrlFetchApp.fetch(url, params);
+}
+
+// Sets initial properties that will be used/saved later.
+function initScriptProperties() {
+  scriptProperties.setProperty(CRON_COUNT_KEY, 0);
+  scriptProperties.setProperty(ANTI_BUFF_AMOUNT_KEY, 0);
+  scriptProperties.setProperty(ANTI_BUFF_USAGE_KEY, 0);
+}
+
+// Gets user info so I can use it, especially stats like mana, experience, and level
+function api_getAuthenticatedUserProfile(userFields) {
+  const params = {
+    "method" : "get",
+    "headers" : HEADERS,
+    "muteHttpExceptions" : true,
+  }
+  
+  var url = "https://habitica.com/api/v3/user";
+  if (userFields != "") {
+    url += "?userFields=" + userFields;
+  }
+
+  return UrlFetchApp.fetch(url, params);
+}
+
+function apiFree_getAllAvailableContentObjects() {
+  const params = {
+    "method" : "get",
+    "muteHttpExceptions" : true,
+  }
+  
+  const url = "https://habitica.com/api/v3/content";
+  return UrlFetchApp.fetch(url, params);
+}
+
+// Purposely does not include buffs
+function calcConstitution() {
+  const levelConRaw = Math.floor(user.stats.lvl / 2);
+  const levelCon = (levelConRaw > 50) ? 50 : levelConRaw;
+  
+  var totalEquipmentAndClassCon = 0;
+  const allocatedCon = user.stats.con;
+  
+  // Get INT from equipped gear
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.weapon]);
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.shield]);
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.head]);
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.armor]);
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.headAccessory]);
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.eyewear]);
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.body]);
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.back]);
+
+  return levelCon + totalEquipmentAndClassCon + allocatedCon;
+}
+
+function calcEquipmentAndClassCon(equipment) {
+  var equipmentAndClassCon = 0;
+
+  if (equipment != undefined) {  
+    equipmentAndClassCon += equipment.con;
+    if ( (equipment.klass == user.stats.class) || ( (equipment.klass == "special") && (equipment.specialClass == user.stats.class) ) ) {
+      equipmentAndClassCon += equipment.con / 2;
+    }
+  }
+  
+  return equipmentAndClassCon;
+}
+
+// Changes stats
+function api_updateUser(payload) { 
+  const params = {
+    "method" : "put",
+    "headers" : HEADERS,
+    "contentType" : "application/json",
+    "payload" : JSON.stringify(payload),
+    "muteHttpExceptions" : true,
+  }
+  
+  const url = "https://habitica.com/api/v3/user";
+  return UrlFetchApp.fetch(url, params);
+}
+
+// Send a notification as a private message, only if they're enabled
+function api_sendPrivateMessage(payload) {
+  switch (NOTIFICATIONS_ON){ // Check if notifications are on, send message if yes
+        case 0:
+          break;        
+        case 1:
+            const params = {
+              "method" : "post",
+              "headers" : HEADERS,
+              "contentType" : "application/json",
+              "payload" : JSON.stringify(payload),
+              "muteHttpExceptions" : true,
+            }
+            const url = "https://habitica.com/api/v3/members/send-private-message";
+            return UrlFetchApp.fetch(url, params);
+          break;
+  }
+}
