@@ -1,0 +1,797 @@
+// This code is licensed under the same terms as Habitica:
+  // https://raw.githubusercontent.com/HabitRPG/habitrpg/develop/LICENSE
+
+/* ========================================== */
+/* [Users] Required script data to fill in    */
+/* ========================================== */
+const USER_ID = "PasteYourUserIdHere";
+const API_TOKEN = "PasteYourApiTokenHere"; // Do not share this to anyone
+const WEB_APP_URL = "PasteGeneratedWebAppUrlHere";
+
+/* ========================================== */
+/* [Users] Required customizations to fill in */
+/* ========================================== */
+const CREATE_OMNI_BUFF = 1; // Change this 1 to a 0 if you don’t want the Omni Buff skill, which combines the four skills listed below for 55 MP.
+
+const CREATE_VALOROUS_PRESENCE_SELF = 0; // Change this 0 to a 1 if you want a skill that buffs your Strength for 10 MP.
+const CREATE_EARTHQUAKE_SELF = 0; // Change this 0 to a 1 if you want a skill that buffs your Intelligence for 17.5 MP. 
+const CREATE_PROTECTIVE_AURA_SELF = 0; // Change this 0 to a 1 if you want a skill that buffs your Constitution for 15 MP. 
+const CREATE_TOOLS_OF_THE_TRADE_SELF = 0; // Change this 0 to a 1 if you want a skill that buffs your Perception for 12.5 MP. 
+
+const CREATE_TRIPLE_BUFF_STR_INT_CON = 0; // Change this 0 to a 1 if you want a skill that buffs your Strength, Intelligence, and Constitution for 42.5 MP.
+const CREATE_TRIPLE_BUFF_STR_INT_PER = 0; // Change this 0 to a 1 if you want a skill that buffs your Strength, Intelligence, and Perception for 40 MP.
+const CREATE_TRIPLE_BUFF_STR_CON_PER = 0; // Change this 0 to a 1 if you want a skill that buffs your Strength, Constitution, and Perception for 37.5 MP.
+const CREATE_TRIPLE_BUFF_INT_CON_PER = 0; // Change this 0 to a 1 if you want a skill that buffs your Intelligence, Constitution, and Perception for 45 MP.
+
+const CREATE_DOUBLE_BUFF_STR_INT = 0; // Change this 0 to a 1 if you want a skill that buffs your Strength and Intelligence for 27.5 MP.
+const CREATE_DOUBLE_BUFF_STR_CON = 0; // Change this 0 to a 1 if you want a skill that buffs your Strength and Constitution for 25 MP.
+const CREATE_DOUBLE_BUFF_STR_PER = 0; // Change this 0 to a 1 if you want a skill that buffs your Strength and Perception for 22.5 MP.
+const CREATE_DOUBLE_BUFF_INT_CON = 0; // Change this 0 to a 1 if you want a skill that buffs your Intelligence and Constitution for 32.5 MP.
+const CREATE_DOUBLE_BUFF_INT_PER = 0; // Change this 0 to a 1 if you want a skill that buffs your Intelligence and Perception for 30 MP.
+const CREATE_DOUBLE_BUFF_CON_PER = 0; // Change this 0 to a 1 if you want a skill that buffs your Constitution and Perception for 27.5 MP.
+
+/* ========================================== */
+/* [Users] Optional customizations to fill in */
+/* ========================================== */
+
+// Do you want to get private message notifications for having insufficient mana or being too low of a level to use the skill?
+// If you don't want them, change the 1 to a 0 in the line below
+const NOTIFICATIONS_ON = 1; 
+
+/* ========================================== */
+/* [Users] Do not edit code below this line   */
+/* ========================================== */
+const AUTHOR_ID = "0034eb14-b4d8-494e-8386-d3f33cff7922";
+const SCRIPT_NAME = "Cross-Class Stat Buffs";
+const HEADERS = {
+  "x-client" : AUTHOR_ID + " - " + SCRIPT_NAME,
+  "x-api-user" : USER_ID,
+  "x-api-key" : API_TOKEN,
+}
+
+const scriptProperties = PropertiesService.getScriptProperties(); // Constants can have properties changed
+
+const LEVEL_LOCK = 13;
+
+const OMNI_BUFF_MP_COST = 55;
+const VALOROUS_PRESENCE_SELF_MP_COST = 10;
+const EARTHQUAKE_SELF_MP_COST = 17.5;
+const PROTECTIVE_AURA_SELF_MP_COST = 15;
+const TOOLS_OF_THE_TRADE_SELF_MP_COST = 12.5;
+const TRIPLE_BUFF_STR_INT_CON_MP_COST = 42.5;
+const TRIPLE_BUFF_STR_INT_PER_MP_COST = 40;
+const TRIPLE_BUFF_STR_CON_PER_MP_COST = 37.5;
+const TRIPLE_BUFF_INT_CON_PER_MP_COST = 45;
+const DOUBLE_BUFF_STR_INT_MP_COST = 27.5;
+const DOUBLE_BUFF_STR_CON_MP_COST = 25;
+const DOUBLE_BUFF_STR_PER_MP_COST = 22.5;
+const DOUBLE_BUFF_INT_CON_MP_COST = 32.5;
+const DOUBLE_BUFF_INT_PER_MP_COST = 30;
+const DOUBLE_BUFF_CON_PER_MP_COST = 27.5;
+
+const OMNI_BUFF_TEXT = "**Omni Buff (self only)**";
+const OMNI_BUFF_ALIAS = "omni";
+const OMNI_BUFF_NOTES = "Buff all four of your stats according to each unbuffed value. 55 MP.";
+const OMNI_BUFF_VALUE = "0";
+
+const OMNI_BUFF_BUTTON = {
+    "text": OMNI_BUFF_TEXT,
+    "type": "reward",
+    "alias": OMNI_BUFF_ALIAS,
+    "notes": OMNI_BUFF_NOTES,
+    "value": OMNI_BUFF_VALUE,
+}
+
+const VALOROUS_PRESENCE_SELF_TEXT = "**Valorous Presence (self only)**";
+const VALOROUS_PRESENCE_SELF_ALIAS = "1str";
+const VALOROUS_PRESENCE_SELF_NOTES = "Your boldness buffs your Strength! (Based on: Unbuffed STR). 10 MP.";
+const VALOROUS_PRESENCE_SELF_VALUE = "0";
+
+const VALOROUS_PRESENCE_SELF_BUTTON = {
+    "text": VALOROUS_PRESENCE_SELF_TEXT,
+    "type": "reward",
+    "alias": VALOROUS_PRESENCE_SELF_ALIAS,
+    "notes": VALOROUS_PRESENCE_SELF_NOTES,
+    "value": VALOROUS_PRESENCE_SELF_VALUE,
+}
+
+const EARTHQUAKE_SELF_TEXT = "**Earthquake (self only)**";
+const EARTHQUAKE_SELF_ALIAS = "1int";
+const EARTHQUAKE_SELF_NOTES = "Your mental power shakes the earth and buffs your Intelligence! (Based on: Unbuffed INT). 17.5 MP.";
+const EARTHQUAKE_SELF_VALUE = "0";
+
+const EARTHQUAKE_SELF_BUTTON = {
+    "text": EARTHQUAKE_SELF_TEXT,
+    "type": "reward",
+    "alias": EARTHQUAKE_SELF_ALIAS,
+    "notes": EARTHQUAKE_SELF_NOTES,
+    "value": EARTHQUAKE_SELF_VALUE,
+}
+
+const PROTECTIVE_AURA_SELF_TEXT = "**Protective Aura (self only)**";
+const PROTECTIVE_AURA_SELF_ALIAS = "1con";
+const PROTECTIVE_AURA_SELF_NOTES = "You shield yourself by buffing your Constitution! (Based on: Unbuffed CON). 15 MP.";
+const PROTECTIVE_AURA_SELF_VALUE = "0";
+
+const PROTECTIVE_AURA_SELF_BUTTON = {
+    "text": PROTECTIVE_AURA_SELF_TEXT,
+    "type": "reward",
+    "alias": PROTECTIVE_AURA_SELF_ALIAS,
+    "notes": PROTECTIVE_AURA_SELF_NOTES,
+    "value": PROTECTIVE_AURA_SELF_VALUE,
+}
+
+const TOOLS_OF_THE_TRADE_SELF_TEXT = "**Tools of the Trade (self only)**";
+const TOOLS_OF_THE_TRADE_SELF_ALIAS = "1per";
+const TOOLS_OF_THE_TRADE_SELF_NOTES = "Your tricky talents buff your Perception! (Based on: Unbuffed PER). 12.5 MP.";
+const TOOLS_OF_THE_TRADE_SELF_VALUE = "0";
+
+const TOOLS_OF_THE_TRADE_SELF_BUTTON = {
+    "text": TOOLS_OF_THE_TRADE_SELF_TEXT,
+    "type": "reward",
+    "alias": TOOLS_OF_THE_TRADE_SELF_ALIAS,
+    "notes": TOOLS_OF_THE_TRADE_SELF_NOTES,
+    "value": TOOLS_OF_THE_TRADE_SELF_VALUE,
+}
+
+const TRIPLE_BUFF_STR_INT_CON_TEXT = "**Triple Buff: Strength, Intelligence, and Constitution**";
+const TRIPLE_BUFF_STR_INT_CON_ALIAS = "3sic";
+const TRIPLE_BUFF_STR_INT_CON_NOTES = "Buff these three of your stats according to each unbuffed value. 42.5 MP.";
+const TRIPLE_BUFF_STR_INT_CON_VALUE = "0";
+
+const TRIPLE_BUFF_STR_INT_CON_BUTTON = {
+    "text": TRIPLE_BUFF_STR_INT_CON_TEXT,
+    "type": "reward",
+    "alias": TRIPLE_BUFF_STR_INT_CON_ALIAS,
+    "notes": TRIPLE_BUFF_STR_INT_CON_NOTES,
+    "value": TRIPLE_BUFF_STR_INT_CON_VALUE,
+}
+
+const TRIPLE_BUFF_STR_INT_PER_TEXT = "**Triple Buff: Strength, Intelligence, and Perception**";
+const TRIPLE_BUFF_STR_INT_PER_ALIAS = "3sip";
+const TRIPLE_BUFF_STR_INT_PER_NOTES = "Buff these three of your stats according to each unbuffed value. 40 MP.";
+const TRIPLE_BUFF_STR_INT_PER_VALUE = "0";
+
+const TRIPLE_BUFF_STR_INT_PER_BUTTON = {
+    "text": TRIPLE_BUFF_STR_INT_PER_TEXT,
+    "type": "reward",
+    "alias": TRIPLE_BUFF_STR_INT_PER_ALIAS,
+    "notes": TRIPLE_BUFF_STR_INT_PER_NOTES,
+    "value": TRIPLE_BUFF_STR_INT_PER_VALUE,
+}
+
+const TRIPLE_BUFF_STR_CON_PER_TEXT = "**Triple Buff: Strength, Constitution, and Perception**";
+const TRIPLE_BUFF_STR_CON_PER_ALIAS = "3scp";
+const TRIPLE_BUFF_STR_CON_PER_NOTES = "Buff these three of your stats according to each unbuffed value. 37.5 MP.";
+const TRIPLE_BUFF_STR_CON_PER_VALUE = "0";
+
+const TRIPLE_BUFF_STR_CON_PER_BUTTON = {
+    "text": TRIPLE_BUFF_STR_CON_PER_TEXT,
+    "type": "reward",
+    "alias": TRIPLE_BUFF_STR_CON_PER_ALIAS,
+    "notes": TRIPLE_BUFF_STR_CON_PER_NOTES,
+    "value": TRIPLE_BUFF_STR_CON_PER_VALUE,
+}
+
+const TRIPLE_BUFF_INT_CON_PER_TEXT = "**Triple Buff: Intelligence, Constitution, and Perception**";
+const TRIPLE_BUFF_INT_CON_PER_ALIAS = "3icp";
+const TRIPLE_BUFF_INT_CON_PER_NOTES = "Buff these three of your stats according to each unbuffed value. 45 MP.";
+const TRIPLE_BUFF_INT_CON_PER_VALUE = "0";
+
+const TRIPLE_BUFF_INT_CON_PER_BUTTON = {
+    "text": TRIPLE_BUFF_INT_CON_PER_TEXT,
+    "type": "reward",
+    "alias": TRIPLE_BUFF_INT_CON_PER_ALIAS,
+    "notes": TRIPLE_BUFF_INT_CON_PER_NOTES,
+    "value": TRIPLE_BUFF_INT_CON_PER_VALUE,
+}
+
+const DOUBLE_BUFF_STR_INT_TEXT = "**Double Buff: Strength and Intelligence**";
+const DOUBLE_BUFF_STR_INT_ALIAS = "2si";
+const DOUBLE_BUFF_STR_INT_NOTES = "Buff both of these stats for you according to each unbuffed value. 27.5 MP.";
+const DOUBLE_BUFF_STR_INT_VALUE = "0";
+
+const DOUBLE_BUFF_STR_INT_BUTTON = {
+    "text": DOUBLE_BUFF_STR_INT_TEXT,
+    "type": "reward",
+    "alias": DOUBLE_BUFF_STR_INT_ALIAS,
+    "notes": DOUBLE_BUFF_STR_INT_NOTES,
+    "value": DOUBLE_BUFF_STR_INT_VALUE,
+}
+
+const DOUBLE_BUFF_STR_CON_TEXT = "**Double Buff: Strength and Constitution**";
+const DOUBLE_BUFF_STR_CON_ALIAS = "2sc";
+const DOUBLE_BUFF_STR_CON_NOTES = "Buff both of these stats for you according to each unbuffed value. 25 MP.";
+const DOUBLE_BUFF_STR_CON_VALUE = "0";
+
+const DOUBLE_BUFF_STR_CON_BUTTON = {
+    "text": DOUBLE_BUFF_STR_CON_TEXT,
+    "type": "reward",
+    "alias": DOUBLE_BUFF_STR_CON_ALIAS,
+    "notes": DOUBLE_BUFF_STR_CON_NOTES,
+    "value": DOUBLE_BUFF_STR_CON_VALUE,
+}
+
+const DOUBLE_BUFF_STR_PER_TEXT = "**Double Buff: Strength and Perception**";
+const DOUBLE_BUFF_STR_PER_ALIAS = "2sp";
+const DOUBLE_BUFF_STR_PER_NOTES = "Buff both of these stats for you according to each unbuffed value. 22.5 MP.";
+const DOUBLE_BUFF_STR_PER_VALUE = "0";
+
+const DOUBLE_BUFF_STR_PER_BUTTON = {
+    "text": DOUBLE_BUFF_STR_PER_TEXT,
+    "type": "reward",
+    "alias": DOUBLE_BUFF_STR_PER_ALIAS,
+    "notes": DOUBLE_BUFF_STR_PER_NOTES,
+    "value": DOUBLE_BUFF_STR_PER_VALUE,
+}
+
+const DOUBLE_BUFF_INT_CON_TEXT = "**Double Buff: Intelligence and Constitution**";
+const DOUBLE_BUFF_INT_CON_ALIAS = "2ic";
+const DOUBLE_BUFF_INT_CON_NOTES = "Buff both of these stats for you according to each unbuffed value. 32.5 MP.";
+const DOUBLE_BUFF_INT_CON_VALUE = "0";
+
+const DOUBLE_BUFF_INT_CON_BUTTON = {
+    "text": DOUBLE_BUFF_INT_CON_TEXT,
+    "type": "reward",
+    "alias": DOUBLE_BUFF_INT_CON_ALIAS,
+    "notes": DOUBLE_BUFF_INT_CON_NOTES,
+    "value": DOUBLE_BUFF_INT_CON_VALUE,
+}
+
+const DOUBLE_BUFF_INT_PER_TEXT = "**Double Buff: Intelligence and Perception**";
+const DOUBLE_BUFF_INT_PER_ALIAS = "2ip";
+const DOUBLE_BUFF_INT_PER_NOTES = "Buff both of these stats for you according to each unbuffed value. 30 MP.";
+const DOUBLE_BUFF_INT_PER_VALUE = "0";
+
+const DOUBLE_BUFF_INT_PER_BUTTON = {
+    "text": DOUBLE_BUFF_INT_PER_TEXT,
+    "type": "reward",
+    "alias": DOUBLE_BUFF_INT_PER_ALIAS,
+    "notes": DOUBLE_BUFF_INT_PER_NOTES,
+    "value": DOUBLE_BUFF_INT_PER_VALUE,
+}
+
+const DOUBLE_BUFF_CON_PER_TEXT = "**Double Buff: Constitution and Perception**";
+const DOUBLE_BUFF_CON_PER_ALIAS = "2cp";
+const DOUBLE_BUFF_CON_PER_NOTES = "Buff both of these stats for you according to each unbuffed value. 27.5 MP.";
+const DOUBLE_BUFF_CON_PER_VALUE = "0";
+
+const DOUBLE_BUFF_CON_PER_BUTTON = {
+    "text": DOUBLE_BUFF_CON_PER_TEXT,
+    "type": "reward",
+    "alias": DOUBLE_BUFF_CON_PER_ALIAS,
+    "notes": DOUBLE_BUFF_CON_PER_NOTES,
+    "value": DOUBLE_BUFF_CON_PER_VALUE,
+}
+
+const TIMESTAMP_KEY = "TIMESTAMP_KEY";
+var timestampKey = "";
+
+function doOneTimeSetup() {
+  // These are not "else if" statements on purpose
+  if (CREATE_DOUBLE_BUFF_CON_PER == 1) {
+    api_createNewTaskForUser([DOUBLE_BUFF_CON_PER_BUTTON]);
+  }
+  if (CREATE_DOUBLE_BUFF_INT_PER == 1) {
+    api_createNewTaskForUser([DOUBLE_BUFF_INT_PER_BUTTON]);
+  }
+  if (CREATE_DOUBLE_BUFF_INT_CON == 1) {
+    api_createNewTaskForUser([DOUBLE_BUFF_INT_CON_BUTTON]);
+  }
+  if (CREATE_DOUBLE_BUFF_STR_PER == 1) {
+    api_createNewTaskForUser([DOUBLE_BUFF_STR_PER_BUTTON]);
+  }
+  if (CREATE_DOUBLE_BUFF_STR_CON == 1) {
+    api_createNewTaskForUser([DOUBLE_BUFF_STR_CON_BUTTON]);
+  }
+  if (CREATE_DOUBLE_BUFF_STR_INT == 1) {
+    api_createNewTaskForUser([DOUBLE_BUFF_STR_INT_BUTTON]);
+  }
+  if (CREATE_TRIPLE_BUFF_INT_CON_PER == 1) {
+    api_createNewTaskForUser([TRIPLE_BUFF_INT_CON_PER_BUTTON]);
+  }
+  if (CREATE_TRIPLE_BUFF_STR_CON_PER == 1) {
+    api_createNewTaskForUser([TRIPLE_BUFF_STR_CON_PER_BUTTON]);
+  }
+  if (CREATE_TRIPLE_BUFF_STR_INT_PER == 1) {
+    api_createNewTaskForUser([TRIPLE_BUFF_STR_INT_PER_BUTTON]);
+  }
+  if (CREATE_TRIPLE_BUFF_STR_INT_CON == 1) {
+    api_createNewTaskForUser([TRIPLE_BUFF_STR_INT_CON_BUTTON]);
+  }
+  if (CREATE_TOOLS_OF_THE_TRADE_SELF == 1) {
+    api_createNewTaskForUser([TOOLS_OF_THE_TRADE_SELF_BUTTON]);
+  }
+  if (CREATE_PROTECTIVE_AURA_SELF == 1) {
+    api_createNewTaskForUser([PROTECTIVE_AURA_SELF_BUTTON]);
+  }
+  if (CREATE_EARTHQUAKE_SELF == 1) {
+    api_createNewTaskForUser([EARTHQUAKE_SELF_BUTTON]);
+  }
+  if (CREATE_VALOROUS_PRESENCE_SELF == 1) {
+    api_createNewTaskForUser([VALOROUS_PRESENCE_SELF_BUTTON]);
+  }
+  if (CREATE_OMNI_BUFF == 1) {
+    api_createNewTaskForUser([OMNI_BUFF_BUTTON]);
+  }
+  
+  // Next, create the webhook
+  const options = {
+    "scored" : true,
+  }
+  const payload = {
+    "url" : WEB_APP_URL,
+    "label" : SCRIPT_NAME + " Webhook",
+    "type" : "taskActivity",
+    "options" : options,
+  }
+  apiMult_createNewWebhookNoDuplicates(payload);
+  
+  // set script properties so they carry over to next session
+  initScriptProperties();
+}
+
+// do things when the webhook runs
+function doPost(e) {
+  const dataContents = JSON.parse(e.postData.contents);
+  const type = dataContents.type;
+  const task = dataContents.task;
+  
+  // Sanitize task alias
+  if ((task.alias == undefined) || (task.alias == null)) {
+    task.alias = "";
+  }
+  if (type == "scored") {
+    // Check if the alias matches any of them
+    if ( (task.alias == OMNI_BUFF_ALIAS) || (task.alias == VALOROUS_PRESENCE_SELF_ALIAS) || (task.alias == EARTHQUAKE_SELF_ALIAS) 
+      || (task.alias == PROTECTIVE_AURA_SELF_ALIAS) || (task.alias == TOOLS_OF_THE_TRADE_SELF_ALIAS) || (task.alias == TRIPLE_BUFF_STR_INT_CON_ALIAS) 
+      || (task.alias == TRIPLE_BUFF_STR_INT_PER_ALIAS) || (task.alias == TRIPLE_BUFF_STR_CON_PER_ALIAS) || (task.alias == TRIPLE_BUFF_INT_CON_PER_ALIAS) 
+      || (task.alias == DOUBLE_BUFF_STR_INT_ALIAS) || (task.alias == DOUBLE_BUFF_STR_CON_ALIAS) || (task.alias == DOUBLE_BUFF_STR_PER_ALIAS)
+      || (task.alias == DOUBLE_BUFF_INT_CON_ALIAS) || (task.alias == DOUBLE_BUFF_INT_PER_ALIAS) || (task.alias == DOUBLE_BUFF_CON_PER_ALIAS) ) {
+      
+      var timestampKey = TIMESTAMP_KEY;
+      var timeStart = Number(scriptProperties.getProperty(timestampKey));
+      if ( (timeStart == 0) || (timeStart == "") || (timeStart == undefined) || (timeStart == null) ) {
+        timeStart = Date.now();
+      }
+      var timeEnd = Date.now();
+      
+      // Rate limiting: If it's been less than 30 seconds since they last clicked one of these buttons, do nothing
+      if ( (timeEnd - timeStart) >= 30000 ) {
+      
+        // Get user info
+        const responseUser = api_getAuthenticatedUserProfile("stats,items.gear.equipped");
+        user = JSON.parse(responseUser).data;
+        
+        var lvl = user.stats.lvl;
+        
+        // Check against level lock
+        if ( lvl < LEVEL_LOCK ) {
+          api_sendPrivateMessage({"message" : "Insufficient level: you must be at least level 13 to use this skill.", "toUserId" : USER_ID});
+        }
+        else {
+          // Get equipment stats info
+          const responseContent = apiFree_getAllAvailableContentObjects();
+          content = JSON.parse(responseContent).data;
+          
+          // Calculate unbuffed stats
+          var unbuffedStr = calculateUnbuffedStrength();
+          var unbuffedInt = calculateUnbuffedIntelligence();
+          var unbuffedCon = calculateUnbuffedConstitution();
+          var unbuffedPer = calculateUnbuffedPerception();
+          
+          // Grab other user stats
+          var mp = user.stats.mp;
+          var buffsStr = user.stats.buffs.str;
+          if (!user.stats.buffs.str) buffsStr = 0;
+          var buffsInt = user.stats.buffs.int;
+          if (!user.stats.buffs.int) buffsInt = 0;
+          var buffsCon = user.stats.buffs.con;
+          if (!user.stats.buffs.con) buffsCon = 0;
+          var buffsPer = user.stats.buffs.per;
+          if (!user.stats.buffs.per) buffsPer = 0;
+          
+          // See which buff is supposed to run, then do it (after checking if there's enough mana)
+          if ( task.alias == OMNI_BUFF_ALIAS ) {
+            var enoughMana = checkMana(mp, OMNI_BUFF_MP_COST);
+            if (enoughMana) {
+              buffStr(unbuffedStr, buffsStr);
+              buffInt(unbuffedInt, buffsInt);
+              buffCon(unbuffedCon, buffsCon);
+              buffPer(unbuffedPer, buffsPer);
+            }
+          }
+          else if ( task.alias == VALOROUS_PRESENCE_SELF_ALIAS) {
+            var enoughMana = checkMana(mp, VALOROUS_PRESENCE_SELF_MP_COST);
+            if (enoughMana) {
+              buffStr(unbuffedStr, buffsStr);
+            }
+          }
+          else if ( task.alias == EARTHQUAKE_SELF_ALIAS) {
+            var enoughMana = checkMana(mp, EARTHQUAKE_SELF_MP_COST);
+            if (enoughMana) {
+              buffInt(unbuffedInt, buffsInt);
+            }
+          }
+          else if ( task.alias == PROTECTIVE_AURA_SELF_ALIAS) {
+            var enoughMana = checkMana(mp, PROTECTIVE_AURA_SELF_MP_COST);
+            if (enoughMana) {
+              buffCon(unbuffedCon, buffsCon);
+            }
+          }
+          else if ( task.alias == TOOLS_OF_THE_TRADE_SELF_ALIAS) {
+            var enoughMana = checkMana(mp, TOOLS_OF_THE_TRADE_SELF_MP_COST);
+            if (enoughMana) {
+              buffPer(unbuffedPer, buffsPer);
+            }
+          }
+          else if ( task.alias == TRIPLE_BUFF_STR_INT_CON_ALIAS) {
+            var enoughMana = checkMana(mp, TRIPLE_BUFF_STR_INT_CON_MP_COST);
+            if (enoughMana) {
+              buffStr(unbuffedStr, buffsStr);
+              buffInt(unbuffedInt, buffsInt);
+              buffCon(unbuffedCon, buffsCon);
+            }
+          }
+          else if ( task.alias == TRIPLE_BUFF_STR_INT_PER_ALIAS) {
+            var enoughMana = checkMana(mp, TRIPLE_BUFF_STR_INT_PER_MP_COST);
+            if (enoughMana) {
+              buffStr(unbuffedStr, buffsStr);
+              buffInt(unbuffedInt, buffsInt);
+              buffPer(unbuffedPer, buffsPer);
+            }
+          }
+          else if ( task.alias == TRIPLE_BUFF_STR_CON_PER_ALIAS) {
+            var enoughMana = checkMana(mp, TRIPLE_BUFF_STR_CON_PER_MP_COST);
+            if (enoughMana) {
+              buffStr(unbuffedStr, buffsStr);
+              buffCon(unbuffedCon, buffsCon);
+              buffPer(unbuffedPer, buffsPer);
+            }
+          }
+          else if ( task.alias == TRIPLE_BUFF_INT_CON_PER_ALIAS) {
+            var enoughMana = checkMana(mp, TRIPLE_BUFF_INT_CON_PER_MP_COST);
+            if (enoughMana) {
+              buffInt(unbuffedInt, buffsInt);
+              buffCon(unbuffedCon, buffsCon);
+              buffPer(unbuffedPer, buffsPer);
+            }
+          }
+          else if ( task.alias == DOUBLE_BUFF_STR_INT_ALIAS) {
+            var enoughMana = checkMana(mp, DOUBLE_BUFF_STR_INT_MP_COST);
+            if (enoughMana) {
+              buffStr(unbuffedStr, buffsStr);
+              buffInt(unbuffedInt, buffsInt);
+            }
+          }
+          else if ( task.alias == DOUBLE_BUFF_STR_CON_ALIAS) {
+            var enoughMana = checkMana(mp, DOUBLE_BUFF_STR_CON_MP_COST);
+            if (enoughMana) {
+              buffStr(unbuffedStr, buffsStr);
+              buffCon(unbuffedCon, buffsCon);
+            }
+          }
+          else if ( task.alias == DOUBLE_BUFF_STR_PER_ALIAS) {
+            var enoughMana = checkMana(mp, DOUBLE_BUFF_STR_PER_MP_COST);
+            if (enoughMana) {
+              buffStr(unbuffedStr, buffsStr);
+              buffPer(unbuffedPer, buffsPer);
+            }
+          }
+          else if ( task.alias == DOUBLE_BUFF_INT_CON_ALIAS) {
+            var enoughMana = checkMana(mp, DOUBLE_BUFF_INT_CON_MP_COST);
+            if (enoughMana) {
+              buffInt(unbuffedInt, buffsInt);
+              buffCon(unbuffedCon, buffsCon);
+            }
+          }
+          else if ( task.alias == DOUBLE_BUFF_INT_PER_ALIAS) {
+            var enoughMana = checkMana(mp, DOUBLE_BUFF_INT_PER_MP_COST);
+            if (enoughMana) {
+              buffInt(unbuffedInt, buffsInt);
+              buffPer(unbuffedPer, buffsPer);
+            }
+          }
+          else if ( task.alias == DOUBLE_BUFF_CON_PER_ALIAS) {
+            var enoughMana = checkMana(mp, DOUBLE_BUFF_CON_PER_MP_COST);
+            if (enoughMana) {
+              buffCon(unbuffedCon, buffsCon);
+              buffPer(unbuffedPer, buffsPer);
+            }
+          }
+        }
+        // Save values to non-volatile memory, but only from within the rate-limited if-block (we don't want to save the timestamp unless the script ran)
+        timeStart = timeEnd;
+        scriptProperties.setProperty(timestampKey, timeStart);
+      } 
+    }
+  }
+  
+  return HtmlService.createHtmlOutput();
+}
+
+// Create custom reward buttons
+function api_createNewTaskForUser(payload) {
+  var params = {
+    "method" : "post",
+    "headers" : HEADERS,
+    "contentType" : "application/json",
+    "payload" : JSON.stringify(payload), // Rightmost button goes on top
+    "muteHttpExceptions" : true,
+  }
+
+  var url = "https://habitica.com/api/v3/tasks/user";
+  UrlFetchApp.fetch(url, params);
+}
+
+// Create a webhook if no duplicate exists
+function apiMult_createNewWebhookNoDuplicates(payload) {
+  const response = api_getWebhooks();
+  const webhooks = JSON.parse(response).data;
+  var duplicateExists = 0;
+    
+  for (var i in webhooks) {
+    if (webhooks[i].label == payload.label) {
+      duplicateExists = 1;
+    }
+  }
+  // If webhook to be created doesn't exist yet
+  if (!duplicateExists) {
+    api_createNewWebhook(payload);
+  }
+}
+
+// Used to see existing webhooks, and therefore if there's a duplicate
+function api_getWebhooks() {
+  const params = {
+    "method" : "get",
+    "headers" : HEADERS,
+    "muteHttpExceptions" : true,
+  }
+  
+  const url = "https://habitica.com/api/v3/user/webhook";
+  return UrlFetchApp.fetch(url, params);
+}
+
+// Creates a webhook (as part of the "don't make it if there's a duplicate" function)
+function api_createNewWebhook(payload) {
+  const params = {
+    "method" : "post",
+    "headers" : HEADERS,
+    "contentType" : "application/json",
+    "payload" : JSON.stringify(payload),
+    "muteHttpExceptions" : true,
+  }
+   
+  const url = "https://habitica.com/api/v3/user/webhook";
+  return UrlFetchApp.fetch(url, params);
+}
+
+// Sets initial properties that will be used/saved later.
+function initScriptProperties() {
+  var timestampInit = Date.now();
+  scriptProperties.setProperty(TIMESTAMP_KEY, timestampInit);
+}
+
+// Gets user info so I can use it, especially stats like mana, experience, and level
+function api_getAuthenticatedUserProfile(userFields) {
+  const params = {
+    "method" : "get",
+    "headers" : HEADERS,
+    "muteHttpExceptions" : true,
+  }
+  
+  var url = "https://habitica.com/api/v3/user";
+  if (userFields != "") {
+    url += "?userFields=" + userFields;
+  }
+
+  return UrlFetchApp.fetch(url, params);
+}
+
+// Send a notification as a private message, only if they're enabled
+function api_sendPrivateMessage(payload) {
+  switch (NOTIFICATIONS_ON){ // Check if notifications are on, send message if yes
+        case 0:
+          break;        
+        case 1:
+            const params = {
+              "method" : "post",
+              "headers" : HEADERS,
+              "contentType" : "application/json",
+              "payload" : JSON.stringify(payload),
+              "muteHttpExceptions" : true,
+            }
+            const url = "https://habitica.com/api/v3/members/send-private-message";
+            return UrlFetchApp.fetch(url, params);
+          break;
+  }
+}
+
+function apiFree_getAllAvailableContentObjects() {
+  const params = {
+    "method" : "get",
+    "muteHttpExceptions" : true,
+  }
+  
+  const url = "https://habitica.com/api/v3/content";
+  return UrlFetchApp.fetch(url, params);
+}
+
+function calculateUnbuffedStrength() {
+  const levelStrRaw = Math.floor(user.stats.lvl / 2);
+  const levelStr = (levelStrRaw > 50) ? 50 : levelStrRaw;
+  
+  var totalEquipmentAndClassStr = 0;
+  const allocatedStr = user.stats.str;
+  
+  // Get STR from equipped gear
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.weapon]);
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.shield]);
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.head]);
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.armor]);
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.headAccessory]);
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.eyewear]);
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.body]);
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.back]);
+
+  return levelStr + totalEquipmentAndClassStr + allocatedStr;
+}
+
+function calcEquipmentAndClassStr(equipment) {
+  var equipmentAndClassStr = 0;
+
+  if (equipment != undefined) {  
+    equipmentAndClassStr += equipment.str;
+    if ( (equipment.klass == user.stats.class) || ( (equipment.klass == "special") && (equipment.specialClass == user.stats.class) ) ) {
+      equipmentAndClassStr += equipment.str / 2;
+    }
+  }
+  
+  return equipmentAndClassStr;
+}
+
+function calculateUnbuffedIntelligence() {
+  const levelIntRaw = Math.floor(user.stats.lvl / 2);
+  const levelInt = (levelIntRaw > 50) ? 50 : levelIntRaw;
+  
+  var totalEquipmentAndClassInt = 0;
+  const allocatedInt = user.stats.int;
+  
+  // Get INT from equipped gear
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.weapon]);
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.shield]);
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.head]);
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.armor]);
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.headAccessory]);
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.eyewear]);
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.body]);
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.back]);
+
+  return levelInt + totalEquipmentAndClassInt + allocatedInt;
+}
+
+function calcEquipmentAndClassInt(equipment) {
+  var equipmentAndClassInt = 0;
+
+  if (equipment != undefined) {  
+    equipmentAndClassInt += equipment.int;
+    if ( (equipment.klass == user.stats.class) || ( (equipment.klass == "special") && (equipment.specialClass == user.stats.class) ) ) {
+      equipmentAndClassInt += equipment.int / 2;
+    }
+  }
+  
+  return equipmentAndClassInt;
+}
+
+function calculateUnbuffedConstitution() {
+  const levelConRaw = Math.floor(user.stats.lvl / 2);
+  const levelCon = (levelConRaw > 50) ? 50 : levelConRaw;
+  
+  var totalEquipmentAndClassCon = 0;
+  const allocatedCon = user.stats.con;
+  
+  // Get CON from equipped gear
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.weapon]);
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.shield]);
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.head]);
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.armor]);
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.headAccessory]);
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.eyewear]);
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.body]);
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.back]);
+
+  return levelCon + totalEquipmentAndClassCon + allocatedCon;
+}
+
+function calcEquipmentAndClassCon(equipment) {
+  var equipmentAndClassCon = 0;
+
+  if (equipment != undefined) {  
+    equipmentAndClassCon += equipment.con;
+    if ( (equipment.klass == user.stats.class) || ( (equipment.klass == "special") && (equipment.specialClass == user.stats.class) ) ) {
+      equipmentAndClassCon += equipment.con / 2;
+    }
+  }
+  
+  return equipmentAndClassCon;
+}
+
+function calculateUnbuffedPerception() {
+  const levelPerRaw = Math.floor(user.stats.lvl / 2);
+  const levelPer = (levelPerRaw > 50) ? 50 : levelPerRaw;
+  
+  var totalEquipmentAndClassPer = 0;
+  const allocatedPer = user.stats.per;
+  
+  // Get PER from equipped gear
+  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.weapon]);
+  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.shield]);
+  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.head]);
+  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.armor]);
+  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.headAccessory]);
+  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.eyewear]);
+  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.body]);
+  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.back]);
+
+  return levelPer + totalEquipmentAndClassPer + allocatedPer;
+}
+
+function calcEquipmentAndClassPer(equipment) {
+  var equipmentAndClassPer = 0;
+
+  if (equipment != undefined) {  
+    equipmentAndClassPer += equipment.per;
+    if ( (equipment.klass == user.stats.class) || ( (equipment.klass == "special") && (equipment.specialClass == user.stats.class) ) ) {
+      equipmentAndClassPer += equipment.per / 2;
+    }
+  }
+  
+  return equipmentAndClassPer;
+}
+
+// Checks if sufficient mana, sends message if not, deduct cost if true
+function checkMana(mp, mpCost){
+  if (mp < mpCost) {
+    api_sendPrivateMessage({"message" : "Insufficient mana to use this skill.", "toUserId" : USER_ID});
+    return false;
+  }
+  else {
+    api_updateUser({"stats.mp" : mp - mpCost});
+    return true;
+  }
+}
+
+// Changes stats
+function api_updateUser(payload) { 
+  const params = {
+    "method" : "put",
+    "headers" : HEADERS,
+    "contentType" : "application/json",
+    "payload" : JSON.stringify(payload),
+    "muteHttpExceptions" : true,
+  }
+  
+  const url = "https://habitica.com/api/v3/user";
+  return UrlFetchApp.fetch(url, params);
+}
+
+function buffStr(unbuffedStr, buffsStr) {
+  var buffAmount = Math.ceil( ( (unbuffedStr * 20) / (unbuffedStr + 200) ) );
+  api_updateUser({"stats.buffs.str" : buffsStr + buffAmount});
+}
+
+function buffInt(unbuffedInt, buffsInt) {
+  var buffAmount = Math.ceil( ( (unbuffedInt * 30) / (unbuffedInt + 200) ) );
+  api_updateUser({"stats.buffs.int" : buffsInt + buffAmount});
+}
+
+function buffCon(unbuffedCon, buffsCon) {
+  var buffAmount = Math.ceil( ( (unbuffedCon * 200) / (unbuffedCon + 200) ) );
+  api_updateUser({"stats.buffs.con" : buffsCon + buffAmount});
+}
+
+function buffPer(unbuffedPer, buffsPer) {
+  var buffAmount = Math.ceil( ( (unbuffedPer * 100) / (unbuffedPer + 50) ) );
+  api_updateUser({"stats.buffs.per" : buffsPer + buffAmount});
+}
