@@ -176,7 +176,7 @@
   }
 
   // Deletes a task
-  function api_deleteTask(taskId) {
+  function api_deleteTask(taskIdOrAlias) {
     const params = {
       "method" : "delete",
       "headers" : HEADERS,
@@ -184,8 +184,8 @@
     }
 
     var url = "https://habitica.com/api/v3/tasks/";
-    if (taskId != "") {
-      url += taskId;
+    if (taskIdOrAlias != "") {
+      url += taskIdOrAlias;
     }
     return UrlFetchApp.fetch(url, params);
   }
@@ -440,7 +440,7 @@
       }
     }
 
-  // GROUPD-ID RELATED FUNCTIONS
+  // GROUP-ID RELATED FUNCTIONS
 
     // Checks if a Guild ID is in the correct formatting: 00000000-0000-4000-A000-000000000000
     function checkGuildIdFormat(guildIdToCheck){
