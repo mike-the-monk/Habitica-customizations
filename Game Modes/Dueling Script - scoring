@@ -467,7 +467,7 @@ function api_updateTask(taskIdOrAlias, payload) {
 }
 
 // Finds if the automated message was posted or not
-function findAutomatedDuelEndMessages(version, guildId, msgIdEarliestAllowed, earliestAllowedTimestamp, announcerBotUsername, searchTerm, ){
+function findAutomatedDuelEndMessages(version, guildId, msgIdEarliestAllowed, earliestAllowedTimestamp, announcerBotUsername, searchTerm){
   // Initialize so it defaults to the error condition
   let msgId = "nope";
   
