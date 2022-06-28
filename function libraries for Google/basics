@@ -1,0 +1,805 @@
+// NON-API FUNCTIONS THAT ARE STILL USEFUL
+  // These functions are deployed as a library in Google Apps.
+    // Script ID is [Paste it here]
+  // The functions are maintained in GitHub at 
+    // https://raw.githubusercontent.com/mike-the-monk/Habitica-customizations/main/function%20libraries%20for%20Google/basics
+
+
+
+  // MANA COST RELATED FUNCTIONS
+
+    // Checks if sufficient mana, sends message if not, deduct cost if true
+    function checkMana(mp, mpCost){
+      if (mp < mpCost) {
+        api_sendPrivateMessage({"message" : "Insufficient mana to use this skill.", "toUserId" : USER_ID});
+        return false;
+      }
+      else {
+        api_updateUser({"stats.mp" : mp - mpCost});
+        return true;
+      }
+    }
+
+    // Checks if sufficient mana, sends message if not, does not deduct it now
+    function checkManaDeductLater(mp, mpCost){
+      if (mp < mpCost) {
+        api_sendPrivateMessage({"message" : "Insufficient mana to use this skill.", "toUserId" : USER_ID});
+        return false;
+      }
+      else {
+        return true;
+      }
+    }
+
+  // NUMERIC-RELATED FUNCTIONS
+
+    // Ensures that the input is between the minimum and maximum
+    function sanitizeInput(input, minimum, maximum) {
+      if ( input < minimum ) {
+        return minimum;
+      }
+      else if ( input > maximum ) {
+        return maximum;
+      }
+      else { return input; }
+    }
+
+    // Ensures that the input is greater than zero
+    function sanitizePositive(input) {
+      if ( input < 0 ) { return 0; }
+      else { return input; }
+    }
+
+    // Checks if input is a number, returns -2 if not (to indicate error), and ensures the result is positive (greater than 0)
+    function checkIfNumber(input){
+      // Turn it into a number
+      let inputAsNumber = parseFloat(input);
+      
+      // If it's not a number, return -2
+      let isNan = Number.isNaN(inputAsNumber);
+      if (isNan) {
+        return -2;
+      } else {
+        let parameter = sanitizePositive(inputAsNumber);
+        return parameter;
+      } 
+    }
+
+  // STRING-RELATED FUNCTIONS
+
+    // Find the index of a given search term
+    function findIndex(searchTerm, stringToSearch) {
+      return stringToSearch.indexOf(searchTerm);
+    }
+
+    // Finds index of a search term, not case-sensitive
+    function findIndexCaseInsensitive(searchTerm, stringToSearch){
+      let uppercaseStringToSearch = stringToSearch.toUpperCase();
+      let index = findIndex(searchTerm, uppercaseStringToSearch);
+      
+      return index;
+    }
+
+    // Finds the semicolon after the search term previously searched. Builds in an offset to account for the number of characters in the search term.
+    function findIndexOfSemicolon(stringToSearch, startingAt, offset) {
+      return stringToSearch.indexOf(";", startingAt + offset);
+    }
+
+    // Finds the period after the search term previously searched. Builds in an offset to account for the number of characters in the search term.
+    function findIndexOfPeriod(stringToSearch, startingAt, offset) {
+      return stringToSearch.indexOf(".", startingAt + offset);
+    }
+
+    // Creates and trims a substring between the given indices
+    function createSubstring(string, startingIndex, endingIndex) {
+      var untrimmed = string.substring(startingIndex,endingIndex);
+      var trimmed = untrimmed.trim();
+      return trimmed;
+    }
+
+    // Alphabetizes characters from two input strings.
+    function alphabetizeString(inputString1, inputString2) {
+      let str1 = inputString1;
+      let str2 = inputString2;
+      
+      // Combine/concatenate
+      let combinedString = str1.concat(str2);
+      
+      // Split by character, sort alphabetically, join back together.
+      return combinedString.split('').sort().join('').trim();
+    }
+
+    // If the first character is a colon, remove it if yes
+    function removeFirstColon(input) {
+      if (input.charAt(0) == ":") {
+        let resultRemoved = input.substring(1);
+        return resultRemoved;
+      } else {
+        let result = input;
+        return result;
+      }
+    }
+
+  // USERNAME-RELATED FUNCTIONS
+
+    // Check it first character is @ or [, remove if yes. Useful for parsing out usernames from the link to their profile.
+    function checkFirstCharacter(stringToCheck){
+      // initialize
+      let result = stringToCheck;
+      
+      // When grabbing a username string, it might instead grab [@username](URL). I want username only.
+      let indexUrlOpen = findIndex("[@", stringToCheck);
+      let indexUrlMid = findIndex("](", stringToCheck);
+      let indexUrlClose = findIndex(")", stringToCheck);
+    
+      // Check if all of them are found. Initiate Boolean it false, flip it if all indices are not -1
+      // Also check if they are in the right order.
+      let allFound = false;
+      let rightOrder = false;
+      if ( (indexUrlOpen != -1) && (indexUrlMid != -1) && (indexUrlClose != -1) ) {
+        allFound = true;
+        if ( (indexUrlOpen < indexUrlMid) && (indexUrlMid < indexUrlClose) ) {
+          rightOrder = true;
+        }
+      }
+    
+      // If all are found and it's in the right order, trim string so it's just username.
+      if (allFound && rightOrder) {
+        result = createSubstring(stringToCheck, indexUrlOpen + 2, indexUrlMid);
+        return result;
+      } else { // Check if the first character is @
+        if (stringToCheck.charAt(0) == "@") {
+          result = stringToCheck.substring(1);
+          return result;
+        } else {
+          return result;
+        }
+      }
+    }
+    
+    // Adds "@" to beginning of a username so you can tag them.
+    function appendAtSymbol(username){
+      // First, check if @ is already first character, remove if yes.
+      let baseUsername = checkFirstCharacter(username);
+      
+      let taggedUsername = "@" + baseUsername;
+      return taggedUsername;
+    }
+
+    // Checks if the first character in a username is @, adds if not.
+    function checkNameFormatting(inputString) {
+      var newString = inputString;
+      if ( inputString.charAt(0) == "@") {
+        return newString;
+      } else {
+        newString = "@" + inputString;
+        return newString;
+      }
+    }
+
+  // GROUP-ID RELATED FUNCTIONS
+
+    // Checks if a Guild ID is in the correct formatting: 00000000-0000-4000-A000-000000000000
+    function checkGuildIdFormat(guildIdToCheck){
+      // Trim, just in case there was extra whitespace
+      let stringTemp = guildIdToCheck.trim();
+      
+      // Total length of string should be 36 (Four total dashes and 32 other hexadecimal characters)
+      let length = stringTemp.length;
+      if (length != 36) {
+        return false;
+      } else {
+        // I'm going to slightly cheat here: if I alphabetize the characters, I can sort out the dashes. 
+        let stringTemp2 = stringTemp.split('').sort().join('').trim();
+        
+        // Checks that total number of dashes is only 4, and ensures that the first 4 characters are dashes
+        let dashCount = checkDashes(stringTemp2);
+        if (dashCount != 4) {
+          return false;
+        } else {     
+          // Remove the first four characters from the string, we already know they are dashes
+          let stringShorter = createSubstring(stringTemp2, 4, length);
+          
+          // Check if the other characters are valid for hexadecimal
+          let isHex = isHexadecimal(stringShorter);
+          if (!isHex){
+            return false;
+          } else {
+            // The character counts are valid, exactly 4 dashes and the rest are hexadecimal (and total lenggth is valid)
+            // The final thing to do is ensure that the string follows the right pattern of hexadecimal and dashes
+            // Parsing the string at the dashes would be the hard way to do it. The easy way is to ensure that the dashes appear at the correct character index
+            
+            let dashLocationsConfirmed = checkDashLocations(stringTemp); // I no longer need the alphabetized string, I need to use the original one
+            if (dashLocationsConfirmed) {
+              return true;
+            } else {
+              return false;
+            }
+          }
+        }
+      }
+    }
+
+    // Checks that total number of dashes is only 4, and ensures that the first 4 characters are dashes
+    function checkDashes(stringToCheck){
+      // First, count them
+      let count = 0;
+      for (let i = 0; i < 36; i++) {
+        if (stringToCheck.charAt(i) == "-" ) {
+          count++;
+        }
+      }
+      
+      // Since the string is alphabetized, I probably don't have to do this, but I will anyway: confirm each of the first four are dashes
+      if (count != 4) { // If more than 4 are dashes, I catch it here
+        return count;
+      } else if (count == 4) {
+        for (let j = 0; j < 4; j++) {
+          if (stringToCheck.charAt(j) != "-" ) { // If any of the first 4 characters are not a dash, it fails. End the loop.
+            count = -1;
+            break;
+          }
+        }
+        return count;
+      }
+    }
+
+    // Checks if each of the characters are valid for hexadecimal
+    function isHexadecimal(stringToCheck) {
+      regexp = /^[0-9a-fA-F]+$/;
+      
+      if (regexp.test(stringToCheck)) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    // Checks that dashes occur at the correct character index locations. Format is 00000000-0000-4000-A000-000000000000
+    function checkDashLocations(stringToCheck) {
+      let count = 0;
+      
+      // Dashes should be at character index 8, 13, 18, and 23. Jump over the loop at other iterations.
+      for (let i = 0; i < 36; i++) {
+        if ( (i == 8) || (i == 13) || (i == 18) || (i == 23) ) {
+          if (stringToCheck.charAt(i) == "-") {
+            count++;
+          }
+        } else {
+          continue;
+        }
+      }
+      
+      if (count == 4) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  
+  // VALIDATION/VERIFICATION FUNCTIONS: HASH, CHECKSUM
+
+    // A good hash function is deterministic, fast, uniformally distributed, and non-invertible. See for more info: https://www.educba.com/javascript-hash/
+    // I don't need a powerful cryptographic hash like SHA1 or SHA256, that would be overkill for me (not to mention, too slow)
+    function createHash(string) {
+      // Initialize at 0
+      var hash = 0;
+      
+      // If the length of the string is 0, return 0
+      if (string.length == 0) {
+        return hash;
+      }
+      else {
+        for (var i = 0 ; i<string.length ; i++) {
+          let ch = string.charCodeAt(i);
+          hash = ((hash << 5) - hash) + ch;
+          hash = hash & hash; // Convert to 32bit integer
+        }
+        return hash;
+      }
+    }
+
+  // CALCULATING TOTAL STATS
+    
+    // Calculates total STR
+    function calculateStrength() {
+      const levelStrRaw = Math.floor(user.stats.lvl / 2);
+      const levelStr = (levelStrRaw > 50) ? 50 : levelStrRaw;
+      
+      var totalEquipmentAndClassStr = 0;
+      const allocatedStr = user.stats.str;
+      const buffsStr = user.stats.buffs.str;
+      
+      // Get STR from equipped gear
+      totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.weapon]);
+      totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.shield]);
+      totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.head]);
+      totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.armor]);
+      totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.headAccessory]);
+      totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.eyewear]);
+      totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.body]);
+      totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.back]);
+
+      return levelStr + totalEquipmentAndClassStr + allocatedStr + buffsStr;
+    }
+
+    // Calculates how much STR comes from the equipment
+    function calcEquipmentAndClassStr(equipment) {
+      var equipmentAndClassStr = 0;
+
+      if (equipment != undefined) {  
+        equipmentAndClassStr += equipment.str;
+        if ( (equipment.klass == user.stats.class) || ( (equipment.klass == "special") && (equipment.specialClass == user.stats.class) ) ) {
+          equipmentAndClassStr += equipment.str / 2;
+        }
+      }
+      
+      return equipmentAndClassStr;
+    }
+
+    // Calculates total INT
+    function calcTotalIntelligence() {
+      const levelIntRaw = Math.floor(user.stats.lvl / 2);
+      const levelInt = (levelIntRaw > 50) ? 50 : levelIntRaw;
+      
+      var totalEquipmentAndClassInt = 0;
+      const allocatedInt = user.stats.int;
+      const buffsInt = user.stats.buffs.int;
+      
+      // Get INT from equipped gear
+      totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.weapon]);
+      totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.shield]);
+      totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.head]);
+      totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.armor]);
+      totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.headAccessory]);
+      totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.eyewear]);
+      totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.body]);
+      totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.back]);
+
+      return levelInt + totalEquipmentAndClassInt + allocatedInt + buffsInt;
+    }
+
+    // Calculates how much INT comes from the equipment
+    function calcEquipmentAndClassInt(equipment) {
+      var equipmentAndClassInt = 0;
+
+      if (equipment != undefined) {  
+        equipmentAndClassInt += equipment.int;
+        if ( (equipment.klass == user.stats.class) || ( (equipment.klass == "special") && (equipment.specialClass == user.stats.class) ) ) {
+          equipmentAndClassInt += equipment.int / 2;
+        }
+      }
+      
+      return equipmentAndClassInt;
+    }
+
+    // Calculates total CON
+    function calculateConstitution() {
+      const levelConRaw = Math.floor(user.stats.lvl / 2);
+      const levelCon = (levelConRaw > 50) ? 50 : levelConRaw;
+      
+      var totalEquipmentAndClassCon = 0;
+      const allocatedCon = user.stats.con;
+      const buffsCon = user.stats.buffs.con;
+      
+      // Get CON from equipped gear
+      totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.weapon]);
+      totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.shield]);
+      totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.head]);
+      totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.armor]);
+      totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.headAccessory]);
+      totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.eyewear]);
+      totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.body]);
+      totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.back]);
+
+      return levelCon + totalEquipmentAndClassCon + allocatedCon + buffsCon;
+    }
+
+    // Calculates how much CON comes from the equipment
+    function calcEquipmentAndClassCon(equipment) {
+      var equipmentAndClassCon = 0;
+
+      if (equipment != undefined) {  
+        equipmentAndClassCon += equipment.con;
+        if ( (equipment.klass == user.stats.class) || ( (equipment.klass == "special") && (equipment.specialClass == user.stats.class) ) ) {
+          equipmentAndClassCon += equipment.con / 2;
+        }
+      }
+      
+      return equipmentAndClassCon;
+    }
+
+    // Calculates total PER
+    function calculatePerception() {
+      const levelPerRaw = Math.floor(user.stats.lvl / 2);
+      const levelPer = (levelPerRaw > 50) ? 50 : levelPerRaw;
+      
+      var totalEquipmentAndClassPer = 0;
+      const allocatedPer = user.stats.per;
+      const buffsPer = user.stats.buffs.per;
+      
+      // Get PER from equipped gear
+      totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.weapon]);
+      totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.shield]);
+      totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.head]);
+      totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.armor]);
+      totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.headAccessory]);
+      totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.eyewear]);
+      totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.body]);
+      totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.back]);
+
+      return levelPer + totalEquipmentAndClassPer + allocatedPer + buffsPer;
+    }
+
+    // Calculates how much PER comes from the equipment
+    function calcEquipmentAndClassPer(equipment) {
+      var equipmentAndClassPer = 0;
+
+      if (equipment != undefined) {  
+        equipmentAndClassPer += equipment.per;
+        if ( (equipment.klass == user.stats.class) || ( (equipment.klass == "special") && (equipment.specialClass == user.stats.class) ) ) {
+          equipmentAndClassPer += equipment.per / 2;
+        }
+      }
+      
+      return equipmentAndClassPer;
+    }
+
+  // FUNCTIONS BASED ON SKILLS IN HABITICA
+  
+    // Some skills do critical hits
+    function criticalHit (stat, chance) {
+      var targetToBeat = chance * ( (1 + stat ) / 100 );
+      if (Math.random() <= targetToBeat) {
+        return (1.5 +  ( 4 * stat ) / ( stat + 200 ) );
+      }
+      else {
+        return 1;
+      }
+    }
+
+    // Some skills require getting task value
+    function getTaskValue(version, presetTaskValue, taskId) {
+      switch (version){
+        case 2:
+          var value = sanitizeInput(presetTaskValue, 0, 21.27);
+          return value;
+          break;        
+        case 3:
+          const responseV3 = api_getUserTasks("dailys");
+          const tasksV3 = JSON.parse(responseV3).data;
+          
+          // loop over all Dailies, then average the task value
+          var taskCount = 0;
+          var taskValueTotal = 0;
+          for (var i in tasksV3) {
+            taskValueTotal += tasksV3[i].value;
+            taskCount++;
+          }
+          var average = sanitizeInput(taskValueTotal/taskCount,0,21.27);
+          return average;
+          break;
+        case 4:
+          const responseV4 = api_getUserTasks("dailys");
+          const tasksV4 = JSON.parse(responseV4).data;
+          var valueV4 = -100;
+              
+          for (var j in tasksV4) {
+            if (tasksV4[j]._id == taskId) {
+              valueV4 = tasksV4[j].value;
+            }
+          }
+          
+          if (valueV4 == -100) {
+            api_sendPrivateMessageAlways({"message" : "Task ID not found, so this script defaulted to the preset task value (version 2 in the Required Customization section). To find task value, see the [wiki page](https://habitica.fandom.com/wiki/Google_Apps_Script#Cross-Class_Skills) section on Required Customizations and then update the script using the instructions at the bottom of the wiki page.", "toUserId" : USER_ID});
+            var valueIfError = sanitizeInput(presetTaskValue, 0, 21.27);
+            return valueIfError;
+            break;
+          }
+          else {
+            // grab value of task ID
+            var valueById = sanitizeInput(valueV4, 0, 21.27);
+            return valueById;
+            break;
+          }
+      }
+    }
+
+    // BUFF SKILLS 
+
+      // Warrior skill Valorous Presence
+      function buffStr(unbuffedStr, buffsStr) {
+        var buffAmount = Math.ceil( ( (unbuffedStr * 20) / (unbuffedStr + 200) ) );
+        api_updateUser({"stats.buffs.str" : buffsStr + buffAmount});
+      }
+
+      // Mage skill Earthquake
+      function buffInt(unbuffedInt, buffsInt) {
+        var buffAmount = Math.ceil( ( (unbuffedInt * 30) / (unbuffedInt + 200) ) );
+        api_updateUser({"stats.buffs.int" : buffsInt + buffAmount});
+      }
+
+      // Healer skill Protective Aura
+      function buffCon(unbuffedCon, buffsCon) {
+        var buffAmount = Math.ceil( ( (unbuffedCon * 200) / (unbuffedCon + 200) ) );
+        api_updateUser({"stats.buffs.con" : buffsCon + buffAmount});
+      }
+
+      // Rogue skill Tools of the Trade
+      function buffPer(unbuffedPer, buffsPer) {
+        var buffAmount = Math.ceil( ( (unbuffedPer * 100) / (unbuffedPer + 50) ) );
+        api_updateUser({"stats.buffs.per" : buffsPer + buffAmount});
+      }
+
+    // WARRIOR SKILLS (EXCEPT BUFFS AND BOSS DAMAGE)
+      // All the Warrior skills are buff or boss damage
+
+    // MAGE SKILLS (EXCEPT BUFFS AND BOSS DAMAGE)
+
+      // Mage skill Chilling Frost
+      function chillingFrost(mp, mpCost) {
+        api_updateUser({"stats.buffs.streaks" : true, "stats.mp" : mp - mpCost});
+      }
+
+      // Mage skill Burst of Flames (XP portion only, not boss damage)
+      function burstOfFlamesXp(int, per, nTimes) {
+        var taskValue = getTaskValue(BURST_OF_FLAMES_VERSION, BURST_OF_FLAMES_TASK_VALUE, BURST_OF_FLAMES_TASK_ID);
+        var multiplier = 1;
+        var modifiedInt = int;
+        var bonus = 1;
+        var newXpRunningTotal = 0;
+        
+        for ( var i = 1; i <= nTimes; i++) {
+          multiplier = criticalHit(per, 0.03);
+          modifiedInt = int * multiplier;
+          var bonus = Math.ceil( (taskValue + 1) * (modifiedInt * 0.075 ) ) ;
+          newXpRunningTotal += ( ( 75 * bonus ) / ( bonus + 37.5) );
+        }
+        
+        return newXpRunningTotal;
+      }
+
+    // HEALER SKILLS (EXCEPT BUFFS AND BOSS DAMAGE)
+
+      // Healer skill Healing Light
+      function healingLight (hp, con, int) {
+        var healing = ( ( con + int + 5 ) * 0.075 );
+        if (hp + healing >= 50) {
+          api_updateUser({"stats.hp" : 50});
+        }
+        else {
+          api_updateUser({"stats.hp" : hp + healing});
+        }
+      }
+
+    // ROGUE SKILLS (EXCEPT BUFFS AND BOSS DAMAGE)
+    
+      // Rogue skill Pickpocket
+      function pickpocket (gp, per) {
+        var taskValue = getTaskValue(PICKPOCKET_VERSION, PICKPOCKET_TASK_VALUE, PICKPOCKET_TASK_ID);
+        var bonus = ( (taskValue + 1) + (per * 0.5 ) );
+        var newGp = gp + ( ( 25 * bonus ) / ( bonus + 75) );
+        
+        api_updateUser({"stats.gp" : newGp});
+      }
+
+      // Rogue skill Backstab
+      function backstab (gp, xp, str) {
+        var multiplier = criticalHit(str, 0.3);
+        var modifiedStr = str * multiplier;
+        var taskValue = getTaskValue(BACKSTAB_VERSION, BACKSTAB_TASK_VALUE, BACKSTAB_TASK_ID);
+        var bonus = ( (taskValue + 1) + (modifiedStr * 0.5 ) )
+        var newXp = xp + ( ( 75 * bonus ) / ( bonus + 50) );
+        var newGp = gp + ( ( 18 * bonus ) / ( bonus + 75) );
+
+        api_updateUser({"stats.gp" : newGp, "stats.exp" : newXp});
+      }
+
+      // Rogue skill Stealth
+      function stealth (totalDailies, prevStealthedDailies, per) {
+        var newDailiesDodged = Math.ceil( ( 0.64 * totalDailies * ( per / (per + 55) ) ) );
+        
+        // If they'd Stealth more than total Dailies, instead only Stealth the total
+        if ( ( prevStealthedDailies + newDailiesDodged ) >= totalDailies ) {
+          api_updateUser({"stats.buffs.stealth" : totalDailies});
+        }
+        else {
+          api_updateUser({"stats.buffs.stealth" : prevStealthedDailies + newDailiesDodged});
+        }
+      }
+
+    // BOSS DAMAGE SKILLS (INCLUDING NEW SKILLS FOR HEALER AND ROGUE)
+
+      // Expected and actual damage for Burst of Flames
+      function flamesDamage (int) {
+        return Math.ceil(int/10);
+      }
+
+      // Expected damage for Brutal Smash. Since this is expected damage only (not actual), don't crit.
+      function smashDamageNoCrit (str) {
+        return (55*str)/(str+70);
+      }
+
+      // Actual damage for Brutal Smash, including crit. Since there's a chance of crit at each iteration, loop through for each use of the skill rather than doing it once and multiplying by number of times
+      function smashDamageActual (str, con, nTimes) { 
+        var smashRunningTotal = 0;
+        var multiplier = 1;
+        var modifiedStr = str;
+        
+        for ( var i = 1; i <= nTimes; i++) {
+          multiplier = criticalHit(con, 0.03);
+          modifiedStr = str * multiplier;
+          smashRunningTotal += (55*modifiedStr)/(modifiedStr+70);
+        }
+        
+        return smashRunningTotal;
+      }
+
+      // Any multi-use of a boss damage skill requires checking if you have enough MP for the multiple uses
+      // How many uses of the skill are required to exceed 90.71 damage? At that damage or higher, crit is guaranteed and thus the script can accurately dial in damage
+      function checkManaMultiUse(mp, mpCost, damageOnce, isFlamesXp, int, per) {
+        var numberTimes = Math.ceil(90.71/damageOnce);
+        var damageMulti = damageOnce * numberTimes;
+        var multiMpCost = mpCost * numberTimes;
+        
+        // If insufficient MP for multi use, send an error message including expected damage (and if Flames with XP, expected XP)
+        if ( multiMpCost > mp ) {
+          // round the damage to one decimal point (for the sake of the message)
+          var damageMultiForMessage = Math.round(damageMulti*10) / 10;
+          
+          if (isFlamesXp) {
+            var xpGain = burstOfFlamesXp(int, per, numberTimes); 
+            api_sendPrivateMessage({"message" : "Insufficient Mana. You will need " + multiMpCost + " MP to use this skill, and it will do " + damageMultiForMessage + " damage and you will gain " + xpGain + " XP.", "toUserId" : USER_ID});
+            return 0;
+          }
+          else {
+            api_sendPrivateMessage({"message" : "Insufficient Mana. You will need " + multiMpCost + " MP to use this skill, and it will do " + damageMultiForMessage + " damage.", "toUserId" : USER_ID});
+            return 0;
+          }
+        }
+        else {
+          return numberTimes;
+        }
+      }
+
+      // Actual damage for Radiant Shield, including crit. Since there's a chance of crit at each iteration, loop through for each use of the skill rather than doing it once and multiplying by number of times
+      function radiantDamageActual (con, int, nTimes) {
+        var radiantRunningTotal = 0;
+        var multiplier = 1;
+        var modifiedCon = con;
+        
+        for ( var i = 1; i <= nTimes; i++) {
+          multiplier = criticalHit(int, 0.03);
+          modifiedCon = con * multiplier;
+          if ( modifiedCon > 225) { // Max damage of 25 occurs at 225 CON. Since this is weaker than the other damage skills, the skill has a lower MP cost
+            radiantRunningTotal += 25;
+          }
+          else { // based damage of 10 insurers it's not too weak at low levels
+            radiantRunningTotal += ( 10 + (modifiedCon/15) );
+          }
+        }
+        
+        return radiantRunningTotal;
+      }
+
+      // Actual damage for Sneak Attack, including crit. Since there's a chance of crit at each iteration, loop through for each use of the skill rather than doing it once and multiplying by number of times
+      function sneakDamageActual (per, str, nTimes) { 
+        var sneakRunningTotal = 0;
+        var multiplier = 1;
+        var modifiedPer = per;
+        
+        for ( var i = 1; i <= nTimes; i++) {
+          multiplier = criticalHit(str, 0.03);
+          modifiedPer = per * multiplier;
+          
+          // Instead of using PER for the cutoff points, use modifiedPer because it's PER times crit multiplier
+          if (modifiedPer <= 122.5) {
+            sneakRunningTotal += (55*modifiedPer)/(modifiedPer+70);
+          }
+          else if ( (modifiedPer > 122.5) && (modifiedPer <= 1486) ) {
+            sneakRunningTotal += 35 + ( (20*modifiedPer)/(modifiedPer+1486) );
+          }
+          else if (modifiedPer > 1486) {
+            sneakRunningTotal += 45 + ( (10*modifiedPer)/(modifiedPer+4213) );
+          }
+        }
+        
+        return sneakRunningTotal;
+      }
+
+      // Deals boss damage
+      function doDamage(damage, mpCost, nTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, isFlamesXp, valueToChange) {
+        var totalMpCost = mpCost * nTimes;
+        
+        // calculate STR setpoint needed to achieve expected damage. Damage = (1+(STR*0.005)) * (1.5 + ((4*STR)/(200+STR)) ) * 1, since crit is 100% guaranteed and task value delta resolves to 1
+        // lowest STR setpoint is 3244, which guarantees a crit, for 90.71 damage. Highest setpoint is 6500, for 180.25 damage, since that's the most this script will do in one use.
+        var setpoint = setpointIteration(3244, 6500, damage);
+        
+        // Create one To-Do so I can check it off in order to do damage
+        api_createNewTaskForUser(DAMAGE_BUTTON);
+              
+        // pause for 1 second
+        Utilities.sleep(1000);
+              
+        // buff STR up to setpoint, INT and PER down to 1
+        api_updateUser({"stats.buffs.str" : setpoint - unbuffedStr, "stats.buffs.int" : 1 - unbuffedInt, "stats.buffs.per" : 1 - unbuffedPer});
+              
+        // pause for 1 second
+        Utilities.sleep(1000);
+              
+        // check off the To-Do created
+        const responseTask = api_getUserTasks("todos");
+        const tasksForDamage = JSON.parse(responseTask).data;
+        var taskIdForDamage = "";
+        
+        // loop through all To-Do's, see which one matches Text and Notes for the previously-created Damage Button
+        for (var j in tasksForDamage) { 
+          if ( (tasksForDamage[j].text == DAMAGE_TEXT) && (tasksForDamage[j].notes == DAMAGE_NOTES) ) {
+            taskIdForDamage = tasksForDamage[j]._id; // if it's a match, save ID of the task since that's the easiest way for me to grab it
+            api_scoreTask(taskIdForDamage, "up"); // this is the task for me to score
+          }
+        }
+              
+        // reset values back to their original ones, including FCV-able ones that may have changed. Deduct mana cost also
+        // if XP needs to increase (Burst of Flames), do this in this step also
+        if (isFlamesXp) {
+          api_updateUser({"stats.buffs.str" : buffsStr, "stats.buffs.int" : buffsInt, "stats.buffs.per" : buffsPer,
+                          "stats.hp" : hp, "stats.exp" : xp + valueToChange, "stats.mp" : mp - totalMpCost, "stats.gp" : gp, "stats.lvl" : lvl});
+        }
+        else {
+          api_updateUser({"stats.buffs.str" : buffsStr, "stats.buffs.int" : buffsInt, "stats.buffs.per" : buffsPer,
+                          "stats.hp" : hp, "stats.exp" : xp, "stats.mp" : mp - totalMpCost, "stats.gp" : gp, "stats.lvl" : lvl});
+        }
+      }
+
+      // calculate setpoint, inputting a low guess and a high guess
+      function setpointIteration (low, high, targetDamage) {
+        var midpoint = Math.floor(((low+high)/2));
+        
+        // damage at each setpoint
+        var damageLow = damageAtSetpoint(low);
+        var damageMidpoint = damageAtSetpoint(midpoint);
+        var damageHigh = damageAtSetpoint(high);
+        
+        // truth conditions regarding damage and where it falls (compared to the setpoints)
+        var targetAboveLow = (damageLow < targetDamage) ? true : false;
+        var targetAboveMidpoint = (damageMidpoint < targetDamage) ? true : false;
+        var targetBelowHigh = (damageHigh > targetDamage) ? true : false;
+        
+        // if these values are within 2 of each other, iteration is done
+        if ( ( high - low ) <= 2) {
+          // whichever setpoint exceeds target damage is our setpoint
+          if (!targetAboveLow) {
+            return low;
+          }
+          else if (!targetAboveMidpoint) {
+            return midpoint;
+          }
+          else if (targetBelowHigh) {
+            return high;
+          }
+          else { // This condition shouldn't be possible, but just in case…
+            api_sendPrivateMessage({"message" : "Error computing damage. Please contact the creator of the script to debug (note to creator: final iteration triggered this message).", "toUserId" : USER_ID});
+          }
+        }
+        else { // keep iterating
+          // Confirm target is between high and low
+          if (targetAboveLow && targetBelowHigh) {
+            // is it above or below midpoint? If above it, run it again but with midpoint and high being the new low/high, else run it with mid/low being new low/high
+            if (targetAboveMidpoint) {
+              return setpointIteration (midpoint, high, targetDamage);
+            }
+            else {
+              return setpointIteration (low, midpoint, targetDamage);
+            }
+          }
+          else { // if it's not between low and high, something messed up. This condition shouldn't be possible, but just in case…
+            api_sendPrivateMessage({"message" : "Error computing damage. Please contact the creator of the script to debug (note to creator: target damage not between low and high setpoints).", "toUserId" : USER_ID});
+          }
+        }
+      }
+
+      // calculate damage for checking off one task at a given value of STR
+      function damageAtSetpoint (str) {
+        return (1+(str*0.005)) * (1.5 + ((4*str)/(200+str)) );
+      }
