@@ -5,7 +5,7 @@ For information about each of the customizations, see the appropriate wiki page,
 
 Here is a list of all of the customizations I've made, as well as a link to their wiki page:
 
-***FCV – these scripts automate things you can do using Fixed Character Values***
+***Automated FCV scripts – things you can do using Fixed Character Values***
 
  - **Experience Potion and Mana Potion** - pay 25 GP for 150 XP or 30 MP. https://habitica.fandom.com/wiki/Experience_Potion_and_Mana_Potion
  - **Anti-Potions** - a crowd of onlookers will pay you 25 GP to drink a concoction that somewhat weakens you (-30 MP, -15 HP, or -150 XP). https://habitica.fandom.com/wiki/Anti-Potions
