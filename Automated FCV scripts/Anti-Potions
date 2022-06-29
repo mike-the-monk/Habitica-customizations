@@ -36,7 +36,7 @@ const HEADERS = {
 
 const scriptProperties = PropertiesService.getScriptProperties(); // Constants can have properties changed
 
-const ANTI_MP_POTION_TEXT = "**Draining Potion** ![Orange-brown potion](https://raw.githubusercontent.com/Mike-Antonacci/Habitica-custom-potions/main/draining%20potion%20transparent%20large%20wide%20432.png)";
+const ANTI_MP_POTION_TEXT = "**Draining Potion** ![Orange-brown potion](https://raw.githubusercontent.com/mike-the-monk/Habitica-customizations/main/Automated%20FCV%20scripts/images/draining%20potion%20transparent%20large%20wide%20432.png)";
 const ANTI_MP_POTION_ALIAS = "antiMPpotion";
 const ANTI_MP_POTION_NOTES = "Pay 30 MP, gain 25 GP (Instant Use). Maximum 4 per day.";
 const ANTI_MP_POTION_VALUE = "0";
@@ -46,7 +46,7 @@ const MSG_ANTI_MP_POTION_LEVEL_LOCK_FAIL = "You must be at least level 11 to use
 const MSG_ANTI_MP_POTION_DAILY_USAGE_EXCEEDED = "You can only use this potion four times each day.";
 const MSG_INSUFFICIENT_MP = "Insufficient Mana to use this potion."
 
-const ANTI_HP_POTION_TEXT = "**Fatiguing Potion** ![Teal potion](https://raw.githubusercontent.com/Mike-Antonacci/Habitica-custom-potions/main/fatiguing%20potion%20transparent%20large%20wide%20432.png)";
+const ANTI_HP_POTION_TEXT = "**Fatiguing Potion** ![Teal potion](https://raw.githubusercontent.com/mike-the-monk/Habitica-customizations/main/Automated%20FCV%20scripts/images/fatiguing%20potion%20transparent%20large%20wide%20432.png)";
 const ANTI_HP_POTION_ALIAS = "antiHPpotion";
 const ANTI_HP_POTION_NOTES = "Pay 15 HP, gain 25 GP (Instant Use). Maximum 4 per day.";
 const ANTI_HP_POTION_VALUE = "0";
@@ -54,7 +54,7 @@ const MAX_DAILY_ANTI_HP_POTION_USAGE = 4;
 const MSG_ANTI_HP_POTION_DAILY_USAGE_EXCEEDED = "You can only use this potion four times each day.";
 const MSG_INSUFFICIENT_HP = "Insufficient Health to use this potion."
 
-const ANTI_XP_POTION_TEXT = "**Stupefying Potion** ![Indigo potion](https://raw.githubusercontent.com/Mike-Antonacci/Habitica-custom-potions/main/stupefying%20potion%20transparent%20large%20wide%20432.png)";
+const ANTI_XP_POTION_TEXT = "**Stupefying Potion** ![Indigo potion](https://raw.githubusercontent.com/mike-the-monk/Habitica-customizations/main/Automated%20FCV%20scripts/images/stupefying%20potion%20transparent%20large%20wide%20432.png)";
 const ANTI_XP_POTION_ALIAS = "antiXPpotion";
 const ANTI_XP_POTION_NOTES = "Pay 150 XP, gain 25 GP (Instant Use). Maximum 4 per day.";
 const ANTI_XP_POTION_VALUE = "0";
