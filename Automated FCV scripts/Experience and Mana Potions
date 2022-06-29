@@ -35,7 +35,7 @@ const HEADERS = {
 
 const scriptProperties = PropertiesService.getScriptProperties(); // Constants can have properties changed
 
-const XP_POTION_TEXT = "**Experience Potion** ![Yellow potion](https://raw.githubusercontent.com/Mike-Antonacci/Habitica-custom-potions/main/experience%20potion%20large%20transparent%20wide%20432.png)";
+const XP_POTION_TEXT = "**Experience Potion** ![Yellow potion](https://raw.githubusercontent.com/mike-the-monk/Habitica-customizations/main/Automated%20FCV%20scripts/images/experience%20potion%20large%20transparent%20wide%20432.png)";
 const XP_POTION_ALIAS = "XPpotion";
 const XP_POTION_NOTES = "Gain 150 Experience (Instant Use). Maximum per day: no more than 1/3 of what's needed to level up.";
 const XP_POTION_VALUE = "25";
@@ -43,7 +43,7 @@ const XP_POTION_LEVEL_LOCK = 21;
 const MSG_XP_POTION_LEVEL_LOCK_FAIL = "You must be at least level 21 to use this potion.";
 const MSG_XP_POTION_DAILY_USAGE_EXCEEDED = "You've already gained your maximum allowable XP from potions today.";
 
-const MP_POTION_TEXT = "**Mana Potion** ![Blue potion](https://raw.githubusercontent.com/Mike-Antonacci/Habitica-custom-potions/main/mana%20potion%20large%20transparent%20wide%20432.png)";
+const MP_POTION_TEXT = "**Mana Potion** ![Blue potion](https://raw.githubusercontent.com/mike-the-monk/Habitica-customizations/main/Automated%20FCV%20scripts/images/mana%20potion%20large%20transparent%20wide%20432.png)";
 const MP_POTION_ALIAS = "MPpotion";
 const MP_POTION_NOTES = "Recover 30 Mana (Instant Use). Maximum 4 per day."
 const MP_POTION_VALUE = "25";
