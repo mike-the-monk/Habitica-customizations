@@ -192,23 +192,19 @@ function doPost(e) {
       // If it was the Anti MP Potion alias, do Anti MP Potion (Draining Potion) things
       if (sanitizedAlias == ANTI_MP_POTION_ALIAS){
         // If level lock fails, send failure message
-        if (lvl < ANTI_MP_POTION_LEVEL_LOCK) {
-          api_sendPrivateMessage({"message" : MSG_ANTI_MP_POTION_LEVEL_LOCK_FAIL, "toUserId" : USER_ID});
-        }
-        else {
+        let sufficientLevel = checkLevelLock(lvl, ANTI_MP_POTION_LEVEL_LOCK, MSG_ANTI_MP_POTION_LEVEL_LOCK_FAIL);
+        if (sufficientLevel) {
           // Check if they've exceeded daily usage. If yes, send failure message.
-          if (AntiMpUsage >= MAX_DAILY_ANTI_MP_POTION_USAGE) {
-            api_sendPrivateMessage({"message" : MSG_ANTI_MP_POTION_DAILY_USAGE_EXCEEDED, "toUserId" : USER_ID});
-          }
-          else {
+          let usageLimitOkay = checkUsageLimit(AntiMpUsage, 1, MAX_DAILY_ANTI_MP_POTION_USAGE, MSG_ANTI_MP_POTION_DAILY_USAGE_EXCEEDED);
+          if (usageLimitOkay) {
             // Check if they have sufficient Mana. Send failure message if not.
             if (mp < 30) {
               api_sendPrivateMessage({"message" : MSG_INSUFFICIENT_MP, "toUserId" : USER_ID});
-            }
+            } 
             else {
               // Run potion as normal since all checks passed.
               api_updateUser({"stats.hp" : hp, "stats.mp" : mp - 30, "stats.exp" : exp, "stats.gp" : gp + 25});
-              AntiMpUsage ++;
+              AntiMpUsage++;
             }
           }
         }
@@ -217,18 +213,15 @@ function doPost(e) {
       // If it was the Anti HP Potion alias, do Anti HP Potion (Fatiguing Potion) things
       else if (sanitizedAlias == ANTI_HP_POTION_ALIAS) {
         // Check if they've exceeded daily usage. If yes, send failure message.
-        if (AntiHpUsage >= MAX_DAILY_ANTI_HP_POTION_USAGE) {
-          api_sendPrivateMessage({"message" : MSG_ANTI_HP_POTION_DAILY_USAGE_EXCEEDED, "toUserId" : USER_ID});
-        }
-        else {
+        let usageLimitOkay = checkUsageLimit(AntiHpUsage, 1, MAX_DAILY_ANTI_HP_POTION_USAGE, MSG_ANTI_HP_POTION_DAILY_USAGE_EXCEEDED);
+        if (usageLimitOkay){
           // Check if they have sufficient Health. Send failure message if not.
           if (hp < 15) {
             api_sendPrivateMessage({"message" : MSG_INSUFFICIENT_HP, "toUserId" : USER_ID});
-          }
-          else {
+          } else {
             // Run potion as normal since all checks passed.
             api_updateUser({"stats.hp" : hp - 15, "stats.mp" : mp, "stats.exp" : exp, "stats.gp" : gp + 25});
-            AntiHpUsage ++;
+            AntiHpUsage++;
           }
         }
       }
@@ -236,27 +229,23 @@ function doPost(e) {
       // If it was the Anti XP Potion alias, do Anti XP Potion (Stupefying Potion) things
       else if (sanitizedAlias == ANTI_XP_POTION_ALIAS) {
         // If level lock fails, send failure message
-        if (lvl < ANTI_XP_POTION_LEVEL_LOCK) {
-          api_sendPrivateMessage({"message" : MSG_ANTI_XP_POTION_LEVEL_LOCK_FAIL, "toUserId" : USER_ID});
-        }
-        else {
+        let sufficientLevel = checkLevelLock(lvl, ANTI_XP_POTION_LEVEL_LOCK, MSG_ANTI_XP_POTION_LEVEL_LOCK_FAIL);
+        if (sufficientLevel) {
           // Check if they've exceeded daily usage. If yes, send failure message.
-          if (AntiXpUsage >= MAX_DAILY_ANTI_XP_POTION_USAGE) {
-            api_sendPrivateMessage({"message" : MSG_ANTI_XP_POTION_DAILY_USAGE_EXCEEDED, "toUserId" : USER_ID});
-          }
-          else {
+          let usageLimitOkay = checkUsageLimit(AntiXpUsage, 1, MAX_DAILY_ANTI_XP_POTION_USAGE, MSG_ANTI_XP_POTION_DAILY_USAGE_EXCEEDED);
+          if (usageLimitOkay) {
             // Check if they have sufficient Experience. Send failure message if not.
             if (exp < 150) {
               api_sendPrivateMessage({"message" : MSG_INSUFFICIENT_XP, "toUserId" : USER_ID});
-            }
-            else {
+            } else {
               // Run potion as normal since all checks passed.
               api_updateUser({"stats.hp" : hp, "stats.mp" : mp, "stats.exp" : exp - 150, "stats.gp" : gp + 25});
-              AntiXpUsage ++;
+              AntiXpUsage++;
             }
           }
         }
       }
+      
       // Save values to non-volatile memory, but only from within the rate-limited if-block (we don't want to save the timestamp unless the script ran)
       timeStart = timeEnd;
       scriptProperties.setProperty(cronCountKey, cronCount);
@@ -382,5 +371,25 @@ function api_sendPrivateMessage(payload) {
             const url = "https://habitica.com/api/v3/members/send-private-message";
             return UrlFetchApp.fetch(url, params);
           break;
+  }
+}
+
+// Check if sufficient level, send message if not.
+function checkLevelLock(level, levelLock, message){
+  if (level < levelLock){
+    api_sendPrivateMessage({"message" : message, "toUserId" : USER_ID});
+    return false;
+  } else {
+    return true;
+  }
+}
+
+// Check if (daily) usage exceeded, send message if yes.
+function checkUsageLimit(usageCounter, newUsageIncrement, maxUsage, message){
+  if ( (usageCounter + newUsageIncrement) > maxUsage ) {
+    api_sendPrivateMessage({"message" : message, "toUserId" : USER_ID});
+    return false;
+  } else {
+    return true;
   }
 }
