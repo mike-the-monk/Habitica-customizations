@@ -12,9 +12,13 @@ const WEB_APP_URL = "PasteGeneratedWebAppUrlHere";
 /* [Users] Required customizations to fill in */
 /* ========================================== */
 
-// Which Guild do you want to duel in? Paste the Guild ID below.
-// You can find it at the end of the URL for that Guild ("https://habitica.com/groups/guild/ID/...")
-const GROUP_ID = "PasteYourGuildIdHere"; 
+// Do you want to duel in your party or in a Guild?
+// Choose 0 for party, 1 for Guild
+const DUEL_GROUP_TYPE = 0;
+
+// If you chose Guild, follow the instructions on the wiki to get the Guild ID for the one you want to duel in. Paste below.
+// You can find it at the end of the URL for that Guild ("https://habitica.com/groups/guild/ID...")
+const GUILD_ID = "PasteYourGuildIdHere";
 
 /* ========================================== */
 /* [Users] Optional customizations to fill in */
@@ -34,6 +38,7 @@ const HEADERS = {
 const scriptProperties = PropertiesService.getScriptProperties(); // Constants can have properties changed
 
 // Info used to save/load values
+const GROUP_ID_KEY = "GROUP_ID_KEY";
 const BOT_USERNAME_KEY = "BOT_USERNAME_KEY";
 const DUEL_SETUP_IN_PROGRESS_KEY = "DUEL_SETUP_IN_PROGRESS_KEY";
 const PARTICIPANT1_KEY = "PARTICIPANT1_KEY";
@@ -49,6 +54,7 @@ const SCORE_NEEDED_WINNER_KEY = "SCORE_NEEDED_WINNER_KEY";
 const HASH_ALL_KEY = "HASH_ALL_KEY";
 const HASH_SUM_KEY = "HASH_SUM_KEY";
 
+var groupIdKey = "";
 var botUsernameKey = "";
 var duelSetupInProgressKey = "";
 var participant1Key = "";
@@ -172,6 +178,17 @@ const MSG_ERROR_CONSOLE_LOG_MID2 = "Ask the person who posted where their post c
 const MSG_ERROR_CONSOLE_LOG_CONTACT = "for him to see if it looks right,";
 
 function doOneTimeSetup() {
+  // See the correct group ID, whether party or Guild
+  var groupIdKey = GROUP_ID_KEY;
+  if (DUEL_GROUP_TYPE == 0) { // If party
+    const PARTY_ID = getParty();
+    scriptProperties.setProperty(groupIdKey, PARTY_ID);
+  } else if (DUEL_GROUP_TYPE == 1) { // If guild
+    scriptProperties.setProperty(groupIdKey, GUILD_ID);
+  }
+  
+  const GROUP_ID = scriptProperties.getProperty(groupIdKey);
+
   // Create the webhook
   const options = {
     "groupId" : GROUP_ID,
@@ -352,6 +369,45 @@ function doPost(e) {
   }
 }             
 
+function getParty(){
+  let paramsTemplate = {
+       "method": "get",
+       "headers": HEADERS,
+   }
+  let response = UrlFetchApp.fetch("https://habitica.com/api/v3/groups/party", paramsTemplate);
+  let party = JSON.parse(response).data;  
+  let partyId = party._id;
+  
+  return partyId;
+}
+
+// Gets all of a user's Groups (Guilds or party)
+function api_getGroups(payload) {
+  const params = {
+    "method" : "get",
+    "headers" : HEADERS,
+    "contentType" : "application/json",
+    "payload" : JSON.stringify(payload),
+    "muteHttpExceptions" : true,
+  }
+  
+  const url = "https://habitica.com/api/v3/groups";
+  return UrlFetchApp.fetch(url, params);
+}
+
+// Send a notification as a private message regardless of if they're enabled
+function api_sendPrivateMessageAlways(payload) {
+  const params = {
+    "method" : "post",
+    "headers" : HEADERS,
+    "contentType" : "application/json",
+    "payload" : JSON.stringify(payload),
+    "muteHttpExceptions" : true,
+  }
+  const url = "https://habitica.com/api/v3/members/send-private-message";
+  return UrlFetchApp.fetch(url, params);
+}
+
 // Create a webhook if no duplicate exists
 function apiMult_createNewWebhookNoDuplicates(payload) {
   const response = api_getWebhooks();
@@ -425,6 +481,9 @@ function resetDuelEnd(){
 }
 
 function api_postChatMessageToGroup(payload) {
+  var groupIdKey = GROUP_ID_KEY;
+  const GROUP_ID = scriptProperties.getProperty(groupIdKey);
+  
   const params = {
     "method" : "post",
     "headers" : HEADERS,
@@ -436,8 +495,11 @@ function api_postChatMessageToGroup(payload) {
   return UrlFetchApp.fetch(url, params);
 }
 
-// Gets chat messages from the Guild this script is set up for
+// Gets chat messages from the group this script is set up for
 function api_getChatMessagesFromGroup() {
+  var groupIdKey = GROUP_ID_KEY;
+  const GROUP_ID = scriptProperties.getProperty(groupIdKey);
+  
   const params = {
     "method" : "get",
     "headers" : HEADERS,
@@ -896,6 +958,10 @@ function sanitizePositive(value) {
 
 // Creates string that starts a duel
 function createDuelStartString(tagResponder, tagInitiator, wager, scoreNeeded, timestamp, botUsername, version) {
+  // Get group ID
+  var groupIdKey = GROUP_ID_KEY;
+  const GROUP_ID = scriptProperties.getProperty(groupIdKey);
+  
   // Strings are identical except usernames. In both cases, it's "@self; vs. @other;"
   let START_STRING1 = tagInitiator + ";vs. " + tagResponder + ";" + wager + ";" + scoreNeeded + ";"
     + timestamp + ";" + GROUP_ID + ";" + botUsername + ";" ;
@@ -1740,6 +1806,20 @@ function createCase700s(indexStartDuelAllParams, indexStartDuelWithWalkthrough, 
   return case700;
 }
 
+// Updates webhook
+function api_updateWebhook(webhookUrl, payload){
+  const params = {
+    "method" : "put",
+    "headers" : HEADERS,
+    "contentType" : "application/json",
+    "payload" : JSON.stringify(payload),
+    "muteHttpExceptions" : true,
+  }
+
+  const url = "https://habitica.com/api/v3/user/webhook/" + webhookUrl;
+  return UrlFetchApp.fetch(url, params);
+}
+
 // FUNCTIONS FOR DEBUGGING. SCRIPT DOES NOT USE THEM, THEY MUST BE TRIGGERED MANUALLY
 
 // Retrieves saved values (duel parameters) and posts them
@@ -1796,6 +1876,37 @@ function debugResetBotUsername() {
   api_postChatMessageToGroup({"message": MSG_INTRO});
   
   return HtmlService.createHtmlOutput();
+}
+
+// Resetting saved Group ID and updating webhook.
+// First, make sure that the Required Customizations have been updated correctly, then you can run this function.
+function debugResetSavedGroupId(){
+  
+  // Save the correct group ID, whether party or Guild
+  var groupIdKey = GROUP_ID_KEY;
+  if (DUEL_GROUP_TYPE == 0) { // If party
+    const PARTY_ID = getParty();
+    scriptProperties.setProperty(groupIdKey, PARTY_ID);
+  } else if (DUEL_GROUP_TYPE == 1) { // If guild
+    scriptProperties.setProperty(groupIdKey, GUILD_ID);
+  }
+  
+  // Update the webhook so that it is for the new group ID
+  const GROUP_ID = scriptProperties.getProperty(groupIdKey);
+
+  const options = {
+    "groupId" : GROUP_ID,
+  }
+  const payload = {
+    "url" : WEB_APP_URL,
+    "label" : SCRIPT_NAME + " Webhook",
+    "type" : "groupChatReceived",
+    "options" : options,
+  }
+  
+  // Update the webhook so that it is for the new group ID
+  api_updateWebhook(WEB_APP_URL, payload);
+
 }
 
 // Manually have duel announcer bot post announcement message so that the script can save username
