@@ -148,12 +148,13 @@ function doPost(e) {
   const task = dataContents.task;
   
   // Sanitize task alias
-  if ((task.alias == undefined) || (task.alias == null)) {
-    task.alias = "";
+  let sanitizedAlias = "sanitized"; // This will be the value if undefined, null, or blank
+  if ( (task.alias != undefined) && (task.alias != null) && (task.alias != "") ) {
+    sanitizedAlias = task.alias;
   }
   
-  if ( (type == "scored") && ( (task.alias == SNOWBALL_ALIAS) || (task.alias == SPOOKY_SPARKLES_ALIAS) || (task.alias == SHINY_SEED_ALIAS) || 
-    (task.alias == SEAFOAM_ALIAS) || (task.alias == RANDOM_ALIAS) ) ) {
+  if ( (type == "scored") && ( (sanitizedAlias == SNOWBALL_ALIAS) || (sanitizedAlias == SPOOKY_SPARKLES_ALIAS) || (sanitizedAlias == SHINY_SEED_ALIAS) || 
+    (sanitizedAlias == SEAFOAM_ALIAS) || (sanitizedAlias == RANDOM_ALIAS) ) ) {
     
     var timestampKey = TIMESTAMP_KEY;
     var timeStart = Number(scriptProperties.getProperty(timestampKey));
@@ -186,7 +187,7 @@ function doPost(e) {
       }
       // Otherwise, subtract 15 GP and do the correct transformation (if they don't have it, send error meesage)
       else {
-        if (task.alias == SNOWBALL_ALIAS) {
+        if (sanitizedAlias == SNOWBALL_ALIAS) {
           if ( gp >= 15) {
             api_updateUser({"stats.buffs.snowball" : true, "stats.gp" : gp - 15});
           }
@@ -195,7 +196,7 @@ function doPost(e) {
           }
         }
       
-        else if (task.alias == SPOOKY_SPARKLES_ALIAS) {
+        else if (sanitizedAlias == SPOOKY_SPARKLES_ALIAS) {
           if ( gp >= 15) {
             api_updateUser({"stats.buffs.spookySparkles" : true, "stats.gp" : gp - 15});
           }
@@ -204,7 +205,7 @@ function doPost(e) {
           }
         }
           
-        else if (task.alias == SHINY_SEED_ALIAS) {
+        else if (sanitizedAlias == SHINY_SEED_ALIAS) {
           if ( gp >= 15) {
             api_updateUser({"stats.buffs.shinySeed" : true, "stats.gp" : gp - 15});
           }
@@ -213,7 +214,7 @@ function doPost(e) {
           }
         }
           
-        else if (task.alias == SEAFOAM_ALIAS) {
+        else if (sanitizedAlias == SEAFOAM_ALIAS) {
           if ( gp >= 15) {
             api_updateUser({"stats.buffs.seafoam" : true, "stats.gp" : gp - 15});
           }
@@ -222,7 +223,7 @@ function doPost(e) {
           }
         }
           
-        else if (task.alias == RANDOM_ALIAS) {
+        else if (sanitizedAlias == RANDOM_ALIAS) {
           if ( gp >= 15) {
             var rand = Math.floor((Math.random() * 4) + 1);
             switch (rand){
