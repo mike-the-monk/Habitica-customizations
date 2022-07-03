@@ -399,7 +399,7 @@ function checkLevelLock(level, levelLock, message){
 
 // Check if (daily) usage exceeded, send message if yes.
 function checkUsageLimit(usageCounter, newUsageIncrement, maxUsage, message){
-  if ( (usageCounter + newUsageIncrement) >= maxUsage ) {
+  if ( (usageCounter + newUsageIncrement) > maxUsage ) {
     api_sendPrivateMessage({"message" : message, "toUserId" : USER_ID});
     return false;
   } else {
