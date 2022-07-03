@@ -6,6 +6,26 @@
 
 
 
+  // TAG RELATED FUNCTIONS
+  
+  // Check if there's supposed to be a tag for the buttons, add if yes. Create tag if needed.
+  function checkAndAddTagToTask(taskIdOrAlias, optionalSecondTaskIdOrAlias){
+    if (TAG_FOR_DUEL_BUTTONS != "typeTagHere"){    
+      var tagId = apiMult_createNewTagNoDuplicates(TAG_FOR_DUEL_BUTTONS);
+      
+      // If the function created the tag anew, it did not grab its ID yet. Do so now.
+      if (tagId == "newlyCreated") {
+        tagId = apiMult_createNewTagNoDuplicates(TAG_FOR_DUEL_BUTTONS);
+      }
+      
+      // Add the tag to the task(s)
+      api_addTagToTask(taskIdOrAlias, tagId);
+      if (optionalSecondTaskIdOrAlias != "none"){
+        api_addTagToTask(optionalSecondTaskIdOrAlias, tagId);
+      }
+    }
+  }
+  
   // MANA COST RELATED FUNCTIONS
 
     // Checks if sufficient mana, sends message if not, deduct cost if true
