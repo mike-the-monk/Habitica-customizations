@@ -146,11 +146,12 @@ function doPost(e) {
   const task = dataContents.task;
   
   // Sanitize task alias
-  if ((task.alias == undefined) || (task.alias == null)) {
-    task.alias = "";
+  let sanitizedAlias = "sanitized"; // This will be the value if undefined, null, or blank
+  if ( (task.alias != undefined) && (task.alias != null) && (task.alias != "") ) {
+    sanitizedAlias = task.alias;
   }
   
-  if ( (type == "scored") && ( (task.alias == ANTI_MP_POTION_ALIAS) || (task.alias == ANTI_HP_POTION_ALIAS) || (task.alias == ANTI_XP_POTION_ALIAS) ) ) {
+  if ( (type == "scored") && ( (sanitizedAlias == ANTI_MP_POTION_ALIAS) || (sanitizedAlias == ANTI_HP_POTION_ALIAS) || (sanitizedAlias == ANTI_XP_POTION_ALIAS) ) ) {
     var timestampKey = TIMESTAMP_KEY;
     var timeStart = Number(scriptProperties.getProperty(timestampKey));
     if ( (timeStart == 0) || (timeStart == "") || (timeStart == undefined) || (timeStart == null) ) {
@@ -189,7 +190,7 @@ function doPost(e) {
       }
 
       // If it was the Anti MP Potion alias, do Anti MP Potion (Draining Potion) things
-      if (task.alias == ANTI_MP_POTION_ALIAS){
+      if (sanitizedAlias == ANTI_MP_POTION_ALIAS){
         // If level lock fails, send failure message
         if (lvl < ANTI_MP_POTION_LEVEL_LOCK) {
           api_sendPrivateMessage({"message" : MSG_ANTI_MP_POTION_LEVEL_LOCK_FAIL, "toUserId" : USER_ID});
@@ -214,7 +215,7 @@ function doPost(e) {
       }
       
       // If it was the Anti HP Potion alias, do Anti HP Potion (Fatiguing Potion) things
-      else if (task.alias == ANTI_HP_POTION_ALIAS) {
+      else if (sanitizedAlias == ANTI_HP_POTION_ALIAS) {
         // Check if they've exceeded daily usage. If yes, send failure message.
         if (AntiHpUsage >= MAX_DAILY_ANTI_HP_POTION_USAGE) {
           api_sendPrivateMessage({"message" : MSG_ANTI_HP_POTION_DAILY_USAGE_EXCEEDED, "toUserId" : USER_ID});
@@ -233,7 +234,7 @@ function doPost(e) {
       }
       
       // If it was the Anti XP Potion alias, do Anti XP Potion (Stupefying Potion) things
-      else if (task.alias == ANTI_XP_POTION_ALIAS) {
+      else if (sanitizedAlias == ANTI_XP_POTION_ALIAS) {
         // If level lock fails, send failure message
         if (lvl < ANTI_XP_POTION_LEVEL_LOCK) {
           api_sendPrivateMessage({"message" : MSG_ANTI_XP_POTION_LEVEL_LOCK_FAIL, "toUserId" : USER_ID});
