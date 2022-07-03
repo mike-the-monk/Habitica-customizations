@@ -1,14 +1,19 @@
-// NON-API FUNCTIONS THAT ARE STILL USEFUL
-  // These functions are deployed as a library in Google Apps.
-    // Script ID is [Paste it here]
-  // The functions are maintained in GitHub at 
-    // https://raw.githubusercontent.com/mike-the-monk/Habitica-customizations/main/function%20libraries%20for%20Google/basics
+// TABLE OF CONTENTS
+  // 1. API basics – functions made directly from Habitica's API. Each individual script probably won't use all of these, but that's okay.
+  // 2. Non-API functions 
+    // 2A. Basics – functions that can be used in a wide variety of scripts
+    // 2B. Skills – functions used to make custom skills
+    // 2X. Debug functions – while the specific kind of debug function depends greatly on the script, they do share some commonalities
+  // 3. Idiosyncratic functions – functions that are used only in a single script.
+    // If a script has no idiosyncratic functions (i.e. all its functions are accounted for in the above categories), it will not be listed in this section.
+    // 3A. Editable Fix Character Values Buttons
+    // 3B. Dueling Script – Scoring
+    // 3C. Dueling Script – Announcer Bot
 
 
-
-  // TAG RELATED FUNCTIONS
+// PUT THIS ONE IN IDIOSYNCRATIC FUNCTIONS
   
-  // Check if there's supposed to be a tag for the buttons, add if yes. Create tag if needed.
+  // Check if there's supposed to be a tag for the task, add if yes. Create tag if needed.
   function checkAndAddTagToTask(taskIdOrAlias, optionalSecondTaskIdOrAlias){
     if (TAG_FOR_DUEL_BUTTONS != "typeTagHere"){    
       var tagId = apiMult_createNewTagNoDuplicates(TAG_FOR_DUEL_BUTTONS);
@@ -28,8 +33,8 @@
   
   // MANA COST RELATED FUNCTIONS
 
-    // Checks if sufficient mana, sends message if not, deduct cost if true
-    function checkMana(mp, mpCost){
+    // Checks if sufficient mana, sends message if not. Choose whether to deduct costs now or later.
+    function checkMana(mp, mpCost, deductLater){
       if (mp < mpCost) {
         api_sendPrivateMessage({"message" : "Insufficient mana to use this skill.", "toUserId" : USER_ID});
         return false;
