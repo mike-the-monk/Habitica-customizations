@@ -323,16 +323,18 @@ function doPost(e) {
   const task = dataContents.task;
   
   // Sanitize task alias
-  if ((task.alias == undefined) || (task.alias == null)) {
-    task.alias = "";
+  let sanitizedAlias = "sanitized"; // This will be the value if undefined, null, or blank
+  if ( (task.alias != undefined) && (task.alias != null) && (task.alias != "") ) {
+    sanitizedAlias = task.alias;
   }
+  
   if (type == "scored") {
     // Check if the alias matches any of them
-    if ( (task.alias == PICKPOCKET_ALIAS) || (task.alias == BACKSTAB_ALIAS) || (task.alias == STEALTH_ALIAS) 
-      || (task.alias == HEALING_LIGHT_ALIAS) || (task.alias == CHILLING_FROST_ALIAS)
-      || (task.alias == BURST_OF_FLAMES_XP_ONLY_ALIAS) || (task.alias == BURST_OF_FLAMES_DAMAGE_ONLY_ALIAS) 
-      || (task.alias == BURST_OF_FLAMES_XP_PLUS_DAMAGE_ALIAS) || (task.alias == BRUTAL_SMASH_ALIAS) 
-      || (task.alias == RADIANT_SHIELD_ALIAS) || (task.alias == SNEAK_ATTACK_ALIAS) ) {
+    if ( (sanitizedAlias == PICKPOCKET_ALIAS) || (sanitizedAlias == BACKSTAB_ALIAS) || (sanitizedAlias == STEALTH_ALIAS) 
+      || (sanitizedAlias == HEALING_LIGHT_ALIAS) || (sanitizedAlias == CHILLING_FROST_ALIAS)
+      || (sanitizedAlias == BURST_OF_FLAMES_XP_ONLY_ALIAS) || (sanitizedAlias == BURST_OF_FLAMES_DAMAGE_ONLY_ALIAS) 
+      || (sanitizedAlias == BURST_OF_FLAMES_XP_PLUS_DAMAGE_ALIAS) || (sanitizedAlias == BRUTAL_SMASH_ALIAS) 
+      || (sanitizedAlias == RADIANT_SHIELD_ALIAS) || (sanitizedAlias == SNEAK_ATTACK_ALIAS) ) {
       
       var timestampKey = TIMESTAMP_KEY;
       var timeStart = Number(scriptProperties.getProperty(timestampKey));
@@ -383,7 +385,7 @@ function doPost(e) {
         var unbuffedPer = perception - buffsPer;
                 
         // Check which alias it is. Then, check level lock and mana.
-        if (task.alias == PICKPOCKET_ALIAS) {
+        if (sanitizedAlias == PICKPOCKET_ALIAS) {
           if ( lvl < LEVEL_LOCK_PICKPOCKET ) {
             api_sendPrivateMessage({"message" : "Insufficient level: you must be at least level 11 to use this skill.", "toUserId" : USER_ID});
           }
@@ -394,7 +396,7 @@ function doPost(e) {
             }
           }
         }
-        else if (task.alias == BACKSTAB_ALIAS) {
+        else if (sanitizedAlias == BACKSTAB_ALIAS) {
           if ( lvl < LEVEL_LOCK_BACKSTAB  ) {
             api_sendPrivateMessage({"message" : "Insufficient level: you must be at least level 12 to use this skill.", "toUserId" : USER_ID});
           }
@@ -405,7 +407,7 @@ function doPost(e) {
             }
           }
         }
-        else if (task.alias == STEALTH_ALIAS) {
+        else if (sanitizedAlias == STEALTH_ALIAS) {
           if ( lvl < LEVEL_LOCK_STEALTH  ) {
             api_sendPrivateMessage({"message" : "Insufficient level: you must be at least level 14 to use this skill.", "toUserId" : USER_ID});
           }
@@ -434,7 +436,7 @@ function doPost(e) {
             }
           }
         }
-        else if (task.alias == HEALING_LIGHT_ALIAS) {
+        else if (sanitizedAlias == HEALING_LIGHT_ALIAS) {
           if ( lvl < LEVEL_LOCK_HEALING_LIGHT ) {
             api_sendPrivateMessage({"message" : "Insufficient level: you must be at least level 11 to use this skill.", "toUserId" : USER_ID});
           }
@@ -451,7 +453,7 @@ function doPost(e) {
             }
           }
         }
-        else if (task.alias == CHILLING_FROST_ALIAS) {
+        else if (sanitizedAlias == CHILLING_FROST_ALIAS) {
           if ( lvl < LEVEL_LOCK_CHILLING_FROST  ) {
             api_sendPrivateMessage({"message" : "Insufficient level: you must be at least level 14 to use this skill.", "toUserId" : USER_ID});
           }
@@ -468,7 +470,7 @@ function doPost(e) {
             }
           }
         }
-        else if (task.alias == BURST_OF_FLAMES_XP_ONLY_ALIAS) {
+        else if (sanitizedAlias == BURST_OF_FLAMES_XP_ONLY_ALIAS) {
           if ( lvl < LEVEL_LOCK_BURST_OF_FLAMES  ) {
             api_sendPrivateMessage({"message" : "Insufficient level: you must be at least level 11 to use this skill.", "toUserId" : USER_ID});
           }
@@ -480,7 +482,7 @@ function doPost(e) {
             }
           }
         }
-        else if (task.alias == BURST_OF_FLAMES_DAMAGE_ONLY_ALIAS) {
+        else if (sanitizedAlias == BURST_OF_FLAMES_DAMAGE_ONLY_ALIAS) {
           if ( lvl < LEVEL_LOCK_BURST_OF_FLAMES  ) {
             api_sendPrivateMessage({"message" : "Insufficient level: you must be at least level 11 to use this skill.", "toUserId" : USER_ID});
           }
@@ -496,7 +498,7 @@ function doPost(e) {
             }
           }
         }
-        else if (task.alias == BURST_OF_FLAMES_XP_PLUS_DAMAGE_ALIAS) {
+        else if (sanitizedAlias == BURST_OF_FLAMES_XP_PLUS_DAMAGE_ALIAS) {
           if ( lvl < LEVEL_LOCK_BURST_OF_FLAMES ) {
             api_sendPrivateMessage({"message" : "Insufficient level: you must be at least level 11 to use this skill.", "toUserId" : USER_ID});
           }
@@ -513,7 +515,7 @@ function doPost(e) {
             }
           }
         }
-        else if (task.alias == BRUTAL_SMASH_ALIAS) {
+        else if (sanitizedAlias == BRUTAL_SMASH_ALIAS) {
           if ( lvl < LEVEL_LOCK_BRUTAL_SMASH ) {
             api_sendPrivateMessage({"message" : "Insufficient level: you must be at least level 11 to use this skill.", "toUserId" : USER_ID});
           }
@@ -529,7 +531,7 @@ function doPost(e) {
             }
           }
         }
-        else if (task.alias == RADIANT_SHIELD_ALIAS) {
+        else if (sanitizedAlias == RADIANT_SHIELD_ALIAS) {
           if ( lvl < LEVEL_LOCK_RADIANT_SHIELD ) {
             api_sendPrivateMessage({"message" : "Insufficient level: you must be at least level 11 to use this skill.", "toUserId" : USER_ID});
           }
@@ -545,7 +547,7 @@ function doPost(e) {
             }
           }
         }
-        else if (task.alias == SNEAK_ATTACK_ALIAS) {
+        else if (sanitizedAlias == SNEAK_ATTACK_ALIAS) {
           if ( lvl < LEVEL_LOCK_SNEAK_ATTACK ) {
             api_sendPrivateMessage({"message" : "Insufficient level: you must be at least level 11 to use this skill.", "toUserId" : USER_ID});
           }
