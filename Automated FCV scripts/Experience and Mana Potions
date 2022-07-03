@@ -160,48 +160,43 @@ function doPost(e) {
         var MaxDailyXpUsage = Math.floor(XpToNextLevel / 3);
         
         // If level lock fails, refund the money and send failure message
-        if (lvl < XP_POTION_LEVEL_LOCK) {
+        let sufficientLevel = checkLevelLock(lvl, XP_POTION_LEVEL_LOCK, MSG_XP_POTION_LEVEL_LOCK_FAIL);
+        if (!sufficientLevel) {
           api_updateUser({"stats.hp" : hp, "stats.mp" : mp, "stats.exp" : exp, "stats.gp" : gp + 25}); 
-          api_sendPrivateMessage({"message" : MSG_XP_POTION_LEVEL_LOCK_FAIL, "toUserId" : USER_ID});
-        }
-        else {
+        } else {
           // If another potion (+150 XP) would put them above the max, refund the money and send failure message
-          if (xpUsage + 150 > MaxDailyXpUsage) {
+          let usageLimitOkay = checkUsageLimit(xpUsage, 150, MaxDailyXpUsage, MSG_XP_POTION_DAILY_USAGE_EXCEEDED);
+          if (!usageLimitOkay) {
             api_updateUser({"stats.hp" : hp, "stats.mp" : mp, "stats.exp" : exp, "stats.gp" : gp + 25}); 
-            api_sendPrivateMessage({"message" : MSG_XP_POTION_DAILY_USAGE_EXCEEDED, "toUserId" : USER_ID});
-          }
-          // If another potion wouldn't make them exceed the max, run as normal and increment counter
-          else {
+          } else { // If another potion wouldn't make them exceed the max, run as normal and increment counter
             api_updateUser({"stats.hp" : hp, "stats.mp" : mp, "stats.exp" : exp + 150, "stats.gp" : gp});
             xpUsage += 150;
           }
         }
       }
     
-      // Check if it was MPpotion alias, then do XP Potion things
+      // Check if it was MPpotion alias, then do MP Potion things
       else if (sanitizedAlias == MP_POTION_ALIAS) {
         // Get equipment stats info
         const responseContent = apiFree_getAllAvailableContentObjects();
         content = JSON.parse(responseContent).data;
         
         // Compute total Intelligence
-        var int = calcTotalIntelligence();
+        var int = calculateIntelligence();
     
         var maxMp = (2 * int) + 30;
         var mpDiff = maxMp - mp;
         
         // If level lock fails, refund the money and send failure message
-        if (lvl < MP_POTION_LEVEL_LOCK) {
+        let sufficientLevel = checkLevelLock(lvl, MP_POTION_LEVEL_LOCK, MSG_MP_POTION_LEVEL_LOCK_FAIL);
+        if (!sufficientLevel) {
           api_updateUser({"stats.hp" : hp, "stats.mp" : mp, "stats.exp" : exp, "stats.gp" : gp + 25}); 
-          api_sendPrivateMessage({"message" : MSG_MP_POTION_LEVEL_LOCK_FAIL, "toUserId" : USER_ID});
-        }
-        else {
+        } else {
           // Check if they've exceeded daily usage. If yes, refund the money and send failure message
-          if (mpUsage >= MAX_DAILY_MP_POTION_USAGE) {
+          let usageLimitOkay = checkUsageLimit(mpUsage, 1, MAX_DAILY_MP_POTION_USAGE, MSG_MP_POTION_DAILY_USAGE_EXCEEDED);
+          if (!usageLimitOkay) {
             api_updateUser({"stats.hp" : hp, "stats.mp" : mp, "stats.exp" : exp, "stats.gp" : gp + 25}); 
-            api_sendPrivateMessage({"message" : MSG_MP_POTION_DAILY_USAGE_EXCEEDED, "toUserId" : USER_ID});
-          }
-          else {
+          } else {
             // Check if they're already at maximum mana. If yes, refund the money and send failure message
             if (mpDiff <= 0) {
               api_updateUser({"stats.hp" : hp, "stats.mp" : mp, "stats.exp" : exp, "stats.gp" : gp + 25}); 
@@ -220,6 +215,7 @@ function doPost(e) {
             }
           }
         }
+
         // Save values to non-volatile memory, but only from within the rate-limited if-block (we don't want to save the timestamp unless the script ran)
         timeStart = timeEnd;
         scriptProperties.setProperty(cronCountKey, cronCount);
@@ -357,7 +353,7 @@ function api_sendPrivateMessage(payload) {
   }
 }
 
-function calcTotalIntelligence() {
+function calculateIntelligence() {
   const levelIntRaw = Math.floor(user.stats.lvl / 2);
   const levelInt = (levelIntRaw > 50) ? 50 : levelIntRaw;
   
@@ -389,4 +385,24 @@ function calcEquipmentAndClassInt(equipment) {
   }
   
   return equipmentAndClassInt;
+}
+
+// Check if sufficient level, send message if not.
+function checkLevelLock(level, levelLock, message){
+  if (level < levelLock){
+    api_sendPrivateMessage({"message" : message, "toUserId" : USER_ID});
+    return false;
+  } else {
+    return true;
+  }
+}
+
+// Check if (daily) usage exceeded, send message if yes.
+function checkUsageLimit(usageCounter, newUsageIncrement, maxUsage, message){
+  if ( (usageCounter + newUsageIncrement) >= maxUsage ) {
+    api_sendPrivateMessage({"message" : message, "toUserId" : USER_ID});
+    return false;
+  } else {
+    return true;
+  }
 }
