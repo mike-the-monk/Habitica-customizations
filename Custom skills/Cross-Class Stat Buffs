@@ -337,17 +337,19 @@ function doPost(e) {
   const type = dataContents.type;
   const task = dataContents.task;
   
-  // Sanitize task alias
-  if ((task.alias == undefined) || (task.alias == null)) {
-    task.alias = "";
+// Sanitize task alias
+  let sanitizedAlias = "sanitized"; // This will be the value if undefined, null, or blank
+  if ( (task.alias != undefined) && (task.alias != null) && (task.alias != "") ) {
+    sanitizedAlias = task.alias;
   }
+  
   if (type == "scored") {
     // Check if the alias matches any of them
-    if ( (task.alias == OMNI_BUFF_ALIAS) || (task.alias == VALOROUS_PRESENCE_SELF_ALIAS) || (task.alias == EARTHQUAKE_SELF_ALIAS) 
-      || (task.alias == PROTECTIVE_AURA_SELF_ALIAS) || (task.alias == TOOLS_OF_THE_TRADE_SELF_ALIAS) || (task.alias == TRIPLE_BUFF_STR_INT_CON_ALIAS) 
-      || (task.alias == TRIPLE_BUFF_STR_INT_PER_ALIAS) || (task.alias == TRIPLE_BUFF_STR_CON_PER_ALIAS) || (task.alias == TRIPLE_BUFF_INT_CON_PER_ALIAS) 
-      || (task.alias == DOUBLE_BUFF_STR_INT_ALIAS) || (task.alias == DOUBLE_BUFF_STR_CON_ALIAS) || (task.alias == DOUBLE_BUFF_STR_PER_ALIAS)
-      || (task.alias == DOUBLE_BUFF_INT_CON_ALIAS) || (task.alias == DOUBLE_BUFF_INT_PER_ALIAS) || (task.alias == DOUBLE_BUFF_CON_PER_ALIAS) ) {
+    if ( (sanitizedAlias == OMNI_BUFF_ALIAS) || (sanitizedAlias == VALOROUS_PRESENCE_SELF_ALIAS) || (sanitizedAlias == EARTHQUAKE_SELF_ALIAS) 
+      || (sanitizedAlias == PROTECTIVE_AURA_SELF_ALIAS) || (sanitizedAlias == TOOLS_OF_THE_TRADE_SELF_ALIAS) || (sanitizedAlias == TRIPLE_BUFF_STR_INT_CON_ALIAS) 
+      || (sanitizedAlias == TRIPLE_BUFF_STR_INT_PER_ALIAS) || (sanitizedAlias == TRIPLE_BUFF_STR_CON_PER_ALIAS) || (sanitizedAlias == TRIPLE_BUFF_INT_CON_PER_ALIAS) 
+      || (sanitizedAlias == DOUBLE_BUFF_STR_INT_ALIAS) || (sanitizedAlias == DOUBLE_BUFF_STR_CON_ALIAS) || (sanitizedAlias == DOUBLE_BUFF_STR_PER_ALIAS)
+      || (sanitizedAlias == DOUBLE_BUFF_INT_CON_ALIAS) || (sanitizedAlias == DOUBLE_BUFF_INT_PER_ALIAS) || (sanitizedAlias == DOUBLE_BUFF_CON_PER_ALIAS) ) {
       
       var timestampKey = TIMESTAMP_KEY;
       var timeStart = Number(scriptProperties.getProperty(timestampKey));
@@ -392,7 +394,7 @@ function doPost(e) {
           if (!user.stats.buffs.per) buffsPer = 0;
           
           // See which buff is supposed to run, then do it (after checking if there's enough mana)
-          if ( task.alias == OMNI_BUFF_ALIAS ) {
+          if ( sanitizedAlias == OMNI_BUFF_ALIAS ) {
             var enoughMana = checkMana(mp, OMNI_BUFF_MP_COST);
             if (enoughMana) {
               buffStr(unbuffedStr, buffsStr);
@@ -401,31 +403,31 @@ function doPost(e) {
               buffPer(unbuffedPer, buffsPer);
             }
           }
-          else if ( task.alias == VALOROUS_PRESENCE_SELF_ALIAS) {
+          else if ( sanitizedAlias == VALOROUS_PRESENCE_SELF_ALIAS) {
             var enoughMana = checkMana(mp, VALOROUS_PRESENCE_SELF_MP_COST);
             if (enoughMana) {
               buffStr(unbuffedStr, buffsStr);
             }
           }
-          else if ( task.alias == EARTHQUAKE_SELF_ALIAS) {
+          else if ( sanitizedAlias == EARTHQUAKE_SELF_ALIAS) {
             var enoughMana = checkMana(mp, EARTHQUAKE_SELF_MP_COST);
             if (enoughMana) {
               buffInt(unbuffedInt, buffsInt);
             }
           }
-          else if ( task.alias == PROTECTIVE_AURA_SELF_ALIAS) {
+          else if ( sanitizedAlias == PROTECTIVE_AURA_SELF_ALIAS) {
             var enoughMana = checkMana(mp, PROTECTIVE_AURA_SELF_MP_COST);
             if (enoughMana) {
               buffCon(unbuffedCon, buffsCon);
             }
           }
-          else if ( task.alias == TOOLS_OF_THE_TRADE_SELF_ALIAS) {
+          else if ( sanitizedAlias == TOOLS_OF_THE_TRADE_SELF_ALIAS) {
             var enoughMana = checkMana(mp, TOOLS_OF_THE_TRADE_SELF_MP_COST);
             if (enoughMana) {
               buffPer(unbuffedPer, buffsPer);
             }
           }
-          else if ( task.alias == TRIPLE_BUFF_STR_INT_CON_ALIAS) {
+          else if ( sanitizedAlias == TRIPLE_BUFF_STR_INT_CON_ALIAS) {
             var enoughMana = checkMana(mp, TRIPLE_BUFF_STR_INT_CON_MP_COST);
             if (enoughMana) {
               buffStr(unbuffedStr, buffsStr);
@@ -433,7 +435,7 @@ function doPost(e) {
               buffCon(unbuffedCon, buffsCon);
             }
           }
-          else if ( task.alias == TRIPLE_BUFF_STR_INT_PER_ALIAS) {
+          else if ( sanitizedAlias == TRIPLE_BUFF_STR_INT_PER_ALIAS) {
             var enoughMana = checkMana(mp, TRIPLE_BUFF_STR_INT_PER_MP_COST);
             if (enoughMana) {
               buffStr(unbuffedStr, buffsStr);
@@ -441,7 +443,7 @@ function doPost(e) {
               buffPer(unbuffedPer, buffsPer);
             }
           }
-          else if ( task.alias == TRIPLE_BUFF_STR_CON_PER_ALIAS) {
+          else if ( sanitizedAlias == TRIPLE_BUFF_STR_CON_PER_ALIAS) {
             var enoughMana = checkMana(mp, TRIPLE_BUFF_STR_CON_PER_MP_COST);
             if (enoughMana) {
               buffStr(unbuffedStr, buffsStr);
@@ -449,7 +451,7 @@ function doPost(e) {
               buffPer(unbuffedPer, buffsPer);
             }
           }
-          else if ( task.alias == TRIPLE_BUFF_INT_CON_PER_ALIAS) {
+          else if ( sanitizedAlias == TRIPLE_BUFF_INT_CON_PER_ALIAS) {
             var enoughMana = checkMana(mp, TRIPLE_BUFF_INT_CON_PER_MP_COST);
             if (enoughMana) {
               buffInt(unbuffedInt, buffsInt);
@@ -457,42 +459,42 @@ function doPost(e) {
               buffPer(unbuffedPer, buffsPer);
             }
           }
-          else if ( task.alias == DOUBLE_BUFF_STR_INT_ALIAS) {
+          else if ( sanitizedAlias == DOUBLE_BUFF_STR_INT_ALIAS) {
             var enoughMana = checkMana(mp, DOUBLE_BUFF_STR_INT_MP_COST);
             if (enoughMana) {
               buffStr(unbuffedStr, buffsStr);
               buffInt(unbuffedInt, buffsInt);
             }
           }
-          else if ( task.alias == DOUBLE_BUFF_STR_CON_ALIAS) {
+          else if ( sanitizedAlias == DOUBLE_BUFF_STR_CON_ALIAS) {
             var enoughMana = checkMana(mp, DOUBLE_BUFF_STR_CON_MP_COST);
             if (enoughMana) {
               buffStr(unbuffedStr, buffsStr);
               buffCon(unbuffedCon, buffsCon);
             }
           }
-          else if ( task.alias == DOUBLE_BUFF_STR_PER_ALIAS) {
+          else if ( sanitizedAlias == DOUBLE_BUFF_STR_PER_ALIAS) {
             var enoughMana = checkMana(mp, DOUBLE_BUFF_STR_PER_MP_COST);
             if (enoughMana) {
               buffStr(unbuffedStr, buffsStr);
               buffPer(unbuffedPer, buffsPer);
             }
           }
-          else if ( task.alias == DOUBLE_BUFF_INT_CON_ALIAS) {
+          else if ( sanitizedAlias == DOUBLE_BUFF_INT_CON_ALIAS) {
             var enoughMana = checkMana(mp, DOUBLE_BUFF_INT_CON_MP_COST);
             if (enoughMana) {
               buffInt(unbuffedInt, buffsInt);
               buffCon(unbuffedCon, buffsCon);
             }
           }
-          else if ( task.alias == DOUBLE_BUFF_INT_PER_ALIAS) {
+          else if ( sanitizedAlias == DOUBLE_BUFF_INT_PER_ALIAS) {
             var enoughMana = checkMana(mp, DOUBLE_BUFF_INT_PER_MP_COST);
             if (enoughMana) {
               buffInt(unbuffedInt, buffsInt);
               buffPer(unbuffedPer, buffsPer);
             }
           }
-          else if ( task.alias == DOUBLE_BUFF_CON_PER_ALIAS) {
+          else if ( sanitizedAlias == DOUBLE_BUFF_CON_PER_ALIAS) {
             var enoughMana = checkMana(mp, DOUBLE_BUFF_CON_PER_MP_COST);
             if (enoughMana) {
               buffCon(unbuffedCon, buffsCon);
