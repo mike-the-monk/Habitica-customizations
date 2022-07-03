@@ -176,13 +176,15 @@ function doPost(e) {
   const task = dataContents.task;
   
   if (type == "scored") {
-    // Sanitize task alias
-    if ((task.alias == undefined) || (task.alias == null)) {
-      task.alias = "";
-    }
+  
+  // Sanitize task alias
+  let sanitizedAlias = "sanitized"; // This will be the value if undefined, null, or blank
+  if ( (task.alias != undefined) && (task.alias != null) && (task.alias != "") ) {
+    sanitizedAlias = task.alias;
+  }
     
-    if ( (task.alias == BUTTON_1_ALIAS) || (task.alias == BUTTON_2_ALIAS) || (task.alias == BUTTON_3_ALIAS)
-    || (task.alias == BUTTON_4_ALIAS) || (task.alias == BUTTON_5_ALIAS) ) {
+    if ( (sanitizedAlias == BUTTON_1_ALIAS) || (sanitizedAlias == BUTTON_2_ALIAS) || (sanitizedAlias == BUTTON_3_ALIAS)
+    || (sanitizedAlias == BUTTON_4_ALIAS) || (sanitizedAlias == BUTTON_5_ALIAS) ) {
       
       var timestampKey = TIMESTAMP_KEY;
       var timeStart = Number(scriptProperties.getProperty(timestampKey));
@@ -209,35 +211,35 @@ function doPost(e) {
         const tasksRewards = JSON.parse(responseTasks).data;
         
         // Set 'notes' string equal to the appropriate string based on which button was pressed
-        if (task.alias == BUTTON_1_ALIAS) {
+        if (sanitizedAlias == BUTTON_1_ALIAS) {
           for (var i in tasksRewards) {
             if (tasksRewards[i].alias == BUTTON_1_ALIAS ) {
               notes = tasksRewards[i].notes;
             }
           }
         }
-        else if (task.alias == BUTTON_2_ALIAS) {
+        else if (sanitizedAlias == BUTTON_2_ALIAS) {
           for (var i in tasksRewards) {
             if (tasksRewards[i].alias == BUTTON_2_ALIAS ) {
               notes = tasksRewards[i].notes;
             }
           }
         }
-        else if (task.alias == BUTTON_3_ALIAS) {
+        else if (sanitizedAlias == BUTTON_3_ALIAS) {
           for (var i in tasksRewards) {
             if (tasksRewards[i].alias == BUTTON_3_ALIAS ) {
               notes = tasksRewards[i].notes;
             }
           }
         }
-        else if (task.alias == BUTTON_4_ALIAS) {
+        else if (sanitizedAlias == BUTTON_4_ALIAS) {
           for (var i in tasksRewards) {
             if (tasksRewards[i].alias == BUTTON_4_ALIAS ) {
               notes = tasksRewards[i].notes;
             }
           }
         }
-        else if (task.alias == BUTTON_5_ALIAS) {
+        else if (sanitizedAlias == BUTTON_5_ALIAS) {
           for (var i in tasksRewards) {
             if (tasksRewards[i].alias == BUTTON_5_ALIAS ) {
               notes = tasksRewards[i].notes;
