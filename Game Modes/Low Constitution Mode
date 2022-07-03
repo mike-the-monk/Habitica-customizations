@@ -80,11 +80,12 @@ function doPost(e) {
   const task = dataContents.task;
   
   // Sanitize task alias
-  if ((task.alias == undefined) || (task.alias == null)) {
-    task.alias = "";
+  let sanitizedAlias = "sanitized"; // This will be the value if undefined, null, or blank
+  if ( (task.alias != undefined) && (task.alias != null) && (task.alias != "") ) {
+    sanitizedAlias = task.alias;
   }
   
-  if ((type == "scored") && (task.alias == LOW_CON_MODE_ALIAS)) {
+  if ((type == "scored") && (sanitizedAlias == LOW_CON_MODE_ALIAS)) {
     const responseUser = api_getAuthenticatedUserProfile("stats,items.gear.equipped");
     user = JSON.parse(responseUser).data;
     
