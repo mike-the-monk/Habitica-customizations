@@ -246,6 +246,7 @@ function doPost(e) {
       api_sendPrivateMessageAlways({"message" : ERROR_MSG_SWITCH_CASE_FAILURE1 + 40 + ERROR_MSG_SWITCH_CASE_FAILURE2, "toUserId" : USER_ID});
       break;
   }
+  return HtmlService.createHtmlOutput();
 }
 
 // Create custom reward buttons
