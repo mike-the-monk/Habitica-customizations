@@ -114,12 +114,13 @@ function doPost(e) {
   const task = dataContents.task;
   
   // Sanitize task alias
-  if ((task.alias == undefined) || (task.alias == null)) {
-    task.alias = "";
+  let sanitizedAlias = "sanitized"; // This will be the value if undefined, null, or blank
+  if ( (task.alias != undefined) && (task.alias != null) && (task.alias != "") ) {
+    sanitizedAlias = task.alias;
   }
   
   // Check if a task was scored and if it was the either alias 
-  if ((type == "scored") && ( (task.alias == XP_POTION_ALIAS) || (task.alias == MP_POTION_ALIAS) ) ) {   
+  if ((type == "scored") && ( (sanitizedAlias == XP_POTION_ALIAS) || (sanitizedAlias == MP_POTION_ALIAS) ) ) {   
     var timestampKey = TIMESTAMP_KEY;
     var timeStart = Number(scriptProperties.getProperty(timestampKey));
     if ( (timeStart == 0) || (timeStart == "") || (timeStart == undefined) || (timeStart == null) ) {
@@ -154,7 +155,7 @@ function doPost(e) {
       }
 
       // Check if it was XPpotion alias, then do XP Potion things
-      if (task.alias == XP_POTION_ALIAS) {
+      if (sanitizedAlias == XP_POTION_ALIAS) {
         var XpToNextLevel = Math.round((Math.pow(user.stats.lvl, 2) * 0.25 + 10 * user.stats.lvl + 139.75) / 10) * 10;
         var MaxDailyXpUsage = Math.floor(XpToNextLevel / 3);
         
@@ -178,7 +179,7 @@ function doPost(e) {
       }
     
       // Check if it was MPpotion alias, then do XP Potion things
-      else if (task.alias == MP_POTION_ALIAS) {
+      else if (sanitizedAlias == MP_POTION_ALIAS) {
         // Get equipment stats info
         const responseContent = apiFree_getAllAvailableContentObjects();
         content = JSON.parse(responseContent).data;
