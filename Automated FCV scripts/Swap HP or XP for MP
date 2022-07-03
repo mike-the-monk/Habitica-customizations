@@ -118,11 +118,12 @@ function doPost(e) {
   const task = dataContents.task;
   
   // Sanitize task alias
-  if ((task.alias == undefined) || (task.alias == null)) {
-    task.alias = "";
+  let sanitizedAlias = "sanitized"; // This will be the value if undefined, null, or blank
+  if ( (task.alias != undefined) && (task.alias != null) && (task.alias != "") ) {
+    sanitizedAlias = task.alias;
   }
   
-  if ( (type == "scored") && ( (task.alias == HP_FOR_MP_ALIAS) || (task.alias == XP_FOR_MP_ALIAS) ) ) {
+  if ( (type == "scored") && ( (sanitizedAlias == HP_FOR_MP_ALIAS) || (sanitizedAlias == XP_FOR_MP_ALIAS) ) ) {
     var timestampKey = TIMESTAMP_KEY;
     var timeStart = Number(scriptProperties.getProperty(timestampKey));
     if ( (timeStart == 0) || (timeStart == "") || (timeStart == undefined) || (timeStart == null) ) {
@@ -171,7 +172,7 @@ function doPost(e) {
       }
     
       // If it was the HP-for-MP alias, do those things
-      if (task.alias == HP_FOR_MP_ALIAS){
+      if (sanitizedAlias == HP_FOR_MP_ALIAS){
         // If level lock fails, send failure message
         if (lvl < HP_FOR_MP_LEVEL_LOCK) {
           api_sendPrivateMessage({"message" : MSG_HP_FOR_MP_LEVEL_LOCK_FAIL, "toUserId" : USER_ID});
@@ -208,7 +209,7 @@ function doPost(e) {
       }
     
       // If it was the XP-for-MP alias, do those things
-      if (task.alias == XP_FOR_MP_ALIAS){
+      if (sanitizedAlias == XP_FOR_MP_ALIAS){
         // If level lock fails, send failure message
         if (lvl < XP_FOR_MP_LEVEL_LOCK) {
           api_sendPrivateMessage({"message" : MSG_XP_FOR_MP_LEVEL_LOCK_FAIL, "toUserId" : USER_ID});
