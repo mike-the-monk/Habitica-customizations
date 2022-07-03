@@ -20,7 +20,7 @@ const WEB_APP_URL = "PasteGeneratedWebAppUrlHere";
 // If you don't want them, change the 1 to a 0 in the line below. Regardless, you'll still get notifications if errors occur.
 const NOTIFICATIONS_ON = 1; 
 
-// Do you want the duel related buttons to have a tag? If yes, type it below.
+// Do you want the duel-related buttons to have a tag? If yes, type it below.
 const TAG_FOR_DUEL_BUTTONS = "typeTagHere";
 
 /* ========================================== */
