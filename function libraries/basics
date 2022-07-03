@@ -4,11 +4,12 @@
     // 2A. Basics – functions that can be used in a wide variety of scripts
     // 2B. Skills – functions used to make custom skills
     // 2X. Debug functions – while the specific kind of debug function depends greatly on the script, they do share some commonalities
-  // 3. Idiosyncratic functions – functions that are used only in a single script.
+  // 3. Switch-case and button functions – these functions determine what happens based on which button was pressed
+  // 4. Idiosyncratic functions – functions that are used only in a single script.
     // If a script has no idiosyncratic functions (i.e. all its functions are accounted for in the above categories), it will not be listed in this section.
-    // 3A. Editable Fix Character Values Buttons
-    // 3B. Dueling Script – Scoring
-    // 3C. Dueling Script – Announcer Bot
+    // 4A. Editable Fix Character Values Buttons
+    // 4B. Dueling Script – Scoring
+    // 4C. Dueling Script – Announcer Bot
 
 
 // PUT THIS ONE IN IDIOSYNCRATIC FUNCTIONS
