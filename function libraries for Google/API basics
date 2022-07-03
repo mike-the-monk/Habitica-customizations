@@ -114,6 +114,58 @@
 
 // TAG
 
+  // Create a new tag if it hasn't been done yet, get its ID if it has
+  function apiMult_createNewTagNoDuplicates(tagName){
+    const response = api_getTags();
+    const tags = JSON.parse(response).data;
+  
+    // Initialize these
+    let duplicateExists = 0;
+    let tagId = "newlyCreated";
+  
+    for (var i in tags) {
+      if (tags[i].name == tagName) {
+        duplicateExists++;
+        
+        // If there is a match, grab the tag ID
+        tagId = tags[i].id;
+      }
+    }
+    
+    // If no duplicate, create new tag
+    if (duplicateExists == 0) {
+      api_createNewTag({"name": tagName});
+    } 
+  
+    return tagId;
+  }
+  
+  // Gets all of a user's tags
+  function api_getTags() {
+    const params = {
+      "method" : "get",
+      "headers" : HEADERS,
+      "muteHttpExceptions" : true,
+    }
+    
+    const url = "https://habitica.com/api/v3/tags";
+    return UrlFetchApp.fetch(url, params);
+  }
+  
+  // Create new tag
+  function api_createNewTag(payload) {
+    const params = {
+      "method" : "post",
+      "headers" : HEADERS,
+      "contentType" : "application/json",
+      "payload" : JSON.stringify(payload),
+      "muteHttpExceptions" : true,
+    }
+     
+    const url = "https://habitica.com/api/v3/tags";
+    return UrlFetchApp.fetch(url, params);
+  }
+
 // TASK
 
   // Create custom tasks, including reward buttons
@@ -161,7 +213,7 @@
     return UrlFetchApp.fetch(url, params);
   }
 
-  // Updates a task
+  // Update a task
   function api_updateTask(taskIdOrAlias, payload) {
     const params = {
       "method" : "put",
@@ -175,7 +227,7 @@
     return UrlFetchApp.fetch(url, params);
   }
 
-  // Deletes a task
+  // Delete a task
   function api_deleteTask(taskIdOrAlias) {
     const params = {
       "method" : "delete",
@@ -186,6 +238,26 @@
     var url = "https://habitica.com/api/v3/tasks/";
     if (taskIdOrAlias != "") {
       url += taskIdOrAlias;
+    }
+    return UrlFetchApp.fetch(url, params);
+  }
+  
+  // Add a tag to a task
+  function api_addTagToTask(taskIdOrAlias, tagId){
+    const params = {
+      "method" : "post",
+      "headers" : HEADERS,
+      "muteHttpExceptions" : true,
+    }
+   
+    var url = "https://habitica.com/api/v3/tasks/";
+    if ( (taskIdOrAlias != "") && (taskIdOrAlias != undefined) && (taskIdOrAlias != null) ) {
+      url += taskIdOrAlias + "/tags/";
+      
+      if ( (tagId != "") && (tagId != undefined) && (tagId != null) ) {
+        url += tagId;
+        api_sendPrivateMessageAlways({"message" : "URL is" + url, "toUserId" : USER_ID});
+      }
     }
     return UrlFetchApp.fetch(url, params);
   }
