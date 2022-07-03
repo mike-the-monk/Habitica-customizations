@@ -20,11 +20,14 @@ const WEB_APP_URL = "PasteGeneratedWebAppUrlHere";
 // If you don't want them, change the 1 to a 0 in the line below. Regardless, you'll still get notifications if errors occur.
 const NOTIFICATIONS_ON = 1; 
 
+// Do you want the duel related buttons to have a tag? If yes, type it below.
+const TAG_FOR_DUEL_BUTTONS = "typeTagHere";
+
 /* ========================================== */
 /* [Users] Do not edit code below this line   */
 /* ========================================== */
 const AUTHOR_ID = "0034eb14-b4d8-494e-8386-d3f33cff7922";
-const SCRIPT_NAME = "Dueling Script - score";
+const SCRIPT_NAME = "Duel Scoring System";
 const HEADERS = {
   "x-client" : AUTHOR_ID + " - " + SCRIPT_NAME,
   "x-api-user" : USER_ID,
@@ -157,6 +160,9 @@ function doOneTimeSetup() {
   // Create the button
   api_createNewTaskForUser([DUEL_START_BUTTON]);
   
+  // If relevant, add tag to task (i.e. only if the user created a tag for these buttons)
+  checkAndAddTagToTask(DUEL_START_ALIAS, "none");
+  
   // Create the webhook
   const options = {
     "scored" : true,
@@ -254,6 +260,96 @@ function api_createNewTaskForUser(payload) {
 
   var url = "https://habitica.com/api/v3/tasks/user";
   UrlFetchApp.fetch(url, params);
+}
+
+// Check if there's supposed to be a tag for the buttons, add if yes. Create tag if needed.
+function checkAndAddTagToTask(taskIdOrAlias, optionalSecondTaskIdOrAlias){
+  if (TAG_FOR_DUEL_BUTTONS != "typeTagHere"){    
+    var tagId = apiMult_createNewTagNoDuplicates(TAG_FOR_DUEL_BUTTONS);
+    
+    // If the function created the tag anew, it did not grab its ID yet. Do so now.
+    if (tagId == "newlyCreated") {
+      tagId = apiMult_createNewTagNoDuplicates(TAG_FOR_DUEL_BUTTONS);
+    }
+
+    // Add the tag to the task(s)
+    api_addTagToTask(taskIdOrAlias, tagId);
+    if (optionalSecondTaskIdOrAlias != "none"){
+      api_addTagToTask(optionalSecondTaskIdOrAlias, tagId);
+    }
+  }
+}
+
+// Create a new tag if it hasn't been done yet, get its ID if it has
+function apiMult_createNewTagNoDuplicates(tagName){
+  const response = api_getTags();
+  const tags = JSON.parse(response).data;
+
+  // Initialize these
+  let duplicateExists = 0;
+  let tagId = "newlyCreated";
+
+  for (var i in tags) {
+    if (tags[i].name == tagName) {
+      duplicateExists++;
+      
+      // If there is a match, grab the tag ID
+      tagId = tags[i].id;
+    }
+  }
+  
+  // If no duplicate, create new tag
+  if (duplicateExists == 0) {
+    api_createNewTag({"name": tagName});
+  } 
+
+  return tagId;
+}
+
+// Gets all of a user's tags
+function api_getTags() {
+  const params = {
+    "method" : "get",
+    "headers" : HEADERS,
+    "muteHttpExceptions" : true,
+  }
+  
+  const url = "https://habitica.com/api/v3/tags";
+  return UrlFetchApp.fetch(url, params);
+}
+
+// Create new tag
+function api_createNewTag(payload) {
+  const params = {
+    "method" : "post",
+    "headers" : HEADERS,
+    "contentType" : "application/json",
+    "payload" : JSON.stringify(payload),
+    "muteHttpExceptions" : true,
+  }
+   
+  const url = "https://habitica.com/api/v3/tags";
+  return UrlFetchApp.fetch(url, params);
+}
+
+// Add a tag to a task
+function api_addTagToTask(taskIdOrAlias, tagId){
+  const params = {
+    "method" : "post",
+    "headers" : HEADERS,
+    "muteHttpExceptions" : true,
+  }
+   
+  var url = "https://habitica.com/api/v3/tasks/";
+  if ( (taskIdOrAlias != "") && (taskIdOrAlias != undefined) && (taskIdOrAlias != null) ) {
+    url += taskIdOrAlias + "/tags/";
+
+    if ( (tagId != "") && (tagId != undefined) && (tagId != null) ) {
+      url += tagId;
+      api_sendPrivateMessageAlways({"message" : "URL is" + url, "toUserId" : USER_ID});
+    }
+  }
+  return UrlFetchApp.fetch(url, params);
 }
 
 // Create a webhook if no duplicate exists
@@ -1130,6 +1226,9 @@ function checkGpAndStartDuel(buttonToDeleteTaskId, duelCurrentlyActiveKey, duelS
     // Create the other two buttons (Duel Score and Duel End)
     api_createNewTaskForUser([DUEL_END_BUTTON, DUEL_SCORE_BUTTON]);
     
+    // If relevant, add tag to task (i.e. only if the user created a tag for these buttons)
+    checkAndAddTagToTask(DUEL_SCORE_ALIAS, DUEL_END_ALIAS);
+
     // Delete the Duel Start button
     api_deleteTask(buttonToDeleteTaskId);
   }
@@ -1392,6 +1491,9 @@ function endDuel(taskIdEnd, taskIdScore, troubleshootingKey, guildId, timestampI
   
   // Create the Duel Start button
   api_createNewTaskForUser([DUEL_START_BUTTON]);
+
+  // If relevant, add tag to task (i.e. only if the user created a tag for these buttons)
+  checkAndAddTagToTask(DUEL_START_ALIAS, "none");
   
   // Delete the Duel Score and Duel End buttons
   api_deleteTask(taskIdEnd);
