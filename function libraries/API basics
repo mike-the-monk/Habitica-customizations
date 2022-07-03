@@ -1,9 +1,6 @@
 // ALL OF THESE FUNCTIONS ARE BASED ON HABITICA'S API DOCUMENTATION
   // https://habitica.com/apidoc/
-  // These functions are deployed as a library in Google Apps.
-    // Script ID is AKfycbzoxB4Xp3NJYGWoGExHNvBleKmZJ19s9jQ5v6eckUVamuCFINTcsWjaBKJWVeb0McsV
-  // The functions are maintained in GitHub at 
-    // https://raw.githubusercontent.com/mike-the-monk/Habitica-customizations/main/function%20libraries%20for%20Google/API%20basics
+  // For functions not directly based on Habitica's API documentation, see other libraries in this repo/folder
 // CATEGORIES FOR FUNCTIONS ARE BELOW. THEY ARE BASED ON THE API DOCUMENTATION.
 
 // CHALLENGE
