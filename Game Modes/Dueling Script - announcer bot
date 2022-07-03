@@ -178,7 +178,7 @@ const MSG_ERROR_CONSOLE_LOG_MID2 = "Ask the person who posted where their post c
 const MSG_ERROR_CONSOLE_LOG_CONTACT = "for him to see if it looks right,";
 
 function doOneTimeSetup() {
-  // See the correct group ID, whether party or Guild
+  // Save the correct group ID, whether party or Guild
   var groupIdKey = GROUP_ID_KEY;
   if (DUEL_GROUP_TYPE == 0) { // If party
     const PARTY_ID = getParty();
