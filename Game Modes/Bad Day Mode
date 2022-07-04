@@ -87,7 +87,7 @@ function doPost(e) {
       var stealthedDailies = user.stats.buffs.stealth;
       if (!stealthedDailies) {stealthedDailies = 0};
       var constitutionBuffs = user.stats.buffs.con;
-      let con = = calculateConstitution();
+      let con = calculateConstitution();
       var unbuffedConstitution = con - constitutionBuffs;
       var hp = user.stats.hp;
       
