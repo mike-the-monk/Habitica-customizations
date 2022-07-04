@@ -100,8 +100,7 @@ function doPost(e) {
     // If they've Cronned, reset all counters
     if (cronCount != user.flags.cronCount) {
       cronCount = user.flags.cronCount;
-      antiBuffAmount = 0;
-      antiBuffUsage = 0;
+      resetCounters();
     }
     
     // If anti-buff usage is even, then user is currently not in Low Con Mode. Therefore, put them in it
@@ -294,4 +293,42 @@ function api_sendPrivateMessage(payload) {
             return UrlFetchApp.fetch(url, params);
           break;
   }
+}
+
+// Resets usage counters, usually done at Cron
+function resetCounters(){
+  scriptProperties.setProperty(ANTI_BUFF_AMOUNT_KEY, 0);
+  scriptProperties.setProperty(ANTI_BUFF_USAGE_KEY, 0);
+}
+
+// FUNCTIONS FOR DEBUGGING. SCRIPT DOES NOT USE THEM, THEY MUST BE TRIGGERED MANUALLY
+
+// Manually reset usage counters
+function debugResetCounters() {
+  resetCounters();
+}
+
+// Retrieves saved values and sends them in a private message
+function debugGetSavedValues(){
+  let cronCount = Number(scriptProperties.getProperty(CRON_COUNT_KEY));
+  let antiBuffAmount = Number(scriptProperties.getProperty(ANTI_BUFF_AMOUNT_KEY));
+  let antiBuffUsage = Number(scriptProperties.getProperty(ANTI_BUFF_USAGE_KEY));
+
+  // saving these will make my life easier
+  let MSG_JOINER_BEFORE = " is `";
+  let MSG_JOINER_AFTER = "`, "; 
+  
+  api_sendPrivateMessageAlways({"message" : "Saved values are as follows: cronCount is `" + cronCount + MSG_JOINER_AFTER
+                                + "antiBuffAmount" + MSG_JOINER_BEFORE + antiBuffAmount + MSG_JOINER_AFTER
+                                + "antiBuffUsage" + MSG_JOINER_BEFORE + antiBuffUsage + "`", "toUserId" : USER_ID});
+}
+
+// Mannually edits and saves the selected value (in case it saved incorrectly)
+function debugManuallyEditSavedValue() {
+  // Fill them in below. antiBuffUsage is shown as a sample.
+  let newValue = 0; 
+  let key = ANTI_BUFF_USAGE_KEY;
+  
+  // Save
+  scriptProperties.setProperty(key, newValue);
 }
