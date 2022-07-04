@@ -274,19 +274,29 @@ function api_createNewTaskForUser(payload) {
   UrlFetchApp.fetch(url, params);
 }
 
-function sanitizeInput (input, minimum, maximum) {
-  if ( input < minimum ) {
-    return minimum;
+// Ensures that the input is between the minimum and maximum. Can use "none" in either argument to indicate if there is either no minimum or no maximum.
+function sanitizeInput(input, minimum, maximum) {
+  if (minimum == "none"){ // Condition for if there is no minimum
+    if ( input > maximum ) {
+      return maximum;
+    } else { 
+      return input;
+    }
+  } else if (maximum == "none"){ // Condition for if there is no maximum
+    if ( input < minimum ) {
+      return minimum;
+    } else { 
+      return input;
+    }
+  } else { // Condition where there is both minimum and maximum
+    if ( input < minimum ) {
+      return minimum;
+    } else if ( input > maximum ) {
+      return maximum;
+    } else { 
+      return input;
+    }
   }
-  else if ( input > maximum ) {
-    return maximum;
-  }
-  else { return input; }
-}
-
-function sanitizePositive (input) {
-  if ( input < 0 ) { return 0; }
-  else { return input; }
 }
 
 // Create a webhook if no duplicate exists
@@ -382,13 +392,13 @@ function multParseAndEvaluate(hp, xp, mp, gp, inputString) {
   const responseContent = apiFree_getAllAvailableContentObjects();
   content = JSON.parse(responseContent).data;
   
-  var int = calcTotalIntelligence();
+  var int = calculateIntelligence();
   var maxMp = (2 * int) + 30;
   
   newHp = sanitizeInput(parseAndEvaluate(inputString, "HP:", hp), 0, 50);
-  newXp = sanitizePositive(parseAndEvaluate(inputString, "XP:", xp));
+  newXp = sanitizeInput(parseAndEvaluate(inputString, "XP:", xp), 0, "none");
   newMp = sanitizeInput(parseAndEvaluate(inputString, "MP:", mp), 0, maxMp);
-  newGp = sanitizePositive(parseAndEvaluate(inputString, "GP:", gp));
+  newGp = sanitizeInput(parseAndEvaluate(inputString, "GP:", gp), 0, "none");
   
   // check if an error happened; 0.184937265 is the value I randomly generated that I'm using to check errors, it's unlikely a user will input it.
   if ( ( newHp == 0.184937265 ) || ( newXp == 0.184937265 ) || ( newMp == 0.184937265 ) || ( newGp == 0.184937265 ) ) {
@@ -457,7 +467,7 @@ function multParseAndEvaluate(hp, xp, mp, gp, inputString) {
 // checks input string for the search term and returns the new stat value
 function parseAndEvaluate(inputString, searchTerm, statValue){
   // Find if the search term exists in the string, and if yes, where it starts
-  var index = findIndex(searchTerm, inputString);
+  var index = findIndex(searchTerm, inputString, false);
   
   // If search term isn't found, stat value stays the same
   if ( index == -1 ) {
@@ -465,7 +475,7 @@ function parseAndEvaluate(inputString, searchTerm, statValue){
   }
   else {
     // Find where the semicolon is in the string (following the search term)
-    var indexSemicolon = findIndexOfSemicolon(inputString, index);
+    var indexSemicolon = findIndexOfSemicolon(inputString, index, 3); // Offset is 3 to account for the search term
     if ( indexSemicolon == -1 ) {
       api_sendPrivateMessageAlways({"message" : SEMICOLON_ERROR_MSG_START + searchTerm + SEMICOLON_ERROR_MSG_END, "toUserId" : USER_ID});
       return 0.184937265; // this signals to the script that there was an error
@@ -556,8 +566,16 @@ function parseAndEvaluate(inputString, searchTerm, statValue){
   }
 }
 
-function findIndex(searchTerm, stringToSearch) {
-  return stringToSearch.indexOf(searchTerm);
+// Find the index of a given search term. Choose whether it's case-sensitive or not.
+function findIndex(searchTerm, stringToSearch, caseSensitive) {
+  if (caseSensitive){
+    return stringToSearch.indexOf(searchTerm);
+  } else {
+    let uppercaseStringToSearch = stringToSearch.toUpperCase();
+    let index = findIndex(searchTerm, uppercaseStringToSearch);
+
+    return index;
+  }
 }
 
 // Send a notification as a private message regardless of if they're enabled
@@ -574,9 +592,8 @@ function api_sendPrivateMessageAlways(payload) {
 }
 
 // Specifically, this finds the semicolon after the search term previously searched
-// Already builds in +3 to the previous index to account for the number of characters in the search term.
-function findIndexOfSemicolon(stringToSearch, startingAt) {
-  return stringToSearch.indexOf(";", startingAt + 3);
+function findIndexOfSemicolon(stringToSearch, startingAt, offset) {
+  return stringToSearch.indexOf(";", startingAt + offset);
 }
 
 function createSubstring(string, startingIndex, endingIndex) {
@@ -617,7 +634,7 @@ function apiFree_getAllAvailableContentObjects() {
   return UrlFetchApp.fetch(url, params);
 }
 
-function calcTotalIntelligence() {
+function calculateIntelligence() {
   const levelIntRaw = Math.floor(user.stats.lvl / 2);
   const levelInt = (levelIntRaw > 50) ? 50 : levelIntRaw;
   
