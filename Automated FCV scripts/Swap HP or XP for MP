@@ -433,7 +433,7 @@ function debugResetCounters() {
 function debugGetSavedValues(){
   let cronCount = Number(scriptProperties.getProperty(CRON_COUNT_KEY));
   let HpForMpUsage = Number(scriptProperties.getProperty(HP_FOR_MP_KEY));
-  let XpForMpUsage = scriptProperties.getProperty(XP_FOR_MP_KEY);
+  let XpForMpUsage = Number(scriptProperties.getProperty(XP_FOR_MP_KEY));
    
   // saving these will make my life easier
   let MSG_JOINER_BEFORE = " is `";
