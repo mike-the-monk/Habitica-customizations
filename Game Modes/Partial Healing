@@ -205,14 +205,29 @@ function initScriptProperties() {
   scriptProperties.setProperty(TIMESTAMP_KEY, timestampInit);
 }
 
-function sanitizeInput (input, minimum, maximum) {
-  if ( input < minimum ) {
-    return minimum;
+// Ensures that the input is between the minimum and maximum. Can use "none" in either argument to indicate if there is either no minimum or no maximum.
+function sanitizeInput(input, minimum, maximum) {
+  if (minimum == "none"){ // Condition for if there is no minimum
+    if ( input > maximum ) {
+      return maximum;
+    } else { 
+      return input;
+    }
+  } else if (maximum == "none"){ // Condition for if there is no maximum
+    if ( input < minimum ) {
+      return minimum;
+    } else { 
+      return input;
+    }
+  } else { // Condition where there is both minimum and maximum
+    if ( input < minimum ) {
+      return minimum;
+    } else if ( input > maximum ) {
+      return maximum;
+    } else { 
+      return input;
+    }
   }
-  else if ( input > maximum ) {
-    return maximum;
-  }
-  else { return input; }
 }
 
 function api_updateUser(payload) { 
