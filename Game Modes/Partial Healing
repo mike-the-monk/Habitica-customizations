@@ -227,3 +227,40 @@ function api_updateUser(payload) {
   const url = "https://habitica.com/api/v3/user";
   return UrlFetchApp.fetch(url, params);
 }
+
+// FUNCTIONS FOR DEBUGGING. SCRIPT DOES NOT USE THEM, THEY MUST BE TRIGGERED MANUALLY
+
+// In case the script saved the wrong value for HP and level, use FCV to set them to the correct amounts and then run the function below to save them
+function debugResetSavedHpAndLevel() {
+  const responseInit = api_getAuthenticatedUserProfile("stats");
+  user = JSON.parse(responseInit).data;
+    
+  var currentHp = user.stats.hp;
+  var currentLvl = user.stats.lvl;
+  
+  scriptProperties.setProperty(HP_KEY, currentHp);
+  scriptProperties.setProperty(LVL_KEY, currentLvl);
+}
+
+// Retrieves saved values and sends them in a private message
+function debugGetSavedHpAndLevel(){
+  let savedHp = Number(scriptProperties.getProperty(HP_KEY));
+  let savedLvl = scriptProperties.getProperty(LVL_KEY);
+  
+  // saving these will make my life easier
+  let MSG_JOINER_BEFORE = " is `";
+  let MSG_JOINER_AFTER = "`, "; 
+  
+  api_sendPrivateMessageAlways({"message" : "Saved values are as follows: savedHp is `" + savedHp + MSG_JOINER_AFTER
+                                + "savedLvl" + MSG_JOINER_BEFORE + savedLvl + "`", "toUserId" : USER_ID});
+}
+
+// Mannually edits and saves the selected value (in case it saved incorrectly)
+function debugManuallyEditSavedValue() {
+  // Fill them in below. savedHp is shown as a sample.
+  let newValue = 0; 
+  let key = HP_KEY;
+  
+  // Save
+  scriptProperties.setProperty(key, newValue);
+}
