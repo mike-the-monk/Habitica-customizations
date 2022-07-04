@@ -410,8 +410,8 @@ function debugResetCounters() {
 function debugGetSavedValues(){
   let cronCount = Number(scriptProperties.getProperty(CRON_COUNT_KEY));
   let AntiMpUsage = Number(scriptProperties.getProperty(ANTI_MP_USAGE_KEY));
-  let AntiHpUsage = scriptProperties.getProperty(ANTI_HP_USAGE_KEY);
-  let AntiXpUsage = scriptProperties.getProperty(ANTI_XP_USAGE_KEY);
+  let AntiHpUsage = Number(scriptProperties.getProperty(ANTI_HP_USAGE_KEY));
+  let AntiXpUsage = Number(scriptProperties.getProperty(ANTI_XP_USAGE_KEY));
     
   // saving these will make my life easier
   let MSG_JOINER_BEFORE = " is `";
