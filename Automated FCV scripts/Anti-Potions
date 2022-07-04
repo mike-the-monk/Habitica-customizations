@@ -184,9 +184,7 @@ function doPost(e) {
       // If they've Cronned, reset all counters
       if (cronCount != user.flags.cronCount) {
         cronCount = user.flags.cronCount;
-        AntiMpUsage = 0;
-        AntiHpUsage = 0;
-        AntiXpUsage = 0;
+        resetCounters();
       }
 
       // If it was the Anti MP Potion alias, do Anti MP Potion (Draining Potion) things
@@ -374,6 +372,13 @@ function api_sendPrivateMessage(payload) {
   }
 }
 
+// Resets usage counters, usually done at Cron
+function resetCounters(){
+  scriptProperties.setProperty(ANTI_MP_USAGE_KEY, 0);
+  scriptProperties.setProperty(ANTI_HP_USAGE_KEY, 0);
+  scriptProperties.setProperty(ANTI_XP_USAGE_KEY, 0);
+}
+
 // Check if sufficient level, send message if not.
 function checkLevelLock(level, levelLock, message){
   if (level < levelLock){
@@ -392,4 +397,38 @@ function checkUsageLimit(usageCounter, newUsageIncrement, maxUsage, message){
   } else {
     return true;
   }
+}
+
+// FUNCTIONS FOR DEBUGGING. SCRIPT DOES NOT USE THEM, THEY MUST BE TRIGGERED MANUALLY
+
+// Manually reset usage counters
+function debugResetCounters() {
+  resetCounters();
+}
+
+// Retrieves saved values and sends them in a private message
+function debugGetSavedValues(){
+  let cronCount = Number(scriptProperties.getProperty(CRON_COUNT_KEY));
+  let AntiMpUsage = Number(scriptProperties.getProperty(ANTI_MP_USAGE_KEY));
+  let AntiHpUsage = scriptProperties.getProperty(ANTI_HP_USAGE_KEY);
+  let AntiXpUsage = scriptProperties.getProperty(ANTI_XP_USAGE_KEY);
+    
+  // saving these will make my life easier
+  let MSG_JOINER_BEFORE = " is `";
+  let MSG_JOINER_AFTER = "`, "; 
+  
+  api_sendPrivateMessageAlways({"message" : "Saved values are as follows: cronCount is `" + cronCount + MSG_JOINER_AFTER
+                                + "AntiMpUsage" + MSG_JOINER_BEFORE + AntiMpUsage + MSG_JOINER_AFTER
+                                + "AntiHpUsage" + MSG_JOINER_BEFORE + AntiHpUsage + MSG_JOINER_AFTER
+                                + "AntiXpUsage" + MSG_JOINER_BEFORE + AntiXpUsage + "`", "toUserId" : USER_ID});
+}
+
+// Mannually edits and saves the selected value (in case it saved incorrectly)
+function debugManuallyEditSavedValue() {
+  // Fill them in below. AntiMpUsage is shown as a sample.
+  let newValue = 0; 
+  let key = ANTI_MP_USAGE_KEY;
+  
+  // Save
+  scriptProperties.setProperty(key, newValue);
 }
