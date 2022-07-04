@@ -419,7 +419,7 @@ function debugResetCounters() {
   resetCounters();
 }
 
-// Retrieves saved values and post them
+// Retrieves saved values and sends them in a private message
 function debugGetSavedValues(){
   let cronCount = Number(scriptProperties.getProperty(CRON_COUNT_KEY));
   let xpUsage = Number(scriptProperties.getProperty(XP_USAGE_KEY));
