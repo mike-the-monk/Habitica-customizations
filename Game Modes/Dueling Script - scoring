@@ -572,8 +572,6 @@ function findAutomatedDuelEndMessages(version, guildId, msgIdEarliestAllowed, ea
   let response = api_getChatMessagesFromGroup(guildId);
   let chatMessages = JSON.parse(response).data;
   
-  let earliestTimestamp = earliestAllowedTimestamp;
-  
   // For "bot" version, I need to find timestamp of the user's automated chat message
   if (version == "bot") {
     for (var i in chatMessages) {
@@ -842,12 +840,6 @@ function parseDuelStartString(inputString, buttonToDeleteTaskId, duelCurrentlyAc
     let length = inputString.length;
     let semicolonIndex = 0;
     let smallerSubstringAsNumber = 0;
-    
-    // Initialize error counter, and error location flags
-    let errorCount = 0;
-    let wagerIsError = false;
-    let scoreNeededGoalIsError = false;
-    let timestampIdentifierIsError = false;
   
     // Use first semicolon to parse out self username
     semicolonIndex = findIndexOfSemicolon(inputString);
