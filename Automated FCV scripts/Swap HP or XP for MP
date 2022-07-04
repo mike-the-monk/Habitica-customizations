@@ -167,8 +167,7 @@ function doPost(e) {
       // If they've Cronned, reset all counters
       if (cronCount != user.flags.cronCount) {
         cronCount = user.flags.cronCount;
-        HpForMpUsage = 0;
-        XpForMpUsage = 0;
+        resetCounters();
       }
     
       // If it was the HP-for-MP alias, do those things
@@ -415,4 +414,42 @@ function api_sendPrivateMessage(payload) {
             return UrlFetchApp.fetch(url, params);
           break;
   }
+}
+
+// Resets usage counters, usually done at Cron
+function resetCounters(){
+  scriptProperties.setProperty(HP_FOR_MP_KEY, 0);
+  scriptProperties.setProperty(XP_FOR_MP_KEY, 0);
+}
+
+// FUNCTIONS FOR DEBUGGING. SCRIPT DOES NOT USE THEM, THEY MUST BE TRIGGERED MANUALLY
+
+// Manually reset usage counters
+function debugResetCounters() {
+  resetCounters();
+}
+
+// Retrieves saved values and sends them in a private message
+function debugGetSavedValues(){
+  let cronCount = Number(scriptProperties.getProperty(CRON_COUNT_KEY));
+  let HpForMpUsage = Number(scriptProperties.getProperty(HP_FOR_MP_KEY));
+  let XpForMpUsage = scriptProperties.getProperty(XP_FOR_MP_KEY);
+   
+  // saving these will make my life easier
+  let MSG_JOINER_BEFORE = " is `";
+  let MSG_JOINER_AFTER = "`, "; 
+  
+  api_sendPrivateMessageAlways({"message" : "Saved values are as follows: cronCount is `" + cronCount + MSG_JOINER_AFTER
+                                + "HpForMpUsage" + MSG_JOINER_BEFORE + HpForMpUsage + MSG_JOINER_AFTER
+                                + "XpForMpUsage" + MSG_JOINER_BEFORE + XpForMpUsage + "`", "toUserId" : USER_ID});
+}
+
+// Mannually edits and saves the selected value (in case it saved incorrectly)
+function debugManuallyEditSavedValue() {
+  // Fill them in below. HpForMpUsage is shown as a sample.
+  let newValue = 0; 
+  let key = HP_FOR_MP_KEY;
+  
+  // Save
+  scriptProperties.setProperty(key, newValue);
 }
