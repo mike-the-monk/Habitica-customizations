@@ -1528,7 +1528,7 @@ function debugClearTroubleshootingFlagAndThenRetry(){
   increaseDuelScore(DUEL_SCORE_KEY, SCORE_NEEDED_GOAL_KEY, GUILD_ID_KEY, SELF_USERNAME_KEY, OPPONENT_USERNAME_KEY, WAGER_KEY, ANNOUNCER_BOT_USERNAME_KEY, TIMESTAMP_IDENTIFIER_KEY, 0, 0, "habit");
 }
 
-// Retrieves expected hashes for duel parameter and user ID and some
+// Retrieves expected hashes for duel parameter and user ID and sum
 function debugGetExpectedHashes(){
   let hashAllExpected = createDuelHash(SELF_USERNAME_KEY, OPPONENT_USERNAME_KEY, WAGER_KEY, SCORE_NEEDED_GOAL_KEY, TIMESTAMP_IDENTIFIER_KEY);
   let hashSelfExpected = createHash(USER_ID);
