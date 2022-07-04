@@ -150,8 +150,7 @@ function doPost(e) {
       // If they've Cronned, reset all counters
       if (cronCount != user.flags.cronCount) {
         cronCount = user.flags.cronCount;
-        xpUsage = 0;
-        mpUsage = 0;
+        resetCounters();
       }
 
       // Check if it was XPpotion alias, then do XP Potion things
@@ -353,6 +352,12 @@ function api_sendPrivateMessage(payload) {
   }
 }
 
+// Resets usage counters, usually done at Cron
+function resetCounters(){
+  scriptProperties.setProperty(XP_USAGE_KEY, 0);
+  scriptProperties.setProperty(MP_USAGE_KEY, 0);
+}
+
 function calculateIntelligence() {
   const levelIntRaw = Math.floor(user.stats.lvl / 2);
   const levelInt = (levelIntRaw > 50) ? 50 : levelIntRaw;
@@ -405,4 +410,36 @@ function checkUsageLimit(usageCounter, newUsageIncrement, maxUsage, message){
   } else {
     return true;
   }
+}
+
+// FUNCTIONS FOR DEBUGGING. SCRIPT DOES NOT USE THEM, THEY MUST BE TRIGGERED MANUALLY
+
+// Manually reset usage counters
+function debugResetCounters() {
+  resetCounters();
+}
+
+// Retrieves saved values and post them
+function debugGetSavedValues(){
+  let cronCount = Number(scriptProperties.getProperty(CRON_COUNT_KEY));
+  let xpUsage = Number(scriptProperties.getProperty(XP_USAGE_KEY));
+  let mpUsage = scriptProperties.getProperty(MP_USAGE_KEY);
+  
+  // saving these will make my life easier
+  let MSG_JOINER_BEFORE = " is `";
+  let MSG_JOINER_AFTER = "`, "; 
+  
+  api_sendPrivateMessageAlways({"message" : "Saved values are as follows: cronCount is `" + cronCount + MSG_JOINER_AFTER
+                                + "xpUsage" + MSG_JOINER_BEFORE + xpUsage + MSG_JOINER_AFTER
+                                + "mpUsage" + MSG_JOINER_BEFORE + mpUsage + "`", "toUserId" : USER_ID});
+}
+
+// Mannually edits and saves the selected value (in case it saved incorrectly)
+function debugManuallyEditSavedValue() {
+  // Fill them in below. xpUsage is shown as a sample.
+  let newValue = 0; 
+  let key = XP_USAGE_KEY;
+  
+  // Save
+  scriptProperties.setProperty(key, newValue);
 }
