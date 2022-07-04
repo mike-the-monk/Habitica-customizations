@@ -148,7 +148,7 @@ function doPost(e) {
       content = JSON.parse(responseContent).data;
     
       // Compute total Intelligence
-      var int = calcTotalIntelligence();
+      var int = calculateIntelligence();
     
       // Compute maximum mana and how close they are to max
       var maxMp = (2 * int) + 30;
@@ -349,7 +349,7 @@ function apiFree_getAllAvailableContentObjects() {
   return UrlFetchApp.fetch(url, params);
 }
 
-function calcTotalIntelligence() {
+function calculateIntelligence() {
   const levelIntRaw = Math.floor(user.stats.lvl / 2);
   const levelInt = (levelIntRaw > 50) ? 50 : levelIntRaw;
   
