@@ -87,7 +87,8 @@ function doPost(e) {
       var stealthedDailies = user.stats.buffs.stealth;
       if (!stealthedDailies) {stealthedDailies = 0};
       var constitutionBuffs = user.stats.buffs.con;
-      var unbuffedConstitution = calculateUnbuffedConstitution();
+      let con = = calculateConstitution();
+      var unbuffedConstitution = con - constitutionBuffs;
       var hp = user.stats.hp;
       
       // Check if they're already in Bad Day Mode by seeing if CON is really high and all Dailies are Stealthed and HP is high
@@ -212,13 +213,15 @@ function api_sendPrivateMessage(payload) {
   }
 }
 
-function calculateUnbuffedConstitution() {
+// Calculate total CON
+function calculateConstitution() {
   const levelConRaw = Math.floor(user.stats.lvl / 2);
   const levelCon = (levelConRaw > 50) ? 50 : levelConRaw;
-  
+
   var totalEquipmentAndClassCon = 0;
   const allocatedCon = user.stats.con;
-  
+  const buffsCon = user.stats.buffs.con;
+
   // Get CON from equipped gear
   totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.weapon]);
   totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.shield]);
@@ -229,7 +232,7 @@ function calculateUnbuffedConstitution() {
   totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.body]);
   totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.back]);
 
-  return levelCon + totalEquipmentAndClassCon + allocatedCon;
+  return levelCon + totalEquipmentAndClassCon + allocatedCon + buffsCon;
 }
 
 function calcEquipmentAndClassCon(equipment) {
