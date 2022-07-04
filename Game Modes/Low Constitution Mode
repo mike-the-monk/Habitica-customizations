@@ -109,8 +109,10 @@ function doPost(e) {
       content = JSON.parse(responseContent).data;
     
       // Using these, calculate total constitution and how much the anti-buff should be to set CON to 1
-      var con = calcConstitution();
-      var antiBuffCon = 1 - con;
+      var constitutionBuffs = user.stats.buffs.con;
+      let con = calculateConstitution();
+      var unbuffedConstitution = con - constitutionBuffs;
+      var antiBuffCon = 1 - unbuffedConstitution;
       
       // Anti-buff user, save value, increment counter
       api_updateUser({"stats.buffs.con" : antiBuffCon});
@@ -228,15 +230,16 @@ function apiFree_getAllAvailableContentObjects() {
   return UrlFetchApp.fetch(url, params);
 }
 
-// Purposely does not include buffs
-function calcConstitution() {
+// Calculate total CON
+function calculateConstitution() {
   const levelConRaw = Math.floor(user.stats.lvl / 2);
   const levelCon = (levelConRaw > 50) ? 50 : levelConRaw;
-  
+
   var totalEquipmentAndClassCon = 0;
   const allocatedCon = user.stats.con;
-  
-  // Get INT from equipped gear
+  const buffsCon = user.stats.buffs.con;
+
+  // Get CON from equipped gear
   totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.weapon]);
   totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.shield]);
   totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.head]);
@@ -246,7 +249,7 @@ function calcConstitution() {
   totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.body]);
   totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.back]);
 
-  return levelCon + totalEquipmentAndClassCon + allocatedCon;
+  return levelCon + totalEquipmentAndClassCon + allocatedCon + buffsCon;
 }
 
 function calcEquipmentAndClassCon(equipment) {
