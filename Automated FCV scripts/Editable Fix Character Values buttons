@@ -210,44 +210,14 @@ function doPost(e) {
         const responseTasks = api_getUserTasks("rewards");
         const tasksRewards = JSON.parse(responseTasks).data;
         
-        // Set 'notes' string equal to the appropriate string based on which button was pressed
-        if (sanitizedAlias == BUTTON_1_ALIAS) {
-          for (var i in tasksRewards) {
-            if (tasksRewards[i].alias == BUTTON_1_ALIAS ) {
-              notes = tasksRewards[i].notes;
-            }
-          }
-        }
-        else if (sanitizedAlias == BUTTON_2_ALIAS) {
-          for (var i in tasksRewards) {
-            if (tasksRewards[i].alias == BUTTON_2_ALIAS ) {
-              notes = tasksRewards[i].notes;
-            }
-          }
-        }
-        else if (sanitizedAlias == BUTTON_3_ALIAS) {
-          for (var i in tasksRewards) {
-            if (tasksRewards[i].alias == BUTTON_3_ALIAS ) {
-              notes = tasksRewards[i].notes;
-            }
-          }
-        }
-        else if (sanitizedAlias == BUTTON_4_ALIAS) {
-          for (var i in tasksRewards) {
-            if (tasksRewards[i].alias == BUTTON_4_ALIAS ) {
-              notes = tasksRewards[i].notes;
-            }
-          }
-        }
-        else if (sanitizedAlias == BUTTON_5_ALIAS) {
-          for (var i in tasksRewards) {
-            if (tasksRewards[i].alias == BUTTON_5_ALIAS ) {
-              notes = tasksRewards[i].notes;
-            }
+        // Grab notes from the button that was pressed
+        for (var i in tasksRewards) {
+          if (tasksRewards[i].alias == sanitizedAlias) {
+            notes = tasksRewards[i].notes;
           }
         }
         
-        // "notes" is now correct based on button, so this function can be outside of the if-statements
+        // "notes" is now correct based on button, so this function can be outside of the if-statements and switch-case
         multParseAndEvaluate(hp, xp, mp, gp, notes);
         
         // Save values to non-volatile memory, but only from within the rate-limited if-block (we don't want to save the timestamp unless the script ran)
