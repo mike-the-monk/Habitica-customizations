@@ -112,8 +112,8 @@ function doPost(e) {
       let buffsCon = user.stats.buffs.con;
       if (!user.stats.buffs.con) { buffsCon = 0; }
       let con = calculateConstitution();
-      var unbuffedConstitution = con - buffsCon;
-      var antiBuffCon = 1 - unbuffedConstitution;
+      let unbuffedConstitution = con - buffsCon;
+      let antiBuffCon = 1 - unbuffedConstitution;
       
       // Anti-buff user, save value, increment counter
       api_updateUser({"stats.buffs.con" : antiBuffCon});
