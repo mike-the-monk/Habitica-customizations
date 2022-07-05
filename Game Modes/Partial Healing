@@ -88,14 +88,14 @@ function doPost(e) {
       const response = api_getAuthenticatedUserProfile("stats");
       user = JSON.parse(response).data;
     
-      var currentHp = user.stats.hp;
-      var currentLvl = user.stats.lvl;
+      let currentHp = user.stats.hp;
+      let currentLvl = user.stats.lvl;
     
       // See if they've leveled up
       if (currentLvl > prevLvl) {
         if ( VERSION == 2 ) {
-          var valueToHeal = sanitizeInput (HP_SET_VALUE_PER_LEVEL, 0, 50);
-          var newHp = valueToHeal + prevHp;
+          let valueToHeal = sanitizeInput (HP_SET_VALUE_PER_LEVEL, 0, 50);
+          let newHp = valueToHeal + prevHp;
         
           if (newHp >= 50) { api_updateUser({"stats.hp" : 50}); }
           else { api_updateUser({"stats.hp" : newHp}); }
@@ -104,9 +104,9 @@ function doPost(e) {
           prevLvl = currentLvl;
         }
         else if ( VERSION == 3 ) {
-          var percentToHeal = sanitizeInput (HP_PERCENT_PER_LEVEL, 0, 100);
-          var healing = ( percentToHeal / 100 ) * ( 50 - prevHp );
-          var newHpPercent = healing + prevHp;
+          let percentToHeal = sanitizeInput (HP_PERCENT_PER_LEVEL, 0, 100);
+          let healing = ( percentToHeal / 100 ) * ( 50 - prevHp );
+          let newHpPercent = healing + prevHp;
         
           if (newHpPercent >= 50) { api_updateUser({"stats.hp" : 50}); }
           else { api_updateUser({"stats.hp" : newHpPercent}); }
@@ -250,8 +250,8 @@ function debugResetSavedHpAndLevel() {
   const responseInit = api_getAuthenticatedUserProfile("stats");
   user = JSON.parse(responseInit).data;
     
-  var currentHp = user.stats.hp;
-  var currentLvl = user.stats.lvl;
+  let currentHp = user.stats.hp;
+  let currentLvl = user.stats.lvl;
   
   scriptProperties.setProperty(HP_KEY, currentHp);
   scriptProperties.setProperty(LVL_KEY, currentLvl);
