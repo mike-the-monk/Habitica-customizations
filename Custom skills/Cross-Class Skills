@@ -390,7 +390,7 @@ function doPost(e) {
             api_sendPrivateMessage({"message" : "Insufficient level: you must be at least level 11 to use this skill.", "toUserId" : USER_ID});
           }
           else {       
-            var enoughMana = checkMana(mp, MP_COST_PICKPOCKET);
+            var enoughMana = checkMana(mp, MP_COST_PICKPOCKET, false);
             if (enoughMana) {
               pickpocket(gp, perception);
             }
@@ -401,7 +401,7 @@ function doPost(e) {
             api_sendPrivateMessage({"message" : "Insufficient level: you must be at least level 12 to use this skill.", "toUserId" : USER_ID});
           }
           else {
-            var enoughMana = checkMana(mp, MP_COST_BACKSTAB);
+            var enoughMana = checkMana(mp, MP_COST_BACKSTAB, false);
             if (enoughMana) {
               backstab(gp, xp, strength);
             }
@@ -429,7 +429,7 @@ function doPost(e) {
             }
             // Do skill as normal
             else {
-              var enoughMana = checkMana(mp, MP_COST_STEALTH);
+              var enoughMana = checkMana(mp, MP_COST_STEALTH, false);
               if (enoughMana) {
                 stealth (totalDailies, stealthedDailies, perception);
               }
@@ -443,7 +443,7 @@ function doPost(e) {
           else {
             // If not at max HP, subtract mana cost and do the skill
             if (hp < 50) {
-              var enoughMana = checkMana(mp, MP_COST_HEALING_LIGHT);
+              var enoughMana = checkMana(mp, MP_COST_HEALING_LIGHT, false);
               if (enoughMana) {
                 healingLight (hp, constitution, intelligence);
               }
@@ -458,7 +458,7 @@ function doPost(e) {
             api_sendPrivateMessage({"message" : "Insufficient level: you must be at least level 14 to use this skill.", "toUserId" : USER_ID});
           }
           else {
-            var enoughMana = checkManaDeductLater(mp, MP_COST_CHILLING_FROST);
+            var enoughMana = checkMana(mp, MP_COST_CHILLING_FROST, true);
             if (enoughMana) {
               // Check if already cast, send message if yes
               if (frostCast == true){
@@ -475,7 +475,7 @@ function doPost(e) {
             api_sendPrivateMessage({"message" : "Insufficient level: you must be at least level 11 to use this skill.", "toUserId" : USER_ID});
           }
           else {
-            var enoughMana = checkMana(mp, MP_COST_BURST_OF_FLAMES_XP_ONLY);
+            var enoughMana = checkMana(mp, MP_COST_BURST_OF_FLAMES_XP_ONLY, false);
             if (enoughMana) {
               var xpGain = burstOfFlamesXp(intelligence, perception, 1); 
               api_updateUser({"stats.exp" : xp + xpGain});
@@ -832,26 +832,18 @@ function calcEquipmentAndClassPer(equipment) {
   return equipmentAndClassPer;
 }
 
-// Checks if sufficient mana, sends message if not, deduct cost if true
-function checkMana(mp, mpCost){
+// Checks if sufficient mana, sends message if not. Choose whether to deduct costs now or later.
+function checkMana(mp, mpCost, deductLater){
   if (mp < mpCost) {
     api_sendPrivateMessage({"message" : "Insufficient mana to use this skill.", "toUserId" : USER_ID});
     return false;
-  }
-  else {
-    api_updateUser({"stats.mp" : mp - mpCost});
-    return true;
-  }
-}
-
-// Checks if sufficient mana, sends message if not, does not deduct it now
-function checkManaDeductLater(mp, mpCost){
-  if (mp < mpCost) {
-    api_sendPrivateMessage({"message" : "Insufficient mana to use this skill.", "toUserId" : USER_ID});
-    return false;
-  }
-  else {
-    return true;
+  } else {
+    if (deductLater) {
+      return true;
+    } else {
+      api_updateUser({"stats.mp" : mp - mpCost});
+      return true;
+    }
   }
 }
 
