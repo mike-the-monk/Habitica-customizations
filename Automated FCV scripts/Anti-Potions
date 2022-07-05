@@ -175,11 +175,11 @@ function doPost(e) {
       var AntiHpUsage = Number(scriptProperties.getProperty(AntiHpUsageKey));
       var AntiXpUsage = Number(scriptProperties.getProperty(AntiXpUsageKey));
 
-      var hp = user.stats.hp;
-      var exp = user.stats.exp;
-      var mp = user.stats.mp;
-      var gp = user.stats.gp;
-      var lvl = user.stats.lvl;
+      let hp = user.stats.hp;
+      let exp = user.stats.exp;
+      let mp = user.stats.mp;
+      let gp = user.stats.gp;
+      let lvl = user.stats.lvl;
     
       // If they've Cronned, reset all counters
       if (cronCount != user.flags.cronCount) {
