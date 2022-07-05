@@ -141,11 +141,11 @@ function doPost(e) {
       var xpUsage = Number(scriptProperties.getProperty(xpUsageKey));
       var mpUsage = Number(scriptProperties.getProperty(mpUsageKey));
     
-      var hp = user.stats.hp;
-      var exp = user.stats.exp;
-      var mp = user.stats.mp;
-      var gp = user.stats.gp;
-      var lvl = user.stats.lvl;
+      let hp = user.stats.hp;
+      let exp = user.stats.exp;
+      let mp = user.stats.mp;
+      let gp = user.stats.gp;
+      let lvl = user.stats.lvl;
     
       // If they've Cronned, reset all counters
       if (cronCount != user.flags.cronCount) {
@@ -174,8 +174,8 @@ function doPost(e) {
 
 // When the XP Potion button is clicked
 function doButtonXpPotion(lvl, gp, exp, xpUsage, xpUsageKey){
-  var XpToNextLevel = Math.round((Math.pow(lvl, 2) * 0.25 + 10 * lvl + 139.75) / 10) * 10;
-  var MaxDailyXpUsage = Math.floor(XpToNextLevel / 3);
+  let XpToNextLevel = Math.round((Math.pow(lvl, 2) * 0.25 + 10 * lvl + 139.75) / 10) * 10;
+  let MaxDailyXpUsage = Math.floor(XpToNextLevel / 3);
 
   // If level lock fails, refund the money and send failure message
   let sufficientLevel = checkLevelLock(lvl, XP_POTION_LEVEL_LOCK, MSG_XP_POTION_LEVEL_LOCK_FAIL);
@@ -203,10 +203,10 @@ function doButtonMpPotion(lvl, gp, mp, mpUsage, mpUsageKey){
   content = JSON.parse(responseContent).data;
 
   // Compute total Intelligence
-  var int = calculateIntelligence();
+  let int = calculateIntelligence();
 
-  var maxMp = (2 * int) + 30;
-  var mpDiff = maxMp - mp;
+  let maxMp = (2 * int) + 30;
+  let mpDiff = maxMp - mp;
 
   // If level lock fails, refund the money and send failure message
   let sufficientLevel = checkLevelLock(lvl, MP_POTION_LEVEL_LOCK, MSG_MP_POTION_LEVEL_LOCK_FAIL);
