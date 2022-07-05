@@ -83,13 +83,14 @@ function doPost(e) {
       const responseContent = apiFree_getAllAvailableContentObjects();
       content = JSON.parse(responseContent).data;
       
-      var totalDailies = user.tasksOrder.dailys.length;
-      var stealthedDailies = user.stats.buffs.stealth;
+      let totalDailies = user.tasksOrder.dailys.length;
+      let stealthedDailies = user.stats.buffs.stealth;
       if (!stealthedDailies) {stealthedDailies = 0};
-      var constitutionBuffs = user.stats.buffs.con;
+      let constitutionBuffs = user.stats.buffs.con;
+      if (!user.stats.buffs.con) { constitutionBuffs = 0; }
       let con = calculateConstitution();
-      var unbuffedConstitution = con - constitutionBuffs;
-      var hp = user.stats.hp;
+      let unbuffedConstitution = con - constitutionBuffs;
+      let hp = user.stats.hp;
       
       // Check if they're already in Bad Day Mode by seeing if CON is really high and all Dailies are Stealthed and HP is high
       if ( ( constitutionBuffs > 8000 ) && ( stealthedDailies >= totalDailies ) && ( hp >= 45 ) ) {
@@ -100,7 +101,7 @@ function doPost(e) {
         api_updateUser({"stats.hp" : 50});
         
         // Set CON to 9999
-        var buffCon = 9999 - unbuffedConstitution;
+        let buffCon = 9999 - unbuffedConstitution;
         api_updateUser({"stats.buffs.con" : buffCon});
         
         // Stealth all Dailies
