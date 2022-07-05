@@ -185,7 +185,7 @@ function doOneTimeSetup() {
     const PARTY_ID = getParty();
     scriptProperties.setProperty(groupIdKey, PARTY_ID);
   } else if (DUEL_GROUP_TYPE == 1) { // If guild
-    // Confirm that it is formatted correctly, which would indicate that the user pasted the entire thing
+    // Confirm that it is formatted correctly, which would indicate that the user pasted the entire Guild ID correctly
     let validFormat = checkUuidFormat(GUILD_ID);
     if (validFormat) {
       scriptProperties.setProperty(groupIdKey, GUILD_ID);
@@ -2009,7 +2009,13 @@ function debugResetSavedGroupId(){
     const PARTY_ID = getParty();
     scriptProperties.setProperty(groupIdKey, PARTY_ID);
   } else if (DUEL_GROUP_TYPE == 1) { // If guild
-    scriptProperties.setProperty(groupIdKey, GUILD_ID);
+    // Confirm that it is formatted correctly, which would indicate that the user pasted the entire Guild ID correctly
+    let validFormat = checkUuidFormat(GUILD_ID);
+    if (validFormat) {
+      scriptProperties.setProperty(groupIdKey, GUILD_ID);
+    } else {
+      api_sendPrivateMessageAlways({"message" : MSG_ERROR_GUILD_ID_FORMAT, "toUserId" : USER_ID});
+    }
   }
   
   // Update the webhook so that it is for the new group ID
