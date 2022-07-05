@@ -190,13 +190,13 @@ function doPost(e) {
       // Switch-case based on which button was pressed. All button-click actions are in a separate function.
       switch (sanitizedAlias){
         case ANTI_MP_POTION_ALIAS:
-          doButtonAntiMpPotion(lvl, AntiMpUsageKey, AntiMpUsage, mp, gp)
+          doButtonAntiMpPotion(lvl, mp, gp, AntiMpUsageKey, AntiMpUsage)
           break;
         case ANTI_HP_POTION_ALIAS:
-          doButtonAntiHpPotion(lvl, AntiHpUsageKey, AntiHpUsage, hp, gp)
+          doButtonAntiHpPotion(lvl, hp, gp, AntiHpUsageKey, AntiHpUsage)
           break;
         case ANTI_XP_POTION_ALIAS:
-          doButtonAntiXpPotion(lvl, AntiXpUsageKey, AntiXpUsage, exp, gp);
+          doButtonAntiXpPotion(lvl, exp, gp, AntiXpUsageKey, AntiXpUsage);
           break;
       }
       
@@ -210,7 +210,7 @@ function doPost(e) {
 }
 
 // When the Anti-MP Potion button is clicked
-function doButtonAntiMpPotion(lvl, AntiMpUsageKey, AntiMpUsage, mp, gp){
+function doButtonAntiMpPotion(lvl, mp, gp, AntiMpUsageKey, AntiMpUsage){
   // If level lock fails, send failure message
   let sufficientLevel = checkLevelLock(lvl, ANTI_MP_POTION_LEVEL_LOCK, MSG_ANTI_MP_POTION_LEVEL_LOCK_FAIL);
   if (sufficientLevel) {
@@ -234,7 +234,7 @@ function doButtonAntiMpPotion(lvl, AntiMpUsageKey, AntiMpUsage, mp, gp){
 }
 
 // When the Anti-HP Potion button is clicked
-function doButtonAntiHpPotion(lvl, AntiHpUsageKey, AntiHpUsage, hp, gp){
+function doButtonAntiHpPotion(lvl, hp, gp, AntiHpUsageKey, AntiHpUsage){
   // Check if they've exceeded daily usage. If yes, send failure message.
   let usageLimitOkay = checkUsageLimit(AntiHpUsage, 1, MAX_DAILY_ANTI_HP_POTION_USAGE, MSG_ANTI_HP_POTION_DAILY_USAGE_EXCEEDED);
   if (usageLimitOkay){
@@ -253,7 +253,7 @@ function doButtonAntiHpPotion(lvl, AntiHpUsageKey, AntiHpUsage, hp, gp){
 }
 
 // When the Anti-XP Potion button is clicked
-function doButtonAntiXpPotion(lvl, AntiXpUsageKey, AntiXpUsage, exp, gp){
+function doButtonAntiXpPotion(lvl, exp, gp, AntiXpUsageKey, AntiXpUsage){
   // If level lock fails, send failure message
   let sufficientLevel = checkLevelLock(lvl, ANTI_XP_POTION_LEVEL_LOCK, MSG_ANTI_XP_POTION_LEVEL_LOCK_FAIL);
   if (sufficientLevel) {
