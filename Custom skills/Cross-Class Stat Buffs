@@ -395,7 +395,7 @@ function doPost(e) {
           
           // See which buff is supposed to run, then do it (after checking if there's enough mana)
           if ( sanitizedAlias == OMNI_BUFF_ALIAS ) {
-            var enoughMana = checkMana(mp, OMNI_BUFF_MP_COST);
+            var enoughMana = checkMana(mp, OMNI_BUFF_MP_COST, false);
             if (enoughMana) {
               buffStr(unbuffedStr, buffsStr);
               buffInt(unbuffedInt, buffsInt);
@@ -404,31 +404,31 @@ function doPost(e) {
             }
           }
           else if ( sanitizedAlias == VALOROUS_PRESENCE_SELF_ALIAS) {
-            var enoughMana = checkMana(mp, VALOROUS_PRESENCE_SELF_MP_COST);
+            var enoughMana = checkMana(mp, VALOROUS_PRESENCE_SELF_MP_COST, false);
             if (enoughMana) {
               buffStr(unbuffedStr, buffsStr);
             }
           }
           else if ( sanitizedAlias == EARTHQUAKE_SELF_ALIAS) {
-            var enoughMana = checkMana(mp, EARTHQUAKE_SELF_MP_COST);
+            var enoughMana = checkMana(mp, EARTHQUAKE_SELF_MP_COST, false);
             if (enoughMana) {
               buffInt(unbuffedInt, buffsInt);
             }
           }
           else if ( sanitizedAlias == PROTECTIVE_AURA_SELF_ALIAS) {
-            var enoughMana = checkMana(mp, PROTECTIVE_AURA_SELF_MP_COST);
+            var enoughMana = checkMana(mp, PROTECTIVE_AURA_SELF_MP_COST, false);
             if (enoughMana) {
               buffCon(unbuffedCon, buffsCon);
             }
           }
           else if ( sanitizedAlias == TOOLS_OF_THE_TRADE_SELF_ALIAS) {
-            var enoughMana = checkMana(mp, TOOLS_OF_THE_TRADE_SELF_MP_COST);
+            var enoughMana = checkMana(mp, TOOLS_OF_THE_TRADE_SELF_MP_COST, false);
             if (enoughMana) {
               buffPer(unbuffedPer, buffsPer);
             }
           }
           else if ( sanitizedAlias == TRIPLE_BUFF_STR_INT_CON_ALIAS) {
-            var enoughMana = checkMana(mp, TRIPLE_BUFF_STR_INT_CON_MP_COST);
+            var enoughMana = checkMana(mp, TRIPLE_BUFF_STR_INT_CON_MP_COST, false);
             if (enoughMana) {
               buffStr(unbuffedStr, buffsStr);
               buffInt(unbuffedInt, buffsInt);
@@ -436,7 +436,7 @@ function doPost(e) {
             }
           }
           else if ( sanitizedAlias == TRIPLE_BUFF_STR_INT_PER_ALIAS) {
-            var enoughMana = checkMana(mp, TRIPLE_BUFF_STR_INT_PER_MP_COST);
+            var enoughMana = checkMana(mp, TRIPLE_BUFF_STR_INT_PER_MP_COST, false);
             if (enoughMana) {
               buffStr(unbuffedStr, buffsStr);
               buffInt(unbuffedInt, buffsInt);
@@ -444,7 +444,7 @@ function doPost(e) {
             }
           }
           else if ( sanitizedAlias == TRIPLE_BUFF_STR_CON_PER_ALIAS) {
-            var enoughMana = checkMana(mp, TRIPLE_BUFF_STR_CON_PER_MP_COST);
+            var enoughMana = checkMana(mp, TRIPLE_BUFF_STR_CON_PER_MP_COST, false);
             if (enoughMana) {
               buffStr(unbuffedStr, buffsStr);
               buffCon(unbuffedCon, buffsCon);
@@ -452,7 +452,7 @@ function doPost(e) {
             }
           }
           else if ( sanitizedAlias == TRIPLE_BUFF_INT_CON_PER_ALIAS) {
-            var enoughMana = checkMana(mp, TRIPLE_BUFF_INT_CON_PER_MP_COST);
+            var enoughMana = checkMana(mp, TRIPLE_BUFF_INT_CON_PER_MP_COST, false);
             if (enoughMana) {
               buffInt(unbuffedInt, buffsInt);
               buffCon(unbuffedCon, buffsCon);
@@ -460,42 +460,42 @@ function doPost(e) {
             }
           }
           else if ( sanitizedAlias == DOUBLE_BUFF_STR_INT_ALIAS) {
-            var enoughMana = checkMana(mp, DOUBLE_BUFF_STR_INT_MP_COST);
+            var enoughMana = checkMana(mp, DOUBLE_BUFF_STR_INT_MP_COST, false);
             if (enoughMana) {
               buffStr(unbuffedStr, buffsStr);
               buffInt(unbuffedInt, buffsInt);
             }
           }
           else if ( sanitizedAlias == DOUBLE_BUFF_STR_CON_ALIAS) {
-            var enoughMana = checkMana(mp, DOUBLE_BUFF_STR_CON_MP_COST);
+            var enoughMana = checkMana(mp, DOUBLE_BUFF_STR_CON_MP_COST, false);
             if (enoughMana) {
               buffStr(unbuffedStr, buffsStr);
               buffCon(unbuffedCon, buffsCon);
             }
           }
           else if ( sanitizedAlias == DOUBLE_BUFF_STR_PER_ALIAS) {
-            var enoughMana = checkMana(mp, DOUBLE_BUFF_STR_PER_MP_COST);
+            var enoughMana = checkMana(mp, DOUBLE_BUFF_STR_PER_MP_COST, false);
             if (enoughMana) {
               buffStr(unbuffedStr, buffsStr);
               buffPer(unbuffedPer, buffsPer);
             }
           }
           else if ( sanitizedAlias == DOUBLE_BUFF_INT_CON_ALIAS) {
-            var enoughMana = checkMana(mp, DOUBLE_BUFF_INT_CON_MP_COST);
+            var enoughMana = checkMana(mp, DOUBLE_BUFF_INT_CON_MP_COST, false);
             if (enoughMana) {
               buffInt(unbuffedInt, buffsInt);
               buffCon(unbuffedCon, buffsCon);
             }
           }
           else if ( sanitizedAlias == DOUBLE_BUFF_INT_PER_ALIAS) {
-            var enoughMana = checkMana(mp, DOUBLE_BUFF_INT_PER_MP_COST);
+            var enoughMana = checkMana(mp, DOUBLE_BUFF_INT_PER_MP_COST, false);
             if (enoughMana) {
               buffInt(unbuffedInt, buffsInt);
               buffPer(unbuffedPer, buffsPer);
             }
           }
           else if ( sanitizedAlias == DOUBLE_BUFF_CON_PER_ALIAS) {
-            var enoughMana = checkMana(mp, DOUBLE_BUFF_CON_PER_MP_COST);
+            var enoughMana = checkMana(mp, DOUBLE_BUFF_CON_PER_MP_COST, false);
             if (enoughMana) {
               buffCon(unbuffedCon, buffsCon);
               buffPer(unbuffedPer, buffsPer);
@@ -752,15 +752,18 @@ function calcEquipmentAndClassPer(equipment) {
   return equipmentAndClassPer;
 }
 
-// Checks if sufficient mana, sends message if not, deduct cost if true
-function checkMana(mp, mpCost){
+// Checks if sufficient mana, sends message if not. Choose whether to deduct costs now or later.
+function checkMana(mp, mpCost, deductLater){
   if (mp < mpCost) {
     api_sendPrivateMessage({"message" : "Insufficient mana to use this skill.", "toUserId" : USER_ID});
     return false;
-  }
-  else {
-    api_updateUser({"stats.mp" : mp - mpCost});
-    return true;
+  } else {
+    if (deductLater) {
+      return true;
+    } else {
+      api_updateUser({"stats.mp" : mp - mpCost});
+      return true;
+    }
   }
 }
 
