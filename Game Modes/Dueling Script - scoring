@@ -839,7 +839,6 @@ function parseDuelStartString(inputString, buttonToDeleteTaskId, duelCurrentlyAc
     // Initialize some values so I can use them later
     let length = inputString.length;
     let semicolonIndex = 0;
-    let smallerSubstringAsNumber = 0;
   
     // Use first semicolon to parse out self username
     semicolonIndex = findIndexOfSemicolon(inputString, 0, 0);
@@ -1363,7 +1362,6 @@ function duelEndButton(taskNotes, selfUsernameKey, opponentUsernameKey, wagerKey
     const tasksRewards2 = JSON.parse(responseTasks2).data;
     for (var i in tasksRewards2) {
       if (tasksRewards2[i].alias == DUEL_END_ALIAS ) {
-        var notes2 = tasksRewards2[i].notes;
         var taskIdEnd = tasksRewards2[i]._id;
       } else if (tasksRewards2[i].alias == DUEL_SCORE_ALIAS ) {
         var taskIdScore = tasksRewards2[i]._id;
