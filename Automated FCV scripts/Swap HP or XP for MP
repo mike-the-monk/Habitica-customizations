@@ -155,7 +155,6 @@ function doPost(e) {
       var mpDiff = maxMp - mp;
     
       // Counters
-    
       var cronCountKey = CRON_COUNT_KEY;
       var HpForMpUsageKey = HP_FOR_MP_KEY;
       var XpForMpUsageKey = XP_FOR_MP_KEY;
@@ -169,92 +168,113 @@ function doPost(e) {
         cronCount = user.flags.cronCount;
         resetCounters();
       }
-    
-      // If it was the HP-for-MP alias, do those things
-      if (sanitizedAlias == HP_FOR_MP_ALIAS){
-        // If level lock fails, send failure message
-        if (lvl < HP_FOR_MP_LEVEL_LOCK) {
-          api_sendPrivateMessage({"message" : MSG_HP_FOR_MP_LEVEL_LOCK_FAIL, "toUserId" : USER_ID});
-        }
-        else {
-          // Check if they've exceeded daily usage. If yes, send failure message.
-          if (HpForMpUsage >= MAX_DAILY_HP_FOR_MP_USAGE) {
-            api_sendPrivateMessage({"message" : MSG_HP_FOR_MP_DAILY_USAGE_EXCEEDED, "toUserId" : USER_ID});
-          }
-          else {
-            // Check if they have sufficient Health. Send failure message if not.
-            if (hp < 5) {
-              api_sendPrivateMessage({"message" : MSG_INSUFFICIENT_HP, "toUserId" : USER_ID});
-            }
-            else {
-              // Check if they're already at maximum mana. If yes, send failure message
-              if (mpDiff <= 0) {
-                api_sendPrivateMessage({"message" : MSG_ALREADY_AT_MAX_MANA, "toUserId" : USER_ID});
-              }
-              // Check if they're close to maximum mana. If yes, refill them to max but not beyond, and send a message
-              else if (mpDiff <= 10) {
-                api_updateUser({"stats.hp" : hp - 5, "stats.mp" : mp + mpDiff, "stats.exp" : exp, "stats.gp" : gp});
-                HpForMpUsage++;
-              api_sendPrivateMessage({"message" : MSG_NEAR_MAX_MANA, "toUserId" : USER_ID});
-              }
-              // Otherwise, run as normal
-              else if (mpDiff > 10){
-                api_updateUser({"stats.hp" : hp - 5, "stats.mp" : mp + 10, "stats.exp" : exp, "stats.gp" : gp});
-                HpForMpUsage++;
-              }
-            }
-          }
-        }
+      
+      // Switch-case based on which button was pressed. All button-click actions are in a separate function.
+      switch (sanitizedAlias){
+        case HP_FOR_MP_ALIAS:
+          doButtonHpForMp(lvl, hp, mp, mpDiff, HpForMpUsage, HpForMpUsageKey);
+          break;
+        case XP_FOR_MP_ALIAS:
+          doButtonXpForMp(lvl, exp, mp, mpDiff, XpForMpUsage, XpForMpUsageKey);
+          break;
       }
     
-      // If it was the XP-for-MP alias, do those things
-      if (sanitizedAlias == XP_FOR_MP_ALIAS){
-        // If level lock fails, send failure message
-        if (lvl < XP_FOR_MP_LEVEL_LOCK) {
-          api_sendPrivateMessage({"message" : MSG_XP_FOR_MP_LEVEL_LOCK_FAIL, "toUserId" : USER_ID});
-        }
-        else {
-          // Check if another use (50 XP) would cause them to exceed daily usage. If yes, send failure message.
-          var XpToNextLevel = Math.round((Math.pow(user.stats.lvl, 2) * 0.25 + 10 * user.stats.lvl + 139.75) / 10) * 10;
-          var MaxDailyXpUsage = Math.floor(XpToNextLevel / 3);
-          
-          if (XpForMpUsage + 50 > MaxDailyXpUsage) {
-            api_sendPrivateMessage({"message" : MSG_XP_FOR_MP_DAILY_USAGE_EXCEEDED, "toUserId" : USER_ID});
-          }
-          else {
-            // Check if they have sufficient Experience. Send failure message if not.
-            if (exp < 50) {
-              api_sendPrivateMessage({"message" : MSG_INSUFFICIENT_XP, "toUserId" : USER_ID});
-            }
-            else {
-              // Check if they're already at maximum mana. If yes, send failure message
-              if (mpDiff <= 0) {
-                api_sendPrivateMessage({"message" : MSG_ALREADY_AT_MAX_MANA, "toUserId" : USER_ID});
-              }
-              // Check if they're close to maximum mana. If yes, refill them to max but not beyond, and send a message
-              else if (mpDiff <= 10) {
-                api_updateUser({"stats.hp" : hp, "stats.mp" : mp + mpDiff, "stats.exp" : exp - 50, "stats.gp" : gp});
-                XpForMpUsage += 50;
-                api_sendPrivateMessage({"message" : MSG_NEAR_MAX_MANA, "toUserId" : USER_ID});
-              }
-              // Otherwise, run as normal
-              else if (mpDiff > 10){
-                api_updateUser({"stats.hp" : hp, "stats.mp" : mp + 10, "stats.exp" : exp - 50, "stats.gp" : gp});
-                XpForMpUsage += 50;
-              }
-            }
-          }
-        }
-      }
       // Save values to non-volatile memory, but only from within the rate-limited if-block (we don't want to save the timestamp unless the script ran)
       timeStart = timeEnd;
       scriptProperties.setProperty(cronCountKey, cronCount);
-      scriptProperties.setProperty(HpForMpUsageKey, HpForMpUsage);
-      scriptProperties.setProperty(XpForMpUsageKey, XpForMpUsage);
       scriptProperties.setProperty(timestampKey, timeStart);
     }
   }
   return HtmlService.createHtmlOutput();
+}
+
+// When the HP-for-MP button is clicked
+function doButtonHpForMp(lvl, hp, mp, mpDiff, HpForMpUsage, HpForMpUsageKey){
+  // If level lock fails, send failure message
+  if (lvl < HP_FOR_MP_LEVEL_LOCK) {
+    api_sendPrivateMessage({"message" : MSG_HP_FOR_MP_LEVEL_LOCK_FAIL, "toUserId" : USER_ID});
+  }
+  else {
+    // Check if they've exceeded daily usage. If yes, send failure message.
+    if (HpForMpUsage >= MAX_DAILY_HP_FOR_MP_USAGE) {
+      api_sendPrivateMessage({"message" : MSG_HP_FOR_MP_DAILY_USAGE_EXCEEDED, "toUserId" : USER_ID});
+    }
+    else {
+      // Check if they have sufficient Health. Send failure message if not.
+      if (hp < 5) {
+        api_sendPrivateMessage({"message" : MSG_INSUFFICIENT_HP, "toUserId" : USER_ID});
+      }
+      else {
+        // Check if they're already at maximum mana. If yes, send failure message
+        if (mpDiff <= 0) {
+          api_sendPrivateMessage({"message" : MSG_ALREADY_AT_MAX_MANA, "toUserId" : USER_ID});
+        }
+        // Check if they're close to maximum mana. If yes, refill them to max but not beyond, and send a message
+        else if (mpDiff <= 10) {
+          api_updateUser({"stats.hp" : hp - 5, "stats.mp" : mp + mpDiff});
+          HpForMpUsage++;
+          api_sendPrivateMessage({"message" : MSG_NEAR_MAX_MANA, "toUserId" : USER_ID});
+          
+          // Save new counter value since it's updated
+          scriptProperties.setProperty(HpForMpUsageKey, HpForMpUsage);
+        }
+        // Otherwise, run as normal
+        else if (mpDiff > 10){
+          api_updateUser({"stats.hp" : hp - 5, "stats.mp" : mp + 10});
+          HpForMpUsage++;
+          
+          // Save new counter value since it's updated
+          scriptProperties.setProperty(HpForMpUsageKey, HpForMpUsage);
+        }
+      }
+    }
+  }
+}
+
+// When the XP-for-MP button is clicked
+function doButtonXpForMp(lvl, exp, mp, mpDiff, XpForMpUsage, XpForMpUsageKey){
+  // If level lock fails, send failure message
+  if (lvl < XP_FOR_MP_LEVEL_LOCK) {
+    api_sendPrivateMessage({"message" : MSG_XP_FOR_MP_LEVEL_LOCK_FAIL, "toUserId" : USER_ID});
+  }
+  else {
+    // Check if another use (50 XP) would cause them to exceed daily usage. If yes, send failure message.
+    var XpToNextLevel = Math.round((Math.pow(lvl, 2) * 0.25 + 10 * lvl + 139.75) / 10) * 10;
+    var MaxDailyXpUsage = Math.floor(XpToNextLevel / 3);
+
+    if (XpForMpUsage + 50 > MaxDailyXpUsage) {
+      api_sendPrivateMessage({"message" : MSG_XP_FOR_MP_DAILY_USAGE_EXCEEDED, "toUserId" : USER_ID});
+    }
+    else {
+      // Check if they have sufficient Experience. Send failure message if not.
+      if (exp < 50) {
+        api_sendPrivateMessage({"message" : MSG_INSUFFICIENT_XP, "toUserId" : USER_ID});
+      }
+      else {
+        // Check if they're already at maximum mana. If yes, send failure message
+        if (mpDiff <= 0) {
+          api_sendPrivateMessage({"message" : MSG_ALREADY_AT_MAX_MANA, "toUserId" : USER_ID});
+        }
+        // Check if they're close to maximum mana. If yes, refill them to max but not beyond, and send a message
+        else if (mpDiff <= 10) {
+          api_updateUser({"stats.mp" : mp + mpDiff, "stats.exp" : exp - 50});
+          XpForMpUsage += 50;
+          api_sendPrivateMessage({"message" : MSG_NEAR_MAX_MANA, "toUserId" : USER_ID});
+          
+          // Save new counter value since it's updated
+          scriptProperties.setProperty(XpForMpUsageKey, XpForMpUsage);
+        }
+        // Otherwise, run as normal
+        else if (mpDiff > 10){
+          api_updateUser({"stats.mp" : mp + 10, "stats.exp" : exp - 50});
+          XpForMpUsage += 50;
+          
+          // Save new counter value since it's updated
+          scriptProperties.setProperty(XpForMpUsageKey, XpForMpUsage);
+        }
+      }
+    }
+  }
 }
 
 // Create custom reward buttons
