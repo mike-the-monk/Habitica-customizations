@@ -591,8 +591,8 @@ function findAutomatedDuelEndMessages(version, guildId, msgIdEarliestAllowed, ea
           let text = chatMessages[i].text;
           
           // See if both search terms are found (automated message and bot username)
-          let autoMsgIndex = findIndex(searchTerm, text);
-          let botIndex = findIndex(announcerBotUsername, text);
+          let autoMsgIndex = findIndex(searchTerm, text, true);
+          let botIndex = findIndex(announcerBotUsername, text, false);
           
           if ( (botIndex != -1) && (autoMsgIndex != -1) ) {
             msgId = chatMessages[i]._id;
@@ -606,7 +606,7 @@ function findAutomatedDuelEndMessages(version, guildId, msgIdEarliestAllowed, ea
         // Look for messages the bot posted
         if (chatMessages[i].username == untaggedAnnouncerBotUsername) {
           // See if search term is found
-          let botMsgIndex = findIndex(searchTerm, text);
+          let botMsgIndex = findIndex(searchTerm, text, true);
           if (botMsgIndex != -1) {
             msgId = chatMessages[i]._id;
           }
@@ -643,9 +643,9 @@ function checkFirstCharacter(stringToCheck){
   let result = stringToCheck;
   
   // When grabbing a username string, it might instead grab [@username](URL). I want username only.
-  let indexUrlOpen = findIndex("[@", stringToCheck);
-  let indexUrlMid = findIndex("](", stringToCheck);
-  let indexUrlClose = findIndex(")", stringToCheck);
+  let indexUrlOpen = findIndex("[@", stringToCheck, true);
+  let indexUrlMid = findIndex("](", stringToCheck, true);
+  let indexUrlClose = findIndex(")", stringToCheck, true);
   
   // Check if all of them are found. Initiate Boolean it false, flip it if all indices are not -1
   // Also check if they are in the right order.
@@ -1324,8 +1324,8 @@ function duelEndButton(taskNotes, selfUsernameKey, opponentUsernameKey, wagerKey
   let validity = -2;
   
   // Check if search terms are found
-  let duelEndIndex = findIndex(DUEL_END, taskNotes); // Since the user will be copy/pasting, I want this to be case-sensitive
-  let duelEndDebugIndex = findIndexCaseInsensitive(DUEL_END_DEBUG, taskNotes); // Since the user will type this one, I don't want to be case-sensitive
+  let duelEndIndex = findIndex(DUEL_END, taskNotes, true); // Since the user will be copy/pasting, I want this to be case-sensitive
+  let duelEndDebugIndex = findIndexCaseInsensitive(DUEL_END_DEBUG, taskNotes, false); // Since the user will type this one, I don't want to be case-sensitive
   
   // Set "validity" to the correct value
   if (duelEndIndex == -1) {
