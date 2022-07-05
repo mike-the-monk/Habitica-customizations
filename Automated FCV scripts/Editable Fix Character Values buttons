@@ -199,10 +199,10 @@ function doPost(e) {
         const responseUser = api_getAuthenticatedUserProfile("stats,items.gear.equipped");
         user = JSON.parse(responseUser).data;
         
-        var hp = user.stats.hp;
-        var xp = user.stats.exp;
-        var mp = user.stats.mp;
-        var gp = user.stats.gp;
+        let hp = user.stats.hp;
+        let xp = user.stats.exp;
+        let mp = user.stats.mp;
+        let gp = user.stats.gp;
         
         var notes = "initial value";
         
@@ -353,17 +353,17 @@ function api_getUserTasks(type) {
 function multParseAndEvaluate(hp, xp, mp, gp, inputString) {
   
   // initialize these at their existing values
-  var newHp = hp;
-  var newXp = xp;
-  var newMp = mp;
-  var newGp = gp;
+  let newHp = hp;
+  let newXp = xp;
+  let newMp = mp;
+  let newGp = gp;
   
   // Compute total Intelligence
   const responseContent = apiFree_getAllAvailableContentObjects();
   content = JSON.parse(responseContent).data;
   
-  var int = calculateIntelligence();
-  var maxMp = (2 * int) + 30;
+  let int = calculateIntelligence();
+  let maxMp = (2 * int) + 30;
   
   newHp = sanitizeInput(parseAndEvaluate(inputString, "HP:", hp), 0, 50);
   newXp = sanitizeInput(parseAndEvaluate(inputString, "XP:", xp), 0, "none");
@@ -437,7 +437,7 @@ function multParseAndEvaluate(hp, xp, mp, gp, inputString) {
 // checks input string for the search term and returns the new stat value
 function parseAndEvaluate(inputString, searchTerm, statValue){
   // Find if the search term exists in the string, and if yes, where it starts
-  var index = findIndex(searchTerm, inputString, false);
+  let index = findIndex(searchTerm, inputString, false);
   
   // If search term isn't found, stat value stays the same
   if ( index == -1 ) {
@@ -445,7 +445,7 @@ function parseAndEvaluate(inputString, searchTerm, statValue){
   }
   else {
     // Find where the semicolon is in the string (following the search term)
-    var indexSemicolon = findIndexOfSemicolon(inputString, index, 3); // Offset is 3 to account for the search term
+    let indexSemicolon = findIndexOfSemicolon(inputString, index, 3); // Offset is 3 to account for the search term
     if ( indexSemicolon == -1 ) {
       api_sendPrivateMessageAlways({"message" : SEMICOLON_ERROR_MSG_START + searchTerm + SEMICOLON_ERROR_MSG_END, "toUserId" : USER_ID});
       return 0.184937265; // this signals to the script that there was an error
@@ -460,8 +460,8 @@ function parseAndEvaluate(inputString, searchTerm, statValue){
       var substring = createSubstring(inputString, index + 3, indexSemicolon);
             
       // Grab direction (up or down) and whether the number is a percent
-      var direction = findDirection(substring, searchTerm);
-      var isPercent = findPercent(substring);
+      let direction = findDirection(substring, searchTerm);
+      let isPercent = findPercent(substring);
       
       if ( direction == "error" ) {
         return 0.184937265; // this signals to the script that there was an error
@@ -469,7 +469,7 @@ function parseAndEvaluate(inputString, searchTerm, statValue){
         
       // grab the smaller substring of just the numbers, which depends on if there's a percent sign at the end
       var smallerSubstring = "";
-      var substringLength = substring.length;
+      let substringLength = substring.length;
           
       if (isPercent) {
         smallerSubstring = createSubstring(substring, 1, substringLength - 1);
@@ -479,10 +479,10 @@ function parseAndEvaluate(inputString, searchTerm, statValue){
       }
             
       // turn it into a number
-      var smallerSubstringAsNumber = parseFloat(smallerSubstring);
+      let smallerSubstringAsNumber = parseFloat(smallerSubstring);
           
       // If it's not a number, return an error
-      var isNan = Number.isNaN(smallerSubstringAsNumber);
+      let isNan = Number.isNaN(smallerSubstringAsNumber);
       if (isNan) {
         api_sendPrivateMessageAlways({"message" : NUMBER_AFTER_DIRECTION_ERROR_MSG, "toUserId" : USER_ID});
         return 0.184937265; // this signals to the script that there was an error
@@ -491,22 +491,22 @@ function parseAndEvaluate(inputString, searchTerm, statValue){
       else {
         if (isPercent) {
           // turn the raw number into a percent
-          var percentFromNotes = (smallerSubstringAsNumber / 100); 
+          let percentFromNotes = (smallerSubstringAsNumber / 100); 
           
           if ( direction == "up") {
             // multiply the percent times the stat value it's going to be the percent of
-            var percentOfStatValue = statValue * percentFromNotes;
+            let percentOfStatValue = statValue * percentFromNotes;
             
             return ( statValue + percentOfStatValue );
           }
           else if (direction == "down") {
             // we must sanitize entries that are beyond 0-100 since we don't want to subtract greater than 100% of a value; this didn't need to happen for positive, just for negative
-            var sanitizedPercent = sanitizeInput(percentFromNotes, 0, 100);
+            let sanitizedPercent = sanitizeInput(percentFromNotes, 0, 100);
             
             // multiply the sanitized percent times the stat value it's going to be the percent of
-            var sanitizedPercentOfStatValue = statValue * sanitizedPercent;
+            let sanitizedPercentOfStatValue = statValue * sanitizedPercent;
             
-            return ( statValue - sanitizedPercentOfStatValue);
+            return (statValue - sanitizedPercentOfStatValue);
           }
           else { // it shouldn't be possible for this "else" condition to happen, but just in case...
             api_sendPrivateMessageAlways({"message" : MISSING_DIRECTION_ERROR_MSG_START + searchTerm + MISSING_DIRECTION_ERROR_MSG_END, "toUserId" : USER_ID});
