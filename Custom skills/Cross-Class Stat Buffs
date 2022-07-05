@@ -368,10 +368,8 @@ function doPost(e) {
         var lvl = user.stats.lvl;
         
         // Check against level lock
-        if ( lvl < LEVEL_LOCK ) {
-          api_sendPrivateMessage({"message" : "Insufficient level: you must be at least level 13 to use this skill.", "toUserId" : USER_ID});
-        }
-        else {
+        let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK, "Insufficient level: you must be at least level 13 to use this skill.");
+        if (sufficientLevel){
           // Get equipment stats info
           const responseContent = apiFree_getAllAvailableContentObjects();
           content = JSON.parse(responseContent).data;
@@ -704,39 +702,6 @@ function apiFree_getAllAvailableContentObjects() {
   return UrlFetchApp.fetch(url, params);
 }
 
-function calculateUnbuffedStrength() {
-  const levelStrRaw = Math.floor(user.stats.lvl / 2);
-  const levelStr = (levelStrRaw > 50) ? 50 : levelStrRaw;
-  
-  var totalEquipmentAndClassStr = 0;
-  const allocatedStr = user.stats.str;
-  
-  // Get STR from equipped gear
-  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.weapon]);
-  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.shield]);
-  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.head]);
-  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.armor]);
-  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.headAccessory]);
-  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.eyewear]);
-  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.body]);
-  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.back]);
-
-  return levelStr + totalEquipmentAndClassStr + allocatedStr;
-}
-
-function calcEquipmentAndClassStr(equipment) {
-  var equipmentAndClassStr = 0;
-
-  if (equipment != undefined) {  
-    equipmentAndClassStr += equipment.str;
-    if ( (equipment.klass == user.stats.class) || ( (equipment.klass == "special") && (equipment.specialClass == user.stats.class) ) ) {
-      equipmentAndClassStr += equipment.str / 2;
-    }
-  }
-  
-  return equipmentAndClassStr;
-}
-
 function calculateStrength() {
   const levelStrRaw = Math.floor(user.stats.lvl / 2);
   const levelStr = (levelStrRaw > 50) ? 50 : levelStrRaw;
@@ -756,6 +721,40 @@ function calculateStrength() {
   totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.back]);
 
   return levelStr + totalEquipmentAndClassStr + allocatedStr + buffsStr;
+}
+
+function calcEquipmentAndClassStr(equipment) {
+  var equipmentAndClassStr = 0;
+
+  if (equipment != undefined) {  
+    equipmentAndClassStr += equipment.str;
+    if ( (equipment.klass == user.stats.class) || ( (equipment.klass == "special") && (equipment.specialClass == user.stats.class) ) ) {
+      equipmentAndClassStr += equipment.str / 2;
+    }
+  }
+  
+  return equipmentAndClassStr;
+}
+
+function calculateIntelligence() {
+  const levelIntRaw = Math.floor(user.stats.lvl / 2);
+  const levelInt = (levelIntRaw > 50) ? 50 : levelIntRaw;
+  
+  var totalEquipmentAndClassInt = 0;
+  const allocatedInt = user.stats.int;
+  const buffsInt = user.stats.buffs.int;
+
+  // Get INT from equipped gear
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.weapon]);
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.shield]);
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.head]);
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.armor]);
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.headAccessory]);
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.eyewear]);
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.body]);
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.back]);
+
+  return levelInt + totalEquipmentAndClassInt + allocatedInt + buffsInt;
 }
 
 function calcEquipmentAndClassInt(equipment) {
@@ -837,6 +836,16 @@ function calcEquipmentAndClassPer(equipment) {
   }
   
   return equipmentAndClassPer;
+}
+
+// Check if sufficient level, send message if not.
+function checkLevelLock(level, levelLock, message){
+  if (level < levelLock){
+    api_sendPrivateMessage({"message" : message, "toUserId" : USER_ID});
+    return false;
+  } else {
+    return true;
+  }
 }
 
 // Checks if sufficient mana, sends message if not. Choose whether to deduct costs now or later.
