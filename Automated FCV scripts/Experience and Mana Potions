@@ -152,79 +152,96 @@ function doPost(e) {
         cronCount = user.flags.cronCount;
         resetCounters();
       }
-
-      // Check if it was XPpotion alias, then do XP Potion things
-      if (sanitizedAlias == XP_POTION_ALIAS) {
-        var XpToNextLevel = Math.round((Math.pow(user.stats.lvl, 2) * 0.25 + 10 * user.stats.lvl + 139.75) / 10) * 10;
-        var MaxDailyXpUsage = Math.floor(XpToNextLevel / 3);
-        
-        // If level lock fails, refund the money and send failure message
-        let sufficientLevel = checkLevelLock(lvl, XP_POTION_LEVEL_LOCK, MSG_XP_POTION_LEVEL_LOCK_FAIL);
-        if (!sufficientLevel) {
-          api_updateUser({"stats.hp" : hp, "stats.mp" : mp, "stats.exp" : exp, "stats.gp" : gp + 25}); 
-        } else {
-          // If another potion (+150 XP) would put them above the max, refund the money and send failure message
-          let usageLimitOkay = checkUsageLimit(xpUsage, 150, MaxDailyXpUsage, MSG_XP_POTION_DAILY_USAGE_EXCEEDED);
-          if (!usageLimitOkay) {
-            api_updateUser({"stats.hp" : hp, "stats.mp" : mp, "stats.exp" : exp, "stats.gp" : gp + 25}); 
-          } else { // If another potion wouldn't make them exceed the max, run as normal and increment counter
-            api_updateUser({"stats.hp" : hp, "stats.mp" : mp, "stats.exp" : exp + 150, "stats.gp" : gp});
-            xpUsage += 150;
-          }
-        }
+      
+      // Switch-case based on which button was pressed. All button-click actions are in a separate function.
+      switch (sanitizedAlias){
+        case XP_POTION_ALIAS:
+          doButtonXpPotion(lvl, gp, exp, xpUsage, xpUsageKey);
+          break;
+        case MP_POTION_ALIAS:
+          doButtonMpPotion(mp, lvl, gp, mpUsage, mpUsageKey);
+          break;
       }
-    
-      // Check if it was MPpotion alias, then do MP Potion things
-      else if (sanitizedAlias == MP_POTION_ALIAS) {
-        // Get equipment stats info
-        const responseContent = apiFree_getAllAvailableContentObjects();
-        content = JSON.parse(responseContent).data;
-        
-        // Compute total Intelligence
-        var int = calculateIntelligence();
-    
-        var maxMp = (2 * int) + 30;
-        var mpDiff = maxMp - mp;
-        
-        // If level lock fails, refund the money and send failure message
-        let sufficientLevel = checkLevelLock(lvl, MP_POTION_LEVEL_LOCK, MSG_MP_POTION_LEVEL_LOCK_FAIL);
-        if (!sufficientLevel) {
-          api_updateUser({"stats.hp" : hp, "stats.mp" : mp, "stats.exp" : exp, "stats.gp" : gp + 25}); 
-        } else {
-          // Check if they've exceeded daily usage. If yes, refund the money and send failure message
-          let usageLimitOkay = checkUsageLimit(mpUsage, 1, MAX_DAILY_MP_POTION_USAGE, MSG_MP_POTION_DAILY_USAGE_EXCEEDED);
-          if (!usageLimitOkay) {
-            api_updateUser({"stats.hp" : hp, "stats.mp" : mp, "stats.exp" : exp, "stats.gp" : gp + 25}); 
-          } else {
-            // Check if they're already at maximum mana. If yes, refund the money and send failure message
-            if (mpDiff <= 0) {
-              api_updateUser({"stats.hp" : hp, "stats.mp" : mp, "stats.exp" : exp, "stats.gp" : gp + 25}); 
-              api_sendPrivateMessage({"message" : MSG_ALREADY_AT_MAX_MANA, "toUserId" : USER_ID});
-            }
-            // Check if they're close to maximum mana. If yes, refill them to max but not beyond, and send a message
-            else if (mpDiff <= 30) {
-              api_updateUser({"stats.hp" : hp, "stats.mp" : mp + mpDiff, "stats.exp" : exp, "stats.gp" : gp});
-              mpUsage ++;
-              api_sendPrivateMessage({"message" : MSG_NEAR_MAX_MANA, "toUserId" : USER_ID});
-            }
-            // Run as normal if they're further than 30 MP away from maximum
-            else if (mpDiff > 30) {
-              api_updateUser({"stats.hp" : hp, "stats.mp" : mp + 30, "stats.exp" : exp, "stats.gp" : gp});
-              mpUsage ++;
-            }
-          }
-        }
 
-        // Save values to non-volatile memory, but only from within the rate-limited if-block (we don't want to save the timestamp unless the script ran)
-        timeStart = timeEnd;
-        scriptProperties.setProperty(cronCountKey, cronCount);
-        scriptProperties.setProperty(xpUsageKey, xpUsage);
-        scriptProperties.setProperty(mpUsageKey, mpUsage);
-        scriptProperties.setProperty(timestampKey, timeStart);
-      }
+      // Save values to non-volatile memory, but only from within the rate-limited if-block (we don't want to save the timestamp unless the script ran)
+      timeStart = timeEnd;
+      scriptProperties.setProperty(cronCountKey, cronCount);
+      scriptProperties.setProperty(timestampKey, timeStart);
     }
   }
   return HtmlService.createHtmlOutput();
+}
+
+// What happens when the XP Potion button is clicked
+function doButtonXpPotion(lvl, gp, exp, xpUsage, xpUsageKey){
+  var XpToNextLevel = Math.round((Math.pow(lvl, 2) * 0.25 + 10 * lvl + 139.75) / 10) * 10;
+  var MaxDailyXpUsage = Math.floor(XpToNextLevel / 3);
+
+  // If level lock fails, refund the money and send failure message
+  let sufficientLevel = checkLevelLock(lvl, XP_POTION_LEVEL_LOCK, MSG_XP_POTION_LEVEL_LOCK_FAIL);
+  if (!sufficientLevel) {
+    api_updateUser({"stats.gp" : gp + 25}); 
+  } else {
+    // If another potion (+150 XP) would put them above the max, refund the money and send failure message
+    let usageLimitOkay = checkUsageLimit(xpUsage, 150, MaxDailyXpUsage, MSG_XP_POTION_DAILY_USAGE_EXCEEDED);
+    if (!usageLimitOkay) {
+      api_updateUser({"stats.gp" : gp + 25}); 
+    } else { // If another potion wouldn't make them exceed the max, run as normal and increment counter
+      api_updateUser({"stats.exp" : exp + 150});
+      xpUsage += 150;
+      
+      // Save new counter value since it's updated
+      scriptProperties.setProperty(xpUsageKey, xpUsage);
+    }
+  }
+}
+
+// What happens when the MP Potion button is clicked
+function doButtonMpPotion(lvl, gp, mp, mpUsage, mpUsageKey){
+  // Get equipment stats info
+  const responseContent = apiFree_getAllAvailableContentObjects();
+  content = JSON.parse(responseContent).data;
+
+  // Compute total Intelligence
+  var int = calculateIntelligence();
+
+  var maxMp = (2 * int) + 30;
+  var mpDiff = maxMp - mp;
+
+  // If level lock fails, refund the money and send failure message
+  let sufficientLevel = checkLevelLock(lvl, MP_POTION_LEVEL_LOCK, MSG_MP_POTION_LEVEL_LOCK_FAIL);
+  if (!sufficientLevel) {
+    api_updateUser({"stats.gp" : gp + 25}); 
+  } else {
+    // Check if they've exceeded daily usage. If yes, refund the money and send failure message
+    let usageLimitOkay = checkUsageLimit(mpUsage, 1, MAX_DAILY_MP_POTION_USAGE, MSG_MP_POTION_DAILY_USAGE_EXCEEDED);
+    if (!usageLimitOkay) {
+      api_updateUser({"stats.gp" : gp + 25}); 
+    } else {
+      // Check if they're already at maximum mana. If yes, refund the money and send failure message
+      if (mpDiff <= 0) {
+        api_updateUser({"stats.gp" : gp + 25}); 
+        api_sendPrivateMessage({"message" : MSG_ALREADY_AT_MAX_MANA, "toUserId" : USER_ID});
+      }
+      // Check if they're close to maximum mana. If yes, refill them to max but not beyond, and send a message
+      else if (mpDiff <= 30) {
+        api_updateUser({"stats.mp" : mp + mpDiff});
+        mpUsage++;
+        api_sendPrivateMessage({"message" : MSG_NEAR_MAX_MANA, "toUserId" : USER_ID});
+        
+        // Save new counter value since it's updated
+        scriptProperties.setProperty(mpUsageKey, mpUsage);
+      }
+      // Run as normal if they're further than 30 MP away from maximum
+      else if (mpDiff > 30) {
+        api_updateUser({"stats.mp" : mp + 30});
+        mpUsage ++;
+        
+        // Save new counter value since it's updated
+        scriptProperties.setProperty(mpUsageKey, mpUsage);
+      }
+    }
+  }
 }
 
 // Create custom reward buttons
