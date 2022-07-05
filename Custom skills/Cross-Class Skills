@@ -890,7 +890,7 @@ function api_updateUser(payload) {
 function getTaskValue(version, presetTaskValue, taskId) {
   switch (version){
     case 2:
-      var value = sanitizeTaskValue(presetTaskValue);
+      var value = sanitizeInput(presetTaskValue, 0, 21.27);
       return value;
       break;        
     case 3:
@@ -904,7 +904,7 @@ function getTaskValue(version, presetTaskValue, taskId) {
         taskValueTotal += tasksV3[i].value;
         taskCount++;
       }
-      var average = sanitizeTaskValue(taskValueTotal/taskCount);
+      var average = sanitizeInput((taskValueTotal/taskCount), 0, 21.27);
       return average;
       break;
     case 4:
@@ -920,28 +920,41 @@ function getTaskValue(version, presetTaskValue, taskId) {
       
       if (valueV4 == -100) {
         api_sendPrivateMessageAlways({"message" : "Task ID not found, so this script defaulted to the preset task value (version 2 in the Required Customization section). To find task value, see the [wiki page](https://habitica.fandom.com/wiki/Google_Apps_Script#Cross-Class_Skills) section on Required Customizations and then update the script using the instructions at the bottom of the wiki page.", "toUserId" : USER_ID});
-        var valueIfError = sanitizeTaskValue(presetTaskValue);
+        var valueIfError = sanitizeInput(presetTaskValue, 0, 21.27);
         return valueIfError;
          break;
       }
       else {
         // grab value of task ID
-        var valueById = sanitizeTaskValue(valueV4);
+        var valueById = sanitizeInput(valueV4, 0, 21.27);
         return valueById;
         break;
       }
   }
 }
 
-function sanitizeTaskValue(value) {
-  if (value < 0) {
-    return 0;
-  }
-  else if (value > 21.27) {
-    return 21.27;
-  }
-  else {
-    return value;
+// Ensures that the input is between the minimum and maximum. Can use "none" in either argument to indicate if there is either no minimum or no maximum.
+function sanitizeInput(input, minimum, maximum) {
+  if (minimum == "none"){ // Condition for if there is no minimum
+    if ( input > maximum ) {
+      return maximum;
+    } else { 
+      return input;
+    }
+  } else if (maximum == "none"){ // Condition for if there is no maximum
+    if ( input < minimum ) {
+      return minimum;
+    } else { 
+      return input;
+    }
+  } else { // Condition where there is both minimum and maximum
+    if ( input < minimum ) {
+      return minimum;
+    } else if ( input > maximum ) {
+      return maximum;
+    } else { 
+      return input;
+    }
   }
 }
 
