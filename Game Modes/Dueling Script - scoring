@@ -960,7 +960,7 @@ function checkIfNumber(input){
   if (isNan) {
     return -2;
   } else {
-    let parameter = sanitizePositive(inputAsNumber); // Ensure that it is greater than 1
+    let parameter = sanitizeInput(inputAsNumber, 1, "none"); // Ensure that it is greater than 1
     return parameter;
   } 
 }
