@@ -172,7 +172,7 @@ function doPost(e) {
   return HtmlService.createHtmlOutput();
 }
 
-// What happens when the XP Potion button is clicked
+// When the XP Potion button is clicked
 function doButtonXpPotion(lvl, gp, exp, xpUsage, xpUsageKey){
   var XpToNextLevel = Math.round((Math.pow(lvl, 2) * 0.25 + 10 * lvl + 139.75) / 10) * 10;
   var MaxDailyXpUsage = Math.floor(XpToNextLevel / 3);
@@ -196,7 +196,7 @@ function doButtonXpPotion(lvl, gp, exp, xpUsage, xpUsageKey){
   }
 }
 
-// What happens when the MP Potion button is clicked
+// When the MP Potion button is clicked
 function doButtonMpPotion(lvl, gp, mp, mpUsage, mpUsageKey){
   // Get equipment stats info
   const responseContent = apiFree_getAllAvailableContentObjects();
