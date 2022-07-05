@@ -365,7 +365,7 @@ function doPost(e) {
         const responseUser = api_getAuthenticatedUserProfile("stats,items.gear.equipped");
         user = JSON.parse(responseUser).data;
         
-        var lvl = user.stats.lvl;
+        let lvl = user.stats.lvl;
         
         // Check against level lock
         let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK, "Insufficient level: you must be at least level 13 to use this skill.");
@@ -381,23 +381,23 @@ function doPost(e) {
           let per = calculatePerception();
           
           // Get buffs (and sanitize if needed)
-          var buffsStr = user.stats.buffs.str;
+          let buffsStr = user.stats.buffs.str;
           if (!user.stats.buffs.str) { buffsStr = 0; }
-          var buffsInt = user.stats.buffs.int;
+          let buffsInt = user.stats.buffs.int;
           if (!user.stats.buffs.int) { buffsInt = 0; }
-          var buffsCon = user.stats.buffs.con;
+          let buffsCon = user.stats.buffs.con;
           if (!user.stats.buffs.con) { buffsCon = 0; }
-          var buffsPer = user.stats.buffs.per;
+          let buffsPer = user.stats.buffs.per;
           if (!user.stats.buffs.per) { buffsPer = 0; }
           
           // Calculate unbuffed stats
-          var unbuffedStr = str - buffsStr;
-          var unbuffedInt = int - buffsInt;
-          var unbuffedCon = con - buffsCon;
-          var unbuffedPer = per - buffsPer;
+          let unbuffedStr = str - buffsStr;
+          let unbuffedInt = int - buffsInt;
+          let unbuffedCon = con - buffsCon;
+          let unbuffedPer = per - buffsPer;
           
           // Grab other user stats
-          var mp = user.stats.mp;
+          let mp = user.stats.mp;
           
           // Switch-case based on which button was pressed. All button-click actions are in a separate function.
           switch (sanitizedAlias){
@@ -459,7 +459,7 @@ function doPost(e) {
 
 // When the Omni-Buff button is clicked
 function doButtonOmniBuff(mp, unbuffedStr, buffsStr, unbuffedInt, buffsInt, unbuffedCon, buffsCon, unbuffedPer, buffsPer){
-  var enoughMana = checkMana(mp, OMNI_BUFF_MP_COST, false);
+  let enoughMana = checkMana(mp, OMNI_BUFF_MP_COST, false);
   if (enoughMana) {
     valorousPresence(unbuffedStr, buffsStr);
     earthquake(unbuffedInt, buffsInt);
@@ -470,7 +470,7 @@ function doButtonOmniBuff(mp, unbuffedStr, buffsStr, unbuffedInt, buffsInt, unbu
 
 // When the Valorous Presence (Self) button is clicked
 function doButtonValorousPresenceSelf(mp, unbuffedStr, buffsStr){
-  var enoughMana = checkMana(mp, VALOROUS_PRESENCE_SELF_MP_COST, false);
+  let enoughMana = checkMana(mp, VALOROUS_PRESENCE_SELF_MP_COST, false);
   if (enoughMana) {
     valorousPresence(unbuffedStr, buffsStr);
   }
@@ -478,7 +478,7 @@ function doButtonValorousPresenceSelf(mp, unbuffedStr, buffsStr){
 
 // When the Earthquake (Self) button is clicked
 function doButtonEarthquakeSelf(mp, unbuffedInt, buffsInt){
-  var enoughMana = checkMana(mp, EARTHQUAKE_SELF_MP_COST, false);
+  let enoughMana = checkMana(mp, EARTHQUAKE_SELF_MP_COST, false);
   if (enoughMana) {
     earthquake(unbuffedInt, buffsInt);
   }
@@ -486,7 +486,7 @@ function doButtonEarthquakeSelf(mp, unbuffedInt, buffsInt){
 
 // When the Protective Aura (Self) button is clicked
 function doButtonProtectiveAuraSelf(mp, unbuffedCon, buffsCon){
-  var enoughMana = checkMana(mp, PROTECTIVE_AURA_SELF_MP_COST, false);
+  let enoughMana = checkMana(mp, PROTECTIVE_AURA_SELF_MP_COST, false);
   if (enoughMana) {
     protectiveAura(unbuffedCon, buffsCon);
   }
@@ -494,7 +494,7 @@ function doButtonProtectiveAuraSelf(mp, unbuffedCon, buffsCon){
 
 // When the Tools of the Trade (Self) button is clicked
 function doButtonToolsOfTheTradeSelf(mp, unbuffedPer, buffsPer){
-  var enoughMana = checkMana(mp, TOOLS_OF_THE_TRADE_SELF_MP_COST, false);
+  let enoughMana = checkMana(mp, TOOLS_OF_THE_TRADE_SELF_MP_COST, false);
   if (enoughMana) {
     toolsOfTheTrade(unbuffedPer, buffsPer);
   }
@@ -502,7 +502,7 @@ function doButtonToolsOfTheTradeSelf(mp, unbuffedPer, buffsPer){
 
 // When the Tripe Buff StrIntCon button is clicked
 function doButtonTripeBuffStrIntCon(mp, unbuffedStr, buffsStr, unbuffedInt, buffsInt, unbuffedCon, buffsCon){
-  var enoughMana = checkMana(mp, TRIPLE_BUFF_STR_INT_CON_MP_COST, false);
+  let enoughMana = checkMana(mp, TRIPLE_BUFF_STR_INT_CON_MP_COST, false);
   if (enoughMana) {
     valorousPresence(unbuffedStr, buffsStr);
     earthquake(unbuffedInt, buffsInt);
@@ -512,7 +512,7 @@ function doButtonTripeBuffStrIntCon(mp, unbuffedStr, buffsStr, unbuffedInt, buff
 
 // When the Tripe Buff StrIntPer button is clicked
 function doButtonTripeBuffStrIntPer(mp, unbuffedStr, buffsStr, unbuffedInt, buffsInt, unbuffedPer, buffsPer){
-  var enoughMana = checkMana(mp, TRIPLE_BUFF_STR_INT_PER_MP_COST, false);
+  let enoughMana = checkMana(mp, TRIPLE_BUFF_STR_INT_PER_MP_COST, false);
   if (enoughMana) {
     valorousPresence(unbuffedStr, buffsStr);
     earthquake(unbuffedInt, buffsInt);
@@ -522,7 +522,7 @@ function doButtonTripeBuffStrIntPer(mp, unbuffedStr, buffsStr, unbuffedInt, buff
 
 // When the Tripe Buff StrConPer button is clicked
 function doButtonTripeBuffStrConPer(mp, unbuffedStr, buffsStr, unbuffedCon, buffsCon, unbuffedPer, buffsPer){
-  var enoughMana = checkMana(mp, TRIPLE_BUFF_STR_CON_PER_MP_COST, false);
+  let enoughMana = checkMana(mp, TRIPLE_BUFF_STR_CON_PER_MP_COST, false);
   if (enoughMana) {
     valorousPresence(unbuffedStr, buffsStr);
     protectiveAura(unbuffedCon, buffsCon);
@@ -532,7 +532,7 @@ function doButtonTripeBuffStrConPer(mp, unbuffedStr, buffsStr, unbuffedCon, buff
 
 // When the Triple Buff IntConPer button is clicked
 function doButtonTripleBuffIntConPer(mp, unbuffedInt, buffsInt, unbuffedCon, buffsCon, unbuffedPer, buffsPer){
-  var enoughMana = checkMana(mp, TRIPLE_BUFF_INT_CON_PER_MP_COST, false);
+  let enoughMana = checkMana(mp, TRIPLE_BUFF_INT_CON_PER_MP_COST, false);
   if (enoughMana) {
     earthquake(unbuffedInt, buffsInt);
     protectiveAura(unbuffedCon, buffsCon);
@@ -542,7 +542,7 @@ function doButtonTripleBuffIntConPer(mp, unbuffedInt, buffsInt, unbuffedCon, buf
 
 // When the Double Buff StrInt button is clicked
 function doButtonDoubleBuffStrInt(mp, unbuffedStr, buffsStr, unbuffedInt, buffsInt){
-  var enoughMana = checkMana(mp, DOUBLE_BUFF_STR_INT_MP_COST, false);
+  let enoughMana = checkMana(mp, DOUBLE_BUFF_STR_INT_MP_COST, false);
   if (enoughMana) {
     valorousPresence(unbuffedStr, buffsStr);
     buffInt(unbuffedInt, buffsInt);
@@ -551,7 +551,7 @@ function doButtonDoubleBuffStrInt(mp, unbuffedStr, buffsStr, unbuffedInt, buffsI
 
 // When the Double Buff StrCon button is clicked
 function doButtonDoubleBuffStrCon(mp, unbuffedStr, buffsStr, unbuffedCon, buffsCon){
-  var enoughMana = checkMana(mp, DOUBLE_BUFF_STR_CON_MP_COST, false);
+  let enoughMana = checkMana(mp, DOUBLE_BUFF_STR_CON_MP_COST, false);
   if (enoughMana) {
     valorousPresence(unbuffedStr, buffsStr);
     protectiveAura(unbuffedCon, buffsCon);
@@ -560,7 +560,7 @@ function doButtonDoubleBuffStrCon(mp, unbuffedStr, buffsStr, unbuffedCon, buffsC
 
 // When the Double Buff StrPer button is clicked
 function doButtonDoubleBuffStrPer(mp, unbuffedStr, buffsStr, unbuffedPer, buffsPer){
-  var enoughMana = checkMana(mp, DOUBLE_BUFF_STR_PER_MP_COST, false);
+  let enoughMana = checkMana(mp, DOUBLE_BUFF_STR_PER_MP_COST, false);
   if (enoughMana) {
     valorousPresence(unbuffedStr, buffsStr);
     toolsOfTheTrade(unbuffedPer, buffsPer);
@@ -569,7 +569,7 @@ function doButtonDoubleBuffStrPer(mp, unbuffedStr, buffsStr, unbuffedPer, buffsP
 
 // When the Double Buff IntCon button is clicked
 function doButtonDoubleBuffIntCon(mp, unbuffedInt, buffsInt, unbuffedCon, buffsCon){
-  var enoughMana = checkMana(mp, DOUBLE_BUFF_INT_CON_MP_COST, false);
+  let enoughMana = checkMana(mp, DOUBLE_BUFF_INT_CON_MP_COST, false);
   if (enoughMana) {
     earthquake(unbuffedInt, buffsInt);
     protectiveAura(unbuffedCon, buffsCon);
@@ -578,7 +578,7 @@ function doButtonDoubleBuffIntCon(mp, unbuffedInt, buffsInt, unbuffedCon, buffsC
 
 // When the Double Buff IntPer button is clicked
 function doButtonDoubleBuffIntPer(mp, unbuffedInt, buffsInt, unbuffedPer, buffsPer){
-  var enoughMana = checkMana(mp, DOUBLE_BUFF_INT_PER_MP_COST, false);
+  let enoughMana = checkMana(mp, DOUBLE_BUFF_INT_PER_MP_COST, false);
   if (enoughMana) {
     earthquake(unbuffedInt, buffsInt);
     toolsOfTheTrade(unbuffedPer, buffsPer);
@@ -587,7 +587,7 @@ function doButtonDoubleBuffIntPer(mp, unbuffedInt, buffsInt, unbuffedPer, buffsP
 
 // When the Double Buff ConPer button is clicked
 function doButtonDoubleBuffConPer(mp, unbuffedCon, buffsCon, unbuffedPer, buffsPer){
-  var enoughMana = checkMana(mp, DOUBLE_BUFF_CON_PER_MP_COST, false);
+  let enoughMana = checkMana(mp, DOUBLE_BUFF_CON_PER_MP_COST, false);
   if (enoughMana) {
     protectiveAura(unbuffedCon, buffsCon);
     toolsOfTheTrade(unbuffedPer, buffsPer);
@@ -878,21 +878,21 @@ function api_updateUser(payload) {
 }
 
 function valorousPresence(unbuffedStr, buffsStr) {
-  var buffAmount = Math.ceil( ( (unbuffedStr * 20) / (unbuffedStr + 200) ) );
+  let buffAmount = Math.ceil( ( (unbuffedStr * 20) / (unbuffedStr + 200) ) );
   api_updateUser({"stats.buffs.str" : buffsStr + buffAmount});
 }
 
 function earthquake(unbuffedInt, buffsInt) {
-  var buffAmount = Math.ceil( ( (unbuffedInt * 30) / (unbuffedInt + 200) ) );
+  let buffAmount = Math.ceil( ( (unbuffedInt * 30) / (unbuffedInt + 200) ) );
   api_updateUser({"stats.buffs.int" : buffsInt + buffAmount});
 }
 
 function protectiveAura(unbuffedCon, buffsCon) {
-  var buffAmount = Math.ceil( ( (unbuffedCon * 200) / (unbuffedCon + 200) ) );
+  let buffAmount = Math.ceil( ( (unbuffedCon * 200) / (unbuffedCon + 200) ) );
   api_updateUser({"stats.buffs.con" : buffsCon + buffAmount});
 }
 
 function toolsOfTheTrade(unbuffedPer, buffsPer) {
-  var buffAmount = Math.ceil( ( (unbuffedPer * 100) / (unbuffedPer + 50) ) );
+  let buffAmount = Math.ceil( ( (unbuffedPer * 100) / (unbuffedPer + 50) ) );
   api_updateUser({"stats.buffs.per" : buffsPer + buffAmount});
 }
