@@ -157,11 +157,11 @@ function doPost(e) {
     (sanitizedAlias == SEAFOAM_ALIAS) || (sanitizedAlias == RANDOM_ALIAS) ) ) {
     
     var timestampKey = TIMESTAMP_KEY;
-    var timeStart = Number(scriptProperties.getProperty(timestampKey));
+    let timeStart = Number(scriptProperties.getProperty(timestampKey));
     if ( (timeStart == 0) || (timeStart == "") || (timeStart == undefined) || (timeStart == null) ) {
       timeStart = Date.now();
     }
-    var timeEnd = Date.now();
+    let timeEnd = Date.now();
     
     // Rate limiting: If it's been less than 30 seconds since they last clicked one of these buttons, do nothing
     if ( (timeEnd - timeStart) >= 30000 ) {
@@ -169,11 +169,11 @@ function doPost(e) {
       const responseUser = api_getAuthenticatedUserProfile("stats");
       user = JSON.parse(responseUser).data;
       
-      var gp = user.stats.gp;
-      var isSnowball = user.stats.buffs.snowball;
-      var isSpookySparkles = user.stats.buffs.spookySparkles;
-      var isShinySeed = user.stats.buffs.shinySeed;
-      var isSeafoam = user.stats.buffs.seafoam;
+      let gp = user.stats.gp;
+      let isSnowball = user.stats.buffs.snowball;
+      let isSpookySparkles = user.stats.buffs.spookySparkles;
+      let isShinySeed = user.stats.buffs.shinySeed;
+      let isSeafoam = user.stats.buffs.seafoam;
       
       // If any of the Boolean search flipped, reset them and subtract 5 GP (if they don't have it, send error meesage)
       if ( (isSnowball) || (isSpookySparkles) || (isShinySeed) || (isSeafoam) ) {
@@ -239,7 +239,7 @@ function doButtonSeafoamTransformation(gp){
 
 // When the Random Transformation button is clicked
 function doButtonRandomTransformation(gp){
-  var rand = Math.floor((Math.random() * 4) + 1);
+  let rand = Math.floor((Math.random() * 4) + 1);
   switch (rand){
     case 1:
       api_updateUser({"stats.buffs.snowball" : true, "stats.gp" : gp - 15});
