@@ -109,9 +109,10 @@ function doPost(e) {
       content = JSON.parse(responseContent).data;
     
       // Using these, calculate total constitution and how much the anti-buff should be to set CON to 1
-      var constitutionBuffs = user.stats.buffs.con;
+      let buffsCon = user.stats.buffs.con;
+      if (!user.stats.buffs.con) { buffsCon = 0; }
       let con = calculateConstitution();
-      var unbuffedConstitution = con - constitutionBuffs;
+      var unbuffedConstitution = con - buffsCon;
       var antiBuffCon = 1 - unbuffedConstitution;
       
       // Anti-buff user, save value, increment counter
