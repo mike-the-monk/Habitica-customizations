@@ -186,71 +186,73 @@ function doPost(e) {
         }
       }
       // Otherwise, subtract 15 GP and do the correct transformation (if they don't have it, send error meesage)
-      else {
-        if (sanitizedAlias == SNOWBALL_ALIAS) {
-          if ( gp >= 15) {
-            api_updateUser({"stats.buffs.snowball" : true, "stats.gp" : gp - 15});
-          }
-          else {
-            api_sendPrivateMessage({"message" : "Insufficient gold: you need at least 15 GP.", "toUserId" : USER_ID});
-          }
-        }
-      
-        else if (sanitizedAlias == SPOOKY_SPARKLES_ALIAS) {
-          if ( gp >= 15) {
-            api_updateUser({"stats.buffs.spookySparkles" : true, "stats.gp" : gp - 15});
-          }
-          else {
-            api_sendPrivateMessage({"message" : "Insufficient gold: you need at least 15 GP.", "toUserId" : USER_ID});
-          }
-        }
-          
-        else if (sanitizedAlias == SHINY_SEED_ALIAS) {
-          if ( gp >= 15) {
-            api_updateUser({"stats.buffs.shinySeed" : true, "stats.gp" : gp - 15});
-          }
-          else {
-            api_sendPrivateMessage({"message" : "Insufficient gold: you need at least 15 GP.", "toUserId" : USER_ID});
-          }
-        }
-          
-        else if (sanitizedAlias == SEAFOAM_ALIAS) {
-          if ( gp >= 15) {
-            api_updateUser({"stats.buffs.seafoam" : true, "stats.gp" : gp - 15});
-          }
-          else {
-            api_sendPrivateMessage({"message" : "Insufficient gold: you need at least 15 GP.", "toUserId" : USER_ID});
-          }
-        }
-          
-        else if (sanitizedAlias == RANDOM_ALIAS) {
-          if ( gp >= 15) {
-            var rand = Math.floor((Math.random() * 4) + 1);
-            switch (rand){
-              case 1:
-                api_updateUser({"stats.buffs.snowball" : true, "stats.gp" : gp - 15});
-                break;
-              case 2:
-                api_updateUser({"stats.buffs.spookySparkles" : true, "stats.gp" : gp - 15});
-                break;
-              case 3:
-                api_updateUser({"stats.buffs.shinySeed" : true, "stats.gp" : gp - 15});
-                break;
-              case 4:
-                api_updateUser({"stats.buffs.seafoam" : true, "stats.gp" : gp - 15});
-                break;
-            }
-          }
-          else {
-            api_sendPrivateMessage({"message" : "Insufficient gold: you need at least 15 GP.", "toUserId" : USER_ID});
-          }
+      if (gp < 15) {
+        api_sendPrivateMessage({"message" : "Insufficient gold: you need at least 15 GP.", "toUserId" : USER_ID});
+      } else {
+        // Switch-case based on which button was pressed. All button-click actions are in a separate function.
+        switch (sanitizedAlias){
+          case SNOWBALL_ALIAS:
+            doButtonSnowballTransformation(gp);
+            break;
+          case SPOOKY_SPARKLES_ALIAS:
+            doButtonSpookySparklesTransformation(gp);
+            break;
+          case SHINY_SEED_ALIAS:
+            doButtonShinySeedTransformation(gp);
+            break;
+          case SEAFOAM_ALIAS:
+            doButtonSeafoamTransformation(gp);
+            break;
+          case RANDOM_ALIAS:
+            doButtonRandomTransformation(gp);
+            break;
         }
       }
+
       // Save values to non-volatile memory, but only from within the rate-limited if-block (we don't want to save the timestamp unless the script ran)
       timeStart = timeEnd;
-    scriptProperties.setProperty(timestampKey, timeStart);
+      scriptProperties.setProperty(timestampKey, timeStart);
     }
     return HtmlService.createHtmlOutput();
+  }
+}
+
+// When the Snowball Transformation button is clicked
+function doButtonSnowballTransformation(gp){
+  api_updateUser({"stats.buffs.snowball" : true, "stats.gp" : gp - 15});
+}
+
+// When the Spooky Sparkles Transformation button is clicked
+function doButtonSpookySparklesTransformation(gp){
+  api_updateUser({"stats.buffs.spookySparkles" : true, "stats.gp" : gp - 15});
+}
+
+// When the Shiny Seed Transformation button is clicked
+function doButtonShinySeedTransformation(gp){
+  api_updateUser({"stats.buffs.shinySeed" : true, "stats.gp" : gp - 15});
+}
+
+// When the Seafoam Transformation button is clicked
+function doButtonSeafoamTransformation(gp){
+  api_updateUser({"stats.buffs.seafoam" : true, "stats.gp" : gp - 15});
+}
+
+// When the Random Transformation button is clicked
+function doButtonRandomTransformation(gp){
+  var rand = Math.floor((Math.random() * 4) + 1);
+  switch (rand){
+    case 1:
+      api_updateUser({"stats.buffs.snowball" : true, "stats.gp" : gp - 15});
+      break;
+    case 2:
+      api_updateUser({"stats.buffs.spookySparkles" : true, "stats.gp" : gp - 15});
+      break;
+    case 3:
+      api_updateUser({"stats.buffs.shinySeed" : true, "stats.gp" : gp - 15});
+      break;
+    case 4:
+      api_updateUser({"stats.buffs.seafoam" : true, "stats.gp" : gp - 15});
+      break;
   }
 }
 
