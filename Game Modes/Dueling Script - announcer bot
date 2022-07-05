@@ -166,6 +166,7 @@ const MSG_AGREE4 = MSG_AGREE2;
 const MSG_AGREE5 = "`\n\n --- \n\nSince I can only set up one duel at a time and this one is now successfully set up, **I'm free to set up another duel if anyone wants!**";
 
 // Error messages from the announcer bot
+const MSG_ERROR_GUILD_ID_FORMAT = "The Guild ID you pasted is not in the correct format. Please ensure you copied the entire thing and try again."
 const MSG_ERROR_BEGINNING = "Error with ";
 const MSG_ERROR_ENDING = ". Please" + MSG_CONTACT_AUTHOR1 + " to troubleshoot" + MSG_CONTACT_AUTHOR2;
 const MSG_ERROR_ENDING_DUEL_START = ", there was an error trying to end the duel.\n\nFor more information about this error, have the player who runs the bot account (";
@@ -184,7 +185,13 @@ function doOneTimeSetup() {
     const PARTY_ID = getParty();
     scriptProperties.setProperty(groupIdKey, PARTY_ID);
   } else if (DUEL_GROUP_TYPE == 1) { // If guild
-    scriptProperties.setProperty(groupIdKey, GUILD_ID);
+    // Confirm that it is formatted correctly, which would indicate that the user pasted the entire thing
+    let validFormat = checkUuidFormat(GUILD_ID);
+    if (validFormat) {
+      scriptProperties.setProperty(groupIdKey, GUILD_ID);
+    } else {
+      api_sendPrivateMessageAlways({"message" : MSG_ERROR_GUILD_ID_FORMAT, "toUserId" : USER_ID});
+    }
   }
   
   const GROUP_ID = scriptProperties.getProperty(groupIdKey);
@@ -210,7 +217,7 @@ function doOneTimeSetup() {
   // Wait 5 seconds
   Utilities.sleep(5000);
   
-  // Post a test message to the Guild to show that the account worked correctly.
+  // Post a test message to the Guild/party to show that the account worked correctly.
   api_postChatMessageToGroup({"message": MSG_INTRO});
   // I will use this message to save the bot username for later reference.
   
@@ -406,6 +413,104 @@ function api_sendPrivateMessageAlways(payload) {
   }
   const url = "https://habitica.com/api/v3/members/send-private-message";
   return UrlFetchApp.fetch(url, params);
+}
+
+// Checks if a UUID is in the correct formatting: 00000000-0000-4000-A000-000000000000
+function checkUuidFormat(uuidToCheck){
+  // Trim, just in case there was extra whitespace
+  let stringTemp = uuidToCheck.trim();
+
+  // Total length of string should be 36 (Four total dashes and 32 other hexadecimal characters)
+  let length = stringTemp.length;
+  if (length != 36) {
+    return false;
+  } else {
+    // I'm going to slightly cheat here: if I alphabetize the characters, I can sort out the dashes. 
+    let stringTemp2 = stringTemp.split('').sort().join('').trim();
+
+    // Checks that total number of dashes is only 4, and ensures that the first 4 characters are dashes
+    let dashCount = checkDashes(stringTemp2);
+    if (dashCount != 4) {
+      return false;
+    } else {     
+      // Remove the first four characters from the string, we already know they are dashes
+      let stringShorter = createSubstring(stringTemp2, 4, length);
+
+      // Check if the other characters are valid for hexadecimal
+      let isHex = isHexadecimal(stringShorter);
+      if (!isHex){
+        return false;
+      } else {
+        // The character counts are valid, exactly 4 dashes and the rest are hexadecimal (and total lenggth is valid)
+        // The final thing to do is ensure that the string follows the right pattern of hexadecimal and dashes
+        // Parsing the string at the dashes would be the hard way to do it. The easy way is to ensure that the dashes appear at the correct character index
+
+        let dashLocationsConfirmed = checkDashLocations(stringTemp); // I no longer need the alphabetized string, I need to use the original one
+        if (dashLocationsConfirmed) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+  }
+}
+
+// Checks that total number of dashes is only 4, and ensures that the first 4 characters are dashes
+function checkDashes(stringToCheck){
+  // First, count them
+  let count = 0;
+  for (let i = 0; i < 36; i++) {
+    if (stringToCheck.charAt(i) == "-" ) {
+      count++;
+    }
+  }
+
+  // Since the string is alphabetized, I probably don't have to do this, but I will anyway: confirm each of the first four are dashes
+  if (count != 4) { // If more than 4 are dashes, I catch it here
+    return count;
+  } else if (count == 4) {
+    for (let j = 0; j < 4; j++) {
+      if (stringToCheck.charAt(j) != "-" ) { // If any of the first 4 characters are not a dash, it fails. End the loop.
+        count = -1;
+        break;
+      }
+    }
+    return count;
+  }
+}
+
+// Checks if each of the characters are valid for hexadecimal
+function isHexadecimal(stringToCheck) {
+  regexp = /^[0-9a-fA-F]+$/;
+
+  if (regexp.test(stringToCheck)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+// Checks that dashes occur at the correct character index locations. Format is 00000000-0000-4000-A000-000000000000
+function checkDashLocations(stringToCheck) {
+  let count = 0;
+
+  // Dashes should be at character index 8, 13, 18, and 23. Jump over the loop at other iterations.
+  for (let i = 0; i < 36; i++) {
+    if ( (i == 8) || (i == 13) || (i == 18) || (i == 23) ) {
+      if (stringToCheck.charAt(i) == "-") {
+        count++;
+      }
+    } else {
+      continue;
+    }
+  }
+
+  if (count == 4) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 // Create a webhook if no duplicate exists
@@ -734,7 +839,7 @@ function createCase100s(indexAutoError1, indexAutoError2, indexFastStartDuel, in
       // If there are errors in the other script, it probably won't pass here.
       let passedDuelEndChecks = parseAndCheckDuelEnd(text, indexEndDuel);
       
-      // If it didn't pass, create generic error message to post to the Guild.
+      // If it didn't pass, create generic error message to post to the Guild/party.
       // Specific causes of the error will be not shown publicly, instead just in the Console log and have already been posted by the function above.
       if (!passedDuelEndChecks) {
         let TAG_DUEL_ENDER = appendAtSymbol(usernameWhoPosted);
@@ -900,11 +1005,11 @@ function checkCompleteDuelStartStringNumeric(input, participant2Key, wagerKey, s
       
       let wager = parseFloat(wagerTemp);
       wagerTemp = wager;
-      wager = sanitizePositive(wagerTemp); // Ensure that it is greater than 1
+      wager = sanitizeInput(wagerTemp, 1, "none"); // Ensure that it is greater than 1
       
       let scoreNeeded = parseFloat(scoreNeededTemp);
       scoreNeededTemp = scoreNeeded;
-      scoreNeeded = sanitizePositive(scoreNeededTemp); // Ensure that it is greater than 1
+      scoreNeeded = sanitizeInput(scoreNeededTemp, 1, "none"); // Ensure that it is greater than 1
       
       scriptProperties.setProperty(participant2Key, name);
       scriptProperties.setProperty(wagerKey, wager);
@@ -947,12 +1052,28 @@ function countHowManyAreNumbers(wagerIsNumber, scoreNeededIsNumber) {
   }
 }
 
-// Ensure that the input is greater than the minimum (normally 0, but for this script, minimum is 1).
-function sanitizePositive(value) {
-  if (value < 1) {
-    return 1;
-  } else {
-    return value;
+// Ensures that the input is between the minimum and maximum. Can use "none" in either argument to indicate if there is either no minimum or no maximum.
+function sanitizeInput(input, minimum, maximum) {
+  if (minimum == "none"){ // Condition for if there is no minimum
+    if ( input > maximum ) {
+      return maximum;
+    } else { 
+      return input;
+    }
+  } else if (maximum == "none"){ // Condition for if there is no maximum
+    if ( input < minimum ) {
+      return minimum;
+    } else { 
+      return input;
+    }
+  } else { // Condition where there is both minimum and maximum
+    if ( input < minimum ) {
+      return minimum;
+    } else if ( input > maximum ) {
+      return maximum;
+    } else { 
+      return input;
+    }
   }
 }
 
@@ -1503,7 +1624,7 @@ function parseAndSave(text, indexStart, offset, isName, isNumeric, parameterToSa
     // If it's a numeric parameter, turn it into a number
     if (isNumeric) {
       let substringAsNumber = parseFloat(substring);
-      let positiveNumber = sanitizePositive(substringAsNumber); // Ensure that it is greater than 1
+      let positiveNumber = sanitizeInput(substringAsNumber, 1, "none"); // Ensure that it is greater than 1
       scriptProperties.setProperty(parameterToSave_Key, positiveNumber);
     } else { // It shouldn't be possible to get this condition
       api_postChatMessageToGroup({"message": MSG_ERROR_BEGINNING + "`parseAndSave`" + MSG_ERROR_ENDING});
