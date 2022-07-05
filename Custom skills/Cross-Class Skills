@@ -96,6 +96,18 @@ const LEVEL_LOCK_BRUTAL_SMASH = 11;
 const LEVEL_LOCK_RADIANT_SHIELD = 11;
 const LEVEL_LOCK_SNEAK_ATTACK = 11;
 
+const MSG_LEVEL_LOCK_FAIL_START = "Insufficient level: you must be at least level ";
+const MSG_LEVEL_LOCK_FAIL_END = " to use this skill.";
+const MSG_LEVEL_LOCK_FAIL_PICKPOCKET = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LOCK_PICKPOCKET + MSG_LEVEL_LOCK_FAIL_END;
+const MSG_LEVEL_LOCK_FAIL_BACKSTAB = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LOCK_BACKSTAB + MSG_LEVEL_LOCK_FAIL_END;
+const MSG_LEVEL_LOCK_FAIL_STEALTH = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LOCK_STEALTH + MSG_LEVEL_LOCK_FAIL_END;
+const MSG_LEVEL_LOCK_FAIL_HEALING_LIGHT = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LOCK_HEALING_LIGHT + MSG_LEVEL_LOCK_FAIL_END;
+const MSG_LEVEL_LOCK_FAIL_CHILLING_FROST = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LOCK_CHILLING_FROST + MSG_LEVEL_LOCK_FAIL_END;
+const MSG_LEVEL_LOCK_FAIL_BURST_OF_FLAMES = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LOCK_BURST_OF_FLAMES + MSG_LEVEL_LOCK_FAIL_END;
+const MSG_LEVEL_LOCK_FAIL_BRUTAL_SMASH = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LOCK_BRUTAL_SMASH + MSG_LEVEL_LOCK_FAIL_END;
+const MSG_LEVEL_LOCK_FAIL_RADIANT_SHIELD = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LOCK_RADIANT_SHIELD + MSG_LEVEL_LOCK_FAIL_END;
+const MSG_LEVEL_LOCK_FAIL_SNEAK_ATTACK = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LOCK_SNEAK_ATTACK + MSG_LEVEL_LOCK_FAIL_END;
+
 const MP_COST_PICKPOCKET = 15;
 const MP_COST_BACKSTAB = 20;
 const MP_COST_STEALTH = 50;
@@ -383,187 +395,44 @@ function doPost(e) {
         var unbuffedInt = intelligence - buffsInt;
         var unbuffedCon = constitution - buffsCon;
         var unbuffedPer = perception - buffsPer;
-                
-        // Check which alias it is. Then, check level lock and mana.
-        if (sanitizedAlias == PICKPOCKET_ALIAS) {
-          if ( lvl < LEVEL_LOCK_PICKPOCKET ) {
-            api_sendPrivateMessage({"message" : "Insufficient level: you must be at least level 11 to use this skill.", "toUserId" : USER_ID});
-          }
-          else {       
-            var enoughMana = checkMana(mp, MP_COST_PICKPOCKET, false);
-            if (enoughMana) {
-              pickpocket(gp, perception);
-            }
-          }
-        }
-        else if (sanitizedAlias == BACKSTAB_ALIAS) {
-          if ( lvl < LEVEL_LOCK_BACKSTAB  ) {
-            api_sendPrivateMessage({"message" : "Insufficient level: you must be at least level 12 to use this skill.", "toUserId" : USER_ID});
-          }
-          else {
-            var enoughMana = checkMana(mp, MP_COST_BACKSTAB, false);
-            if (enoughMana) {
-              backstab(gp, xp, strength);
-            }
-          }
-        }
-        else if (sanitizedAlias == STEALTH_ALIAS) {
-          if ( lvl < LEVEL_LOCK_STEALTH  ) {
-            api_sendPrivateMessage({"message" : "Insufficient level: you must be at least level 14 to use this skill.", "toUserId" : USER_ID});
-          }
-          else {
-            // Check how many Dailies due but aren't complete
-            const responseTaskStealth = api_getUserTasks("dailys");
-            const tasksStealth = JSON.parse(responseTaskStealth).data;
-            var tasksDueAndNotComplete = 0;
-            
-            for (var i in tasksStealth) {
-              if ( (tasksStealth[i].isDue == true)  && (tasksStealth[i].completed == false) ) {
-                tasksDueAndNotComplete++;
-              }
-            }
-            
-            // If already avoided all dailies that are due but not complete, send message and don't subtract MP cost
-            if (stealthedDailies >= tasksDueAndNotComplete){
-              api_sendPrivateMessageAlways({"message" : "You've already avoided all your Dailies, so additional uses of this skill have no effect.", "toUserId" : USER_ID});
-            }
-            // Do skill as normal
-            else {
-              var enoughMana = checkMana(mp, MP_COST_STEALTH, false);
-              if (enoughMana) {
-                stealth (totalDailies, stealthedDailies, perception);
-              }
-            }
-          }
-        }
-        else if (sanitizedAlias == HEALING_LIGHT_ALIAS) {
-          if ( lvl < LEVEL_LOCK_HEALING_LIGHT ) {
-            api_sendPrivateMessage({"message" : "Insufficient level: you must be at least level 11 to use this skill.", "toUserId" : USER_ID});
-          }
-          else {
-            // If not at max HP, subtract mana cost and do the skill
-            if (hp < 50) {
-              var enoughMana = checkMana(mp, MP_COST_HEALING_LIGHT, false);
-              if (enoughMana) {
-                healingLight (hp, constitution, intelligence);
-              }
-            }
-            else { // if already at max HP, do nothing
-              api_sendPrivateMessage({"message" : "You are already at max HP.", "toUserId" : USER_ID});
-            }
-          }
-        }
-        else if (sanitizedAlias == CHILLING_FROST_ALIAS) {
-          if ( lvl < LEVEL_LOCK_CHILLING_FROST  ) {
-            api_sendPrivateMessage({"message" : "Insufficient level: you must be at least level 14 to use this skill.", "toUserId" : USER_ID});
-          }
-          else {
-            var enoughMana = checkMana(mp, MP_COST_CHILLING_FROST, true);
-            if (enoughMana) {
-              // Check if already cast, send message if yes
-              if (frostCast == true){
-                api_sendPrivateMessageAlways({"message" : "You've already used this skill. Additional uses have no effect.", "toUserId" : USER_ID});
-              }
-              else {
-                chillingFrost(mp, MP_COST_CHILLING_FROST); // includes deducting MP cost
-              }
-            }
-          }
-        }
-        else if (sanitizedAlias == BURST_OF_FLAMES_XP_ONLY_ALIAS) {
-          if ( lvl < LEVEL_LOCK_BURST_OF_FLAMES  ) {
-            api_sendPrivateMessage({"message" : "Insufficient level: you must be at least level 11 to use this skill.", "toUserId" : USER_ID});
-          }
-          else {
-            var enoughMana = checkMana(mp, MP_COST_BURST_OF_FLAMES_XP_ONLY, false);
-            if (enoughMana) {
-              var xpGain = burstOfFlamesXp(intelligence, perception, 1); 
-              api_updateUser({"stats.exp" : xp + xpGain});
-            }
-          }
-        }
-        else if (sanitizedAlias == BURST_OF_FLAMES_DAMAGE_ONLY_ALIAS) {
-          if ( lvl < LEVEL_LOCK_BURST_OF_FLAMES  ) {
-            api_sendPrivateMessage({"message" : "Insufficient level: you must be at least level 11 to use this skill.", "toUserId" : USER_ID});
-          }
-          else {
-            // Check how much damage it will deal once, and then whether they have enough MP for multi-use (to exceed 90.71 damage)
-            var damageOnce = flamesDamage(intelligence);
-            var numberTimes = checkManaMultiUse(mp, MP_COST_BURST_OF_FLAMES_DAMAGE_ONLY, damageOnce, false, intelligence, perception);
-            
-            // If mana is sufficient
-            if (numberTimes > 0) {
-              var damageDealt = damageOnce * numberTimes;
-              doDamage(damageDealt, MP_COST_BURST_OF_FLAMES_DAMAGE_ONLY, numberTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, false, 0);
-            }
-          }
-        }
-        else if (sanitizedAlias == BURST_OF_FLAMES_XP_PLUS_DAMAGE_ALIAS) {
-          if ( lvl < LEVEL_LOCK_BURST_OF_FLAMES ) {
-            api_sendPrivateMessage({"message" : "Insufficient level: you must be at least level 11 to use this skill.", "toUserId" : USER_ID});
-          }
-          else {
-            // Check how much damage it will deal once, and then whether they have enough MP for multi-use (to exceed 90.71 damage)
-            var damageOnce = flamesDamage(intelligence);
-            var numberTimes = checkManaMultiUse(mp, MP_COST_BURST_OF_FLAMES_XP_PLUS_DAMAGE, damageOnce, true, intelligence, perception);
-            
-            // If mana is sufficient
-            if (numberTimes > 0) {
-              var xpGain = burstOfFlamesXp(intelligence, perception, numberTimes);
-              var damageDealt = damageOnce * numberTimes;
-              doDamage(damageDealt, MP_COST_BURST_OF_FLAMES_XP_PLUS_DAMAGE, numberTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, true, xpGain);
-            }
-          }
-        }
-        else if (sanitizedAlias == BRUTAL_SMASH_ALIAS) {
-          if ( lvl < LEVEL_LOCK_BRUTAL_SMASH ) {
-            api_sendPrivateMessage({"message" : "Insufficient level: you must be at least level 11 to use this skill.", "toUserId" : USER_ID});
-          }
-          else {
-            // Check how much damage it will deal once, and then whether they have enough MP for multi-use (to exceed 90.71 damage)
-            var damageOnce = smashDamageNoCrit(strength);
-            var numberTimes = checkManaMultiUse(mp, MP_COST_BRUTAL_SMASH, damageOnce, false, intelligence, perception);
-            
-            // If mana is sufficient
-            if (numberTimes > 0) {
-              var damageDealt = smashDamageActual(strength, constitution, numberTimes);
-              doDamage(damageDealt, MP_COST_BRUTAL_SMASH, numberTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, false, 0);
-            }
-          }
-        }
-        else if (sanitizedAlias == RADIANT_SHIELD_ALIAS) {
-          if ( lvl < LEVEL_LOCK_RADIANT_SHIELD ) {
-            api_sendPrivateMessage({"message" : "Insufficient level: you must be at least level 11 to use this skill.", "toUserId" : USER_ID});
-          }
-          else {
-            // Check how much damage it will deal once, and then whether they have enough MP for multi-use (to exceed 90.71 damage)
-            var damageOnce = radiantDamageNoCrit(constitution);
-            var numberTimes = checkManaMultiUse(mp, MP_COST_RADIANT_SHIELD, damageOnce, false, intelligence, perception);
-            
-            // If mana is sufficient
-            if (numberTimes > 0) {
-              var damageDealt = radiantDamageActual(constitution, intelligence, numberTimes);
-              doDamage(damageDealt, MP_COST_RADIANT_SHIELD, numberTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, false, 0);
-            }
-          }
-        }
-        else if (sanitizedAlias == SNEAK_ATTACK_ALIAS) {
-          if ( lvl < LEVEL_LOCK_SNEAK_ATTACK ) {
-            api_sendPrivateMessage({"message" : "Insufficient level: you must be at least level 11 to use this skill.", "toUserId" : USER_ID});
-          }
-          else {
-            // Check how much damage it will deal once, and then whether they have enough MP for multi-use (to exceed 90.71 damage)
-            var damageOnce = sneakDamageNoCrit(perception);
-            var numberTimes = checkManaMultiUse(mp, MP_COST_SNEAK_ATTACK, damageOnce, false, intelligence, perception);
-            
-            // If mana is sufficient
-            if (numberTimes > 0) {
-              var damageDealt = sneakDamageActual(perception, strength, numberTimes);
-              doDamage(damageDealt, MP_COST_SNEAK_ATTACK, numberTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, false, 0);
-            }
-          }
-        }
         
+        // Switch-case based on which button was pressed. All button-click actions are in a separate function.
+        switch (sanitizedAlias){
+          case PICKPOCKET_ALIAS:
+            doButtonPickpocket(lvl, mp, gp, perception);
+            break;
+          case BACKSTAB_ALIAS:
+            doButtonBackstab(lvl, mp, gp, xp, strength);
+            break;
+          case STEALTH_ALIAS:
+            doButtonStealth(lvl, stealthedDailies, mp, totalDailies, perception);
+            break;
+          case HEALING_LIGHT_ALIAS:
+            doButtonHealingLight(lvl, mp, hp, constitution, intelligence);
+            break;
+          case CHILLING_FROST_ALIAS:
+            doButtonChillingFrost(lvl, mp, frostCast);
+            break;
+          case BURST_OF_FLAMES_XP_ONLY_ALIAS:
+            doButtonBurstOfFlamesXpOnly(lvl, mp, xp, intelligence, perception);
+            break;
+          case BURST_OF_FLAMES_DAMAGE_ONLY_ALIAS:
+            doButtonBurstOfFlamesDamageOnly(lvl, hp, xp, mp, gp, intelligence, perception, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer);
+            break;
+          case BURST_OF_FLAMES_XP_PLUS_DAMAGE_ALIAS:
+            doButtonBurstOfFlamesXpAndDamage(lvl, hp, xp, mp, gp, intelligence, perception, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer);
+            break;
+          case BRUTAL_SMASH_ALIAS:
+            doButtonBrutalSmash(lvl, hp, xp, mp, gp, strength, intelligence, perception, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer);
+            break;
+          case RADIANT_SHIELD_ALIAS:
+            doButtonRadiantShield(lvl, hp, xp, mp, gp, constitution, intelligence, perception, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer);
+            break;
+          case SNEAK_ATTACK_ALIAS:
+            doButtonSneakAttack(lvl, hp, xp, mp, gp, perception, intelligence, strength, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer);
+            break;
+        }
+
         // Save values to non-volatile memory, but only from within the rate-limited if-block (we don't want to save the timestamp unless the script ran)
         timeStart = timeEnd;
         scriptProperties.setProperty(timestampKey, timeStart);
@@ -572,6 +441,183 @@ function doPost(e) {
   }
   
   return HtmlService.createHtmlOutput();
+}
+
+// When the Pickpocket button is clicked
+function doButtonPickpocket(lvl, mp, gp, perception){
+  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_PICKPOCKET, MSG_LEVEL_LOCK_FAIL_PICKPOCKET);
+  if (sufficientLevel){
+    var enoughMana = checkMana(mp, MP_COST_PICKPOCKET, false);
+    if (enoughMana) {
+      pickpocket(gp, perception);
+    }
+  }
+}
+
+// When the Backstab button is clicked
+function doButtonBackstab(lvl, mp, gp, xp, strength){
+  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_BACKSTAB, MSG_LEVEL_LOCK_FAIL_BACKSTAB);
+  if (sufficientLevel){
+    var enoughMana = checkMana(mp, MP_COST_BACKSTAB, false);
+    if (enoughMana) {
+      backstab(gp, xp, strength);
+    }
+  }
+}
+
+// When the Stealth button is clicked
+function doButtonStealth(lvl, stealthedDailies, mp, totalDailies, perception){
+  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_STEALTH, MSG_LEVEL_LOCK_FAIL_STEALTH);
+  if (sufficientLevel){
+    // Check how many Dailies due but aren't complete
+    const responseTaskStealth = api_getUserTasks("dailys");
+    const tasksStealth = JSON.parse(responseTaskStealth).data;
+    var tasksDueAndNotComplete = 0;
+
+    for (var i in tasksStealth) {
+      if ( (tasksStealth[i].isDue == true)  && (tasksStealth[i].completed == false) ) {
+        tasksDueAndNotComplete++;
+      }
+
+    // If already avoided all dailies that are due but not complete, send message and don't subtract MP cost
+    if (stealthedDailies >= tasksDueAndNotComplete){
+      api_sendPrivateMessageAlways({"message" : "You've already avoided all your Dailies, so additional uses of this skill have no effect.", "toUserId" : USER_ID});
+    }
+    // Do skill as normal
+    else {
+      var enoughMana = checkMana(mp, MP_COST_STEALTH, false);
+      if (enoughMana) {
+        stealth (totalDailies, stealthedDailies, perception);
+      }
+    }
+  }
+}
+
+// When the Healing Light button is clicked
+function doButtonHealingLight(lvl, mp, hp, constitution, intelligence){
+  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_HEALING_LIGHT, MSG_LEVEL_LOCK_FAIL_HEALING_LIGHT);
+  if (sufficientLevel){
+    // If not at max HP, subtract mana cost and do the skill
+    if (hp < 50) {
+      var enoughMana = checkMana(mp, MP_COST_HEALING_LIGHT, false);
+      if (enoughMana) {
+        healingLight(hp, constitution, intelligence);
+      }
+    }
+    else { // if already at max HP, do nothing
+      api_sendPrivateMessage({"message" : "You are already at max HP.", "toUserId" : USER_ID});
+    }
+  }
+}
+
+// When the Chilling Frost button is clicked
+function doButtonChillingFrost(lvl, mp, frostCast){
+  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_CHILLING_FROST, MSG_LEVEL_LOCK_FAIL_CHILLING_FROST);
+  if (sufficientLevel){
+    var enoughMana = checkMana(mp, MP_COST_CHILLING_FROST, true);
+    if (enoughMana) {
+      // Check if already cast, send message if yes
+      if (frostCast == true){
+        api_sendPrivateMessageAlways({"message" : "You've already used this skill. Additional uses have no effect.", "toUserId" : USER_ID});
+      }
+      else {
+        chillingFrost(mp, MP_COST_CHILLING_FROST); // includes deducting MP cost
+      }
+    }
+  }
+}
+
+// When the Burst of Flames (XP only) button is clicked
+function doButtonBurstOfFlamesXpOnly(lvl, mp, xp, intelligence, perception){
+  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_BURST_OF_FLAMES, MSG_LEVEL_LOCK_FAIL_BURST_OF_FLAMES);
+  if (sufficientLevel){
+    var enoughMana = checkMana(mp, MP_COST_BURST_OF_FLAMES_XP_ONLY, false);
+    if (enoughMana) {
+      var xpGain = burstOfFlamesXp(intelligence, perception, 1); 
+      api_updateUser({"stats.exp" : xp + xpGain});
+    }
+  }
+}
+
+// When the Burst of Flames (damage only) button is clicked
+function doButtonBurstOfFlamesDamageOnly(lvl, hp, xp, mp, gp, intelligence, perception, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer){
+  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_BURST_OF_FLAMES, MSG_LEVEL_LOCK_FAIL_BURST_OF_FLAMES);
+  if (sufficientLevel){
+    // Check how much damage it will deal once, and then whether they have enough MP for multi-use (to exceed 90.71 damage)
+    var damageOnce = flamesDamage(intelligence);
+    var numberTimes = checkManaMultiUse(mp, MP_COST_BURST_OF_FLAMES_DAMAGE_ONLY, damageOnce, false, intelligence, perception);
+
+    // If mana is sufficient
+    if (numberTimes > 0) {
+      var damageDealt = damageOnce * numberTimes;
+      doDamage(damageDealt, MP_COST_BURST_OF_FLAMES_DAMAGE_ONLY, numberTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, false, 0);
+    }
+  }
+}
+
+// When the Burst of Flames (XP and damage) button is clicked
+function doButtonBurstOfFlamesXpAndDamage(lvl, hp, xp, mp, gp, intelligence, perception, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer){
+  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_BURST_OF_FLAMES, MSG_LEVEL_LOCK_FAIL_BURST_OF_FLAMES);
+  if (sufficientLevel){
+    // Check how much damage it will deal once, and then whether they have enough MP for multi-use (to exceed 90.71 damage)
+    var damageOnce = flamesDamage(intelligence);
+    var numberTimes = checkManaMultiUse(mp, MP_COST_BURST_OF_FLAMES_XP_PLUS_DAMAGE, damageOnce, true, intelligence, perception);
+
+    // If mana is sufficient
+    if (numberTimes > 0) {
+      var xpGain = burstOfFlamesXp(intelligence, perception, numberTimes);
+      var damageDealt = damageOnce * numberTimes;
+      doDamage(damageDealt, MP_COST_BURST_OF_FLAMES_XP_PLUS_DAMAGE, numberTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, true, xpGain);
+    }
+  }
+}
+
+// When the Brutal Smash button is clicked
+function doButtonBrutalSmash(lvl, hp, xp, mp, gp, strength, intelligence, perception, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer){
+  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_BRUTAL_SMASH, MSG_LEVEL_LOCK_FAIL_BRUTAL_SMASH);
+  if (sufficientLevel){
+    // Check how much damage it will deal once, and then whether they have enough MP for multi-use (to exceed 90.71 damage)
+    var damageOnce = smashDamageNoCrit(strength);
+    var numberTimes = checkManaMultiUse(mp, MP_COST_BRUTAL_SMASH, damageOnce, false, intelligence, perception);
+
+    // If mana is sufficient
+    if (numberTimes > 0) {
+      var damageDealt = smashDamageActual(strength, constitution, numberTimes);
+      doDamage(damageDealt, MP_COST_BRUTAL_SMASH, numberTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, false, 0);
+    }
+  }
+}
+
+// When the Radiant Shield button is clicked
+function doButtonRadiantShield(lvl, hp, xp, mp, gp, constitution, intelligence, perception, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer){
+  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_RADIANT_SHIELD, MSG_LEVEL_LOCK_FAIL_RADIANT_SHIELD);
+  if (sufficientLevel){
+    // Check how much damage it will deal once, and then whether they have enough MP for multi-use (to exceed 90.71 damage)
+    var damageOnce = radiantDamageNoCrit(constitution);
+    var numberTimes = checkManaMultiUse(mp, MP_COST_RADIANT_SHIELD, damageOnce, false, intelligence, perception);
+
+    // If mana is sufficient
+    if (numberTimes > 0) {
+      var damageDealt = radiantDamageActual(constitution, intelligence, numberTimes);
+      doDamage(damageDealt, MP_COST_RADIANT_SHIELD, numberTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, false, 0);
+    }
+  }
+}
+
+// When the Sneak Attack button is clicked
+function doButtonSneakAttack(lvl, hp, xp, mp, gp, perception, intelligence, strength, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer) {
+  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_SNEAK_ATTACK, MSG_LEVEL_LOCK_FAIL_SNEAK_ATTACK);
+  if (sufficientLevel){
+    // Check how much damage it will deal once, and then whether they have enough MP for multi-use (to exceed 90.71 damage)
+    var damageOnce = sneakDamageNoCrit(perception);
+    var numberTimes = checkManaMultiUse(mp, MP_COST_SNEAK_ATTACK, damageOnce, false, intelligence, perception);
+
+    // If mana is sufficient
+    if (numberTimes > 0) {
+      var damageDealt = sneakDamageActual(perception, strength, numberTimes);
+      doDamage(damageDealt, MP_COST_SNEAK_ATTACK, numberTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, false, 0);
+    }
+  }
 }
 
 // Create custom reward buttons
@@ -870,6 +916,16 @@ function checkManaMultiUse(mp, mpCost, damageOnce, isFlamesXp, int, per) {
   }
   else {
     return numberTimes;
+  }
+}
+
+// Check if sufficient level, send message if not.
+function checkLevelLock(level, levelLock, message){
+  if (level < levelLock){
+    api_sendPrivateMessage({"message" : message, "toUserId" : USER_ID});
+    return false;
+  } else {
+    return true;
   }
 }
 
