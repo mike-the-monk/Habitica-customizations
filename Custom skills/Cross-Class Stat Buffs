@@ -376,129 +376,137 @@ function doPost(e) {
           const responseContent = apiFree_getAllAvailableContentObjects();
           content = JSON.parse(responseContent).data;
           
+          // Calculate stats
+          let str = calculateStrength();
+          let int = calculateIntelligence();
+          let con = calculateConstitution();
+          let per = calculatePerception();
+          
+          // Get buffs (and sanitize if needed)
+          var buffsStr = user.stats.buffs.str;
+          if (!user.stats.buffs.str) { buffsStr = 0; }
+          var buffsInt = user.stats.buffs.int;
+          if (!user.stats.buffs.int) { buffsInt = 0; }
+          var buffsCon = user.stats.buffs.con;
+          if (!user.stats.buffs.con) { buffsCon = 0; }
+          var buffsPer = user.stats.buffs.per;
+          if (!user.stats.buffs.per) { buffsPer = 0; }
+          
           // Calculate unbuffed stats
-          var unbuffedStr = calculateUnbuffedStrength();
-          var unbuffedInt = calculateUnbuffedIntelligence();
-          var unbuffedCon = calculateUnbuffedConstitution();
-          var unbuffedPer = calculateUnbuffedPerception();
+          var unbuffedStr = str - buffsStr;
+          var unbuffedInt = int - buffsInt;
+          var unbuffedCon = con - buffsCon;
+          var unbuffedPer = per - buffsPer;
           
           // Grab other user stats
           var mp = user.stats.mp;
-          var buffsStr = user.stats.buffs.str;
-          if (!user.stats.buffs.str) buffsStr = 0;
-          var buffsInt = user.stats.buffs.int;
-          if (!user.stats.buffs.int) buffsInt = 0;
-          var buffsCon = user.stats.buffs.con;
-          if (!user.stats.buffs.con) buffsCon = 0;
-          var buffsPer = user.stats.buffs.per;
-          if (!user.stats.buffs.per) buffsPer = 0;
           
           // See which buff is supposed to run, then do it (after checking if there's enough mana)
-          if ( sanitizedAlias == OMNI_BUFF_ALIAS ) {
+          if (sanitizedAlias == OMNI_BUFF_ALIAS) {
             var enoughMana = checkMana(mp, OMNI_BUFF_MP_COST, false);
             if (enoughMana) {
-              buffStr(unbuffedStr, buffsStr);
-              buffInt(unbuffedInt, buffsInt);
-              buffCon(unbuffedCon, buffsCon);
-              buffPer(unbuffedPer, buffsPer);
+              valorousPresence(unbuffedStr, buffsStr);
+              earthquake(unbuffedInt, buffsInt);
+              protectiveAura(unbuffedCon, buffsCon);
+              toolsOfTheTrade(unbuffedPer, buffsPer);
             }
           }
-          else if ( sanitizedAlias == VALOROUS_PRESENCE_SELF_ALIAS) {
+          else if (sanitizedAlias == VALOROUS_PRESENCE_SELF_ALIAS) {
             var enoughMana = checkMana(mp, VALOROUS_PRESENCE_SELF_MP_COST, false);
             if (enoughMana) {
-              buffStr(unbuffedStr, buffsStr);
+              valorousPresence(unbuffedStr, buffsStr);
             }
           }
-          else if ( sanitizedAlias == EARTHQUAKE_SELF_ALIAS) {
+          else if (sanitizedAlias == EARTHQUAKE_SELF_ALIAS) {
             var enoughMana = checkMana(mp, EARTHQUAKE_SELF_MP_COST, false);
             if (enoughMana) {
-              buffInt(unbuffedInt, buffsInt);
+              earthquake(unbuffedInt, buffsInt);
             }
           }
-          else if ( sanitizedAlias == PROTECTIVE_AURA_SELF_ALIAS) {
+          else if (sanitizedAlias == PROTECTIVE_AURA_SELF_ALIAS) {
             var enoughMana = checkMana(mp, PROTECTIVE_AURA_SELF_MP_COST, false);
             if (enoughMana) {
-              buffCon(unbuffedCon, buffsCon);
+              protectiveAura(unbuffedCon, buffsCon);
             }
           }
-          else if ( sanitizedAlias == TOOLS_OF_THE_TRADE_SELF_ALIAS) {
+          else if (sanitizedAlias == TOOLS_OF_THE_TRADE_SELF_ALIAS) {
             var enoughMana = checkMana(mp, TOOLS_OF_THE_TRADE_SELF_MP_COST, false);
             if (enoughMana) {
-              buffPer(unbuffedPer, buffsPer);
+              toolsOfTheTrade(unbuffedPer, buffsPer);
             }
           }
-          else if ( sanitizedAlias == TRIPLE_BUFF_STR_INT_CON_ALIAS) {
+          else if (sanitizedAlias == TRIPLE_BUFF_STR_INT_CON_ALIAS) {
             var enoughMana = checkMana(mp, TRIPLE_BUFF_STR_INT_CON_MP_COST, false);
             if (enoughMana) {
-              buffStr(unbuffedStr, buffsStr);
-              buffInt(unbuffedInt, buffsInt);
-              buffCon(unbuffedCon, buffsCon);
+              valorousPresence(unbuffedStr, buffsStr);
+              earthquake(unbuffedInt, buffsInt);
+              protectiveAura(unbuffedCon, buffsCon);
             }
           }
-          else if ( sanitizedAlias == TRIPLE_BUFF_STR_INT_PER_ALIAS) {
+          else if (sanitizedAlias == TRIPLE_BUFF_STR_INT_PER_ALIAS) {
             var enoughMana = checkMana(mp, TRIPLE_BUFF_STR_INT_PER_MP_COST, false);
             if (enoughMana) {
-              buffStr(unbuffedStr, buffsStr);
-              buffInt(unbuffedInt, buffsInt);
-              buffPer(unbuffedPer, buffsPer);
+              valorousPresence(unbuffedStr, buffsStr);
+              earthquake(unbuffedInt, buffsInt);
+              toolsOfTheTrade(unbuffedPer, buffsPer);
             }
           }
-          else if ( sanitizedAlias == TRIPLE_BUFF_STR_CON_PER_ALIAS) {
+          else if (sanitizedAlias == TRIPLE_BUFF_STR_CON_PER_ALIAS) {
             var enoughMana = checkMana(mp, TRIPLE_BUFF_STR_CON_PER_MP_COST, false);
             if (enoughMana) {
-              buffStr(unbuffedStr, buffsStr);
-              buffCon(unbuffedCon, buffsCon);
-              buffPer(unbuffedPer, buffsPer);
+              valorousPresence(unbuffedStr, buffsStr);
+              protectiveAura(unbuffedCon, buffsCon);
+              toolsOfTheTrade(unbuffedPer, buffsPer);
             }
           }
-          else if ( sanitizedAlias == TRIPLE_BUFF_INT_CON_PER_ALIAS) {
+          else if (sanitizedAlias == TRIPLE_BUFF_INT_CON_PER_ALIAS) {
             var enoughMana = checkMana(mp, TRIPLE_BUFF_INT_CON_PER_MP_COST, false);
             if (enoughMana) {
-              buffInt(unbuffedInt, buffsInt);
-              buffCon(unbuffedCon, buffsCon);
-              buffPer(unbuffedPer, buffsPer);
+              earthquake(unbuffedInt, buffsInt);
+              protectiveAura(unbuffedCon, buffsCon);
+              toolsOfTheTrade(unbuffedPer, buffsPer);
             }
           }
-          else if ( sanitizedAlias == DOUBLE_BUFF_STR_INT_ALIAS) {
+          else if (sanitizedAlias == DOUBLE_BUFF_STR_INT_ALIAS) {
             var enoughMana = checkMana(mp, DOUBLE_BUFF_STR_INT_MP_COST, false);
             if (enoughMana) {
-              buffStr(unbuffedStr, buffsStr);
+              valorousPresence(unbuffedStr, buffsStr);
               buffInt(unbuffedInt, buffsInt);
             }
           }
-          else if ( sanitizedAlias == DOUBLE_BUFF_STR_CON_ALIAS) {
+          else if (sanitizedAlias == DOUBLE_BUFF_STR_CON_ALIAS) {
             var enoughMana = checkMana(mp, DOUBLE_BUFF_STR_CON_MP_COST, false);
             if (enoughMana) {
-              buffStr(unbuffedStr, buffsStr);
-              buffCon(unbuffedCon, buffsCon);
+              valorousPresence(unbuffedStr, buffsStr);
+              protectiveAura(unbuffedCon, buffsCon);
             }
           }
-          else if ( sanitizedAlias == DOUBLE_BUFF_STR_PER_ALIAS) {
+          else if (sanitizedAlias == DOUBLE_BUFF_STR_PER_ALIAS) {
             var enoughMana = checkMana(mp, DOUBLE_BUFF_STR_PER_MP_COST, false);
             if (enoughMana) {
-              buffStr(unbuffedStr, buffsStr);
-              buffPer(unbuffedPer, buffsPer);
+              valorousPresence(unbuffedStr, buffsStr);
+              toolsOfTheTrade(unbuffedPer, buffsPer);
             }
           }
-          else if ( sanitizedAlias == DOUBLE_BUFF_INT_CON_ALIAS) {
+          else if (sanitizedAlias == DOUBLE_BUFF_INT_CON_ALIAS) {
             var enoughMana = checkMana(mp, DOUBLE_BUFF_INT_CON_MP_COST, false);
             if (enoughMana) {
-              buffInt(unbuffedInt, buffsInt);
-              buffCon(unbuffedCon, buffsCon);
+              earthquake(unbuffedInt, buffsInt);
+              protectiveAura(unbuffedCon, buffsCon);
             }
           }
-          else if ( sanitizedAlias == DOUBLE_BUFF_INT_PER_ALIAS) {
+          else if (sanitizedAlias == DOUBLE_BUFF_INT_PER_ALIAS) {
             var enoughMana = checkMana(mp, DOUBLE_BUFF_INT_PER_MP_COST, false);
             if (enoughMana) {
-              buffInt(unbuffedInt, buffsInt);
-              buffPer(unbuffedPer, buffsPer);
+              earthquake(unbuffedInt, buffsInt);
+              toolsOfTheTrade(unbuffedPer, buffsPer);
             }
           }
-          else if ( sanitizedAlias == DOUBLE_BUFF_CON_PER_ALIAS) {
+          else if (sanitizedAlias == DOUBLE_BUFF_CON_PER_ALIAS) {
             var enoughMana = checkMana(mp, DOUBLE_BUFF_CON_PER_MP_COST, false);
             if (enoughMana) {
-              buffCon(unbuffedCon, buffsCon);
-              buffPer(unbuffedPer, buffsPer);
+              protectiveAura(unbuffedCon, buffsCon);
+              toolsOfTheTrade(unbuffedPer, buffsPer);
             }
           }
         }
@@ -653,24 +661,25 @@ function calcEquipmentAndClassStr(equipment) {
   return equipmentAndClassStr;
 }
 
-function calculateUnbuffedIntelligence() {
-  const levelIntRaw = Math.floor(user.stats.lvl / 2);
-  const levelInt = (levelIntRaw > 50) ? 50 : levelIntRaw;
+function calculateStrength() {
+  const levelStrRaw = Math.floor(user.stats.lvl / 2);
+  const levelStr = (levelStrRaw > 50) ? 50 : levelStrRaw;
   
-  var totalEquipmentAndClassInt = 0;
-  const allocatedInt = user.stats.int;
+  var totalEquipmentAndClassStr = 0;
+  const allocatedStr = user.stats.str;
+  const buffsStr = user.stats.buffs.str;
   
-  // Get INT from equipped gear
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.weapon]);
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.shield]);
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.head]);
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.armor]);
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.headAccessory]);
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.eyewear]);
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.body]);
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.back]);
+  // Get STR from equipped gear
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.weapon]);
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.shield]);
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.head]);
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.armor]);
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.headAccessory]);
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.eyewear]);
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.body]);
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.back]);
 
-  return levelInt + totalEquipmentAndClassInt + allocatedInt;
+  return levelStr + totalEquipmentAndClassStr + allocatedStr + buffsStr;
 }
 
 function calcEquipmentAndClassInt(equipment) {
@@ -686,12 +695,13 @@ function calcEquipmentAndClassInt(equipment) {
   return equipmentAndClassInt;
 }
 
-function calculateUnbuffedConstitution() {
+function calculateConstitution() {
   const levelConRaw = Math.floor(user.stats.lvl / 2);
   const levelCon = (levelConRaw > 50) ? 50 : levelConRaw;
   
   var totalEquipmentAndClassCon = 0;
   const allocatedCon = user.stats.con;
+  const buffsCon = user.stats.buffs.con;
   
   // Get CON from equipped gear
   totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.weapon]);
@@ -703,7 +713,7 @@ function calculateUnbuffedConstitution() {
   totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.body]);
   totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.back]);
 
-  return levelCon + totalEquipmentAndClassCon + allocatedCon;
+  return levelCon + totalEquipmentAndClassCon + allocatedCon + buffsCon;
 }
 
 function calcEquipmentAndClassCon(equipment) {
@@ -719,12 +729,13 @@ function calcEquipmentAndClassCon(equipment) {
   return equipmentAndClassCon;
 }
 
-function calculateUnbuffedPerception() {
+function calculatePerception() {
   const levelPerRaw = Math.floor(user.stats.lvl / 2);
   const levelPer = (levelPerRaw > 50) ? 50 : levelPerRaw;
   
   var totalEquipmentAndClassPer = 0;
   const allocatedPer = user.stats.per;
+  const buffsPer = user.stats.buffs.per;
   
   // Get PER from equipped gear
   totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.weapon]);
@@ -736,7 +747,7 @@ function calculateUnbuffedPerception() {
   totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.body]);
   totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.back]);
 
-  return levelPer + totalEquipmentAndClassPer + allocatedPer;
+  return levelPer + totalEquipmentAndClassPer + allocatedPer + buffsPer;
 }
 
 function calcEquipmentAndClassPer(equipment) {
@@ -781,22 +792,22 @@ function api_updateUser(payload) {
   return UrlFetchApp.fetch(url, params);
 }
 
-function buffStr(unbuffedStr, buffsStr) {
+function valorousPresence(unbuffedStr, buffsStr) {
   var buffAmount = Math.ceil( ( (unbuffedStr * 20) / (unbuffedStr + 200) ) );
   api_updateUser({"stats.buffs.str" : buffsStr + buffAmount});
 }
 
-function buffInt(unbuffedInt, buffsInt) {
+function earthquake(unbuffedInt, buffsInt) {
   var buffAmount = Math.ceil( ( (unbuffedInt * 30) / (unbuffedInt + 200) ) );
   api_updateUser({"stats.buffs.int" : buffsInt + buffAmount});
 }
 
-function buffCon(unbuffedCon, buffsCon) {
+function protectiveAura(unbuffedCon, buffsCon) {
   var buffAmount = Math.ceil( ( (unbuffedCon * 200) / (unbuffedCon + 200) ) );
   api_updateUser({"stats.buffs.con" : buffsCon + buffAmount});
 }
 
-function buffPer(unbuffedPer, buffsPer) {
+function toolsOfTheTrade(unbuffedPer, buffsPer) {
   var buffAmount = Math.ceil( ( (unbuffedPer * 100) / (unbuffedPer + 50) ) );
   api_updateUser({"stats.buffs.per" : buffsPer + buffAmount});
 }
