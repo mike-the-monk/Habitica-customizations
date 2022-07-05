@@ -137,22 +137,22 @@ function doPost(e) {
       const responseUser = api_getAuthenticatedUserProfile("stats,items.gear.equipped");
       user = JSON.parse(responseUser).data;
     
-      var hp = user.stats.hp;
-      var exp = user.stats.exp;
-      var mp = user.stats.mp;
-      var gp = user.stats.gp;
-      var lvl = user.stats.lvl;
+      let hp = user.stats.hp;
+      let exp = user.stats.exp;
+      let mp = user.stats.mp;
+      let gp = user.stats.gp;
+      let lvl = user.stats.lvl;
     
       // Get equipment stats info
       const responseContent = apiFree_getAllAvailableContentObjects();
       content = JSON.parse(responseContent).data;
     
       // Compute total Intelligence
-      var int = calculateIntelligence();
+      let int = calculateIntelligence();
     
       // Compute maximum mana and how close they are to max
-      var maxMp = (2 * int) + 30;
-      var mpDiff = maxMp - mp;
+      let maxMp = (2 * int) + 30;
+      let mpDiff = maxMp - mp;
     
       // Counters
       var cronCountKey = CRON_COUNT_KEY;
