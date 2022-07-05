@@ -842,7 +842,7 @@ function parseDuelStartString(inputString, buttonToDeleteTaskId, duelCurrentlyAc
     let smallerSubstringAsNumber = 0;
   
     // Use first semicolon to parse out self username
-    semicolonIndex = findIndexOfSemicolon(inputString);
+    semicolonIndex = findIndexOfSemicolon(inputString, 0, 0);
     let selfUsernameTemp = createSubstring(inputString, 0, semicolonIndex);
     
     // Check if first character is @. If not, add it.
@@ -854,7 +854,7 @@ function parseDuelStartString(inputString, buttonToDeleteTaskId, duelCurrentlyAc
     length = inputString.length;
     
     // Repeat to parse out opponent username
-    semicolonIndex = findIndexOfSemicolon(inputString);
+    semicolonIndex = findIndexOfSemicolon(inputString, 0, 0);
     let opponentUsernameTemp = createSubstring(inputString, 3, semicolonIndex); // Start at index 3 because of "vs."
     
     // Check if first character is @. If not, add it.
@@ -866,7 +866,7 @@ function parseDuelStartString(inputString, buttonToDeleteTaskId, duelCurrentlyAc
     length = inputString.length;
     
     // Repeat to parse out wager
-    semicolonIndex = findIndexOfSemicolon(inputString);
+    semicolonIndex = findIndexOfSemicolon(inputString, 0, 0);
     let wagerTemp = createSubstring(inputString, 0, semicolonIndex);
     
     // If it's not a number, the function will return -2
@@ -880,7 +880,7 @@ function parseDuelStartString(inputString, buttonToDeleteTaskId, duelCurrentlyAc
     length = inputString.length;
     
     // Repeat to parse out Score Needed / Goal
-    semicolonIndex = findIndexOfSemicolon(inputString);
+    semicolonIndex = findIndexOfSemicolon(inputString, 0, 0);
     let scoreNeededGoalTemp = createSubstring(inputString, 0, semicolonIndex);
     
     // If it's not a number, the function will return -2
@@ -894,7 +894,7 @@ function parseDuelStartString(inputString, buttonToDeleteTaskId, duelCurrentlyAc
     length = inputString.length;
     
     // Repeat to parse out Timestamp identifier
-    semicolonIndex = findIndexOfSemicolon(inputString);
+    semicolonIndex = findIndexOfSemicolon(inputString, 0, 0);
     let timestampIdentifierTemp = createSubstring(inputString, 0, semicolonIndex);
     
     // If it's not a number, the function will return -2
@@ -906,7 +906,7 @@ function parseDuelStartString(inputString, buttonToDeleteTaskId, duelCurrentlyAc
     length = inputString.length;
     
     // Repeat to parse out Guild ID
-    semicolonIndex = findIndexOfSemicolon(inputString);
+    semicolonIndex = findIndexOfSemicolon(inputString, 0, 0);
     let guildId = createSubstring(inputString, 0, semicolonIndex);
     
     // Check to make sure it's a valid format for a Guild ID
@@ -918,7 +918,7 @@ function parseDuelStartString(inputString, buttonToDeleteTaskId, duelCurrentlyAc
     length = inputString.length;
     
     // Repeat to parse out Bot Announcer ID
-    semicolonIndex = findIndexOfSemicolon(inputString);
+    semicolonIndex = findIndexOfSemicolon(inputString, 0, 0);
     let announcerBotUsernameTemp = createSubstring(inputString, 0, semicolonIndex);
     
     // Check if first character is @. If not, add it.
@@ -934,9 +934,9 @@ function parseDuelStartString(inputString, buttonToDeleteTaskId, duelCurrentlyAc
   }
 }
 
-// Finds the first semicolon
-function findIndexOfSemicolon(stringToSearch) {
-  return stringToSearch.indexOf(";");
+// Finds the semicolon after the search term previously searched. Builds in an offset to account for the number of characters in the search term.
+function findIndexOfSemicolon(stringToSearch, startingAt, offset) {
+  return stringToSearch.indexOf(";", startingAt + offset);
 }
 
 // Makes sure the first character in a username is @
@@ -965,12 +965,28 @@ function checkIfNumber(input){
   } 
 }
 
-// Ensure that the input is greater than the minimum (normally 0, but for this script, minimum is 1).
-function sanitizePositive(value) {
-  if (value < 1) {
-    return 1;
-  } else {
-    return value;
+// Ensures that the input is between the minimum and maximum. Can use "none" in either argument to indicate if there is either no minimum or no maximum.
+function sanitizeInput(input, minimum, maximum) {
+  if (minimum == "none"){ // Condition for if there is no minimum
+    if ( input > maximum ) {
+      return maximum;
+    } else { 
+      return input;
+    }
+  } else if (maximum == "none"){ // Condition for if there is no maximum
+    if ( input < minimum ) {
+      return minimum;
+    } else { 
+      return input;
+    }
+  } else { // Condition where there is both minimum and maximum
+    if ( input < minimum ) {
+      return minimum;
+    } else if ( input > maximum ) {
+      return maximum;
+    } else { 
+      return input;
+    }
   }
 }
 
@@ -1427,14 +1443,14 @@ function parseDuelEndString(string, hashAllExpected, hashSumIfWinner){
     return -2; // To indicate it's an invalid string
   } else {
     // Parse out first hash
-    let semicolonIndex = findIndexOfSemicolon(string);
+    let semicolonIndex = findIndexOfSemicolon(string, 0, 0);
     let hashAllTemp = createSubstring(string, 0, semicolonIndex);
     let hashAllParsed = parseFloat(hashAllTemp);
 
     // Parse out second hash
     let length = string.length;
     let substringTemp = createSubstring(string, semicolonIndex + 1, length);
-    semicolonIndex = findIndexOfSemicolon(substringTemp);
+    semicolonIndex = findIndexOfSemicolon(substringTemp, 0, 0);
     let hashSumTemp = createSubstring(substringTemp, 0, semicolonIndex);
     let hashSumParsed = parseFloat(hashSumTemp);
 
