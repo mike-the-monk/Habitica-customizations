@@ -401,113 +401,52 @@ function doPost(e) {
           // Grab other user stats
           var mp = user.stats.mp;
           
-          // See which buff is supposed to run, then do it (after checking if there's enough mana)
-          if (sanitizedAlias == OMNI_BUFF_ALIAS) {
-            var enoughMana = checkMana(mp, OMNI_BUFF_MP_COST, false);
-            if (enoughMana) {
-              valorousPresence(unbuffedStr, buffsStr);
-              earthquake(unbuffedInt, buffsInt);
-              protectiveAura(unbuffedCon, buffsCon);
-              toolsOfTheTrade(unbuffedPer, buffsPer);
-            }
-          }
-          else if (sanitizedAlias == VALOROUS_PRESENCE_SELF_ALIAS) {
-            var enoughMana = checkMana(mp, VALOROUS_PRESENCE_SELF_MP_COST, false);
-            if (enoughMana) {
-              valorousPresence(unbuffedStr, buffsStr);
-            }
-          }
-          else if (sanitizedAlias == EARTHQUAKE_SELF_ALIAS) {
-            var enoughMana = checkMana(mp, EARTHQUAKE_SELF_MP_COST, false);
-            if (enoughMana) {
-              earthquake(unbuffedInt, buffsInt);
-            }
-          }
-          else if (sanitizedAlias == PROTECTIVE_AURA_SELF_ALIAS) {
-            var enoughMana = checkMana(mp, PROTECTIVE_AURA_SELF_MP_COST, false);
-            if (enoughMana) {
-              protectiveAura(unbuffedCon, buffsCon);
-            }
-          }
-          else if (sanitizedAlias == TOOLS_OF_THE_TRADE_SELF_ALIAS) {
-            var enoughMana = checkMana(mp, TOOLS_OF_THE_TRADE_SELF_MP_COST, false);
-            if (enoughMana) {
-              toolsOfTheTrade(unbuffedPer, buffsPer);
-            }
-          }
-          else if (sanitizedAlias == TRIPLE_BUFF_STR_INT_CON_ALIAS) {
-            var enoughMana = checkMana(mp, TRIPLE_BUFF_STR_INT_CON_MP_COST, false);
-            if (enoughMana) {
-              valorousPresence(unbuffedStr, buffsStr);
-              earthquake(unbuffedInt, buffsInt);
-              protectiveAura(unbuffedCon, buffsCon);
-            }
-          }
-          else if (sanitizedAlias == TRIPLE_BUFF_STR_INT_PER_ALIAS) {
-            var enoughMana = checkMana(mp, TRIPLE_BUFF_STR_INT_PER_MP_COST, false);
-            if (enoughMana) {
-              valorousPresence(unbuffedStr, buffsStr);
-              earthquake(unbuffedInt, buffsInt);
-              toolsOfTheTrade(unbuffedPer, buffsPer);
-            }
-          }
-          else if (sanitizedAlias == TRIPLE_BUFF_STR_CON_PER_ALIAS) {
-            var enoughMana = checkMana(mp, TRIPLE_BUFF_STR_CON_PER_MP_COST, false);
-            if (enoughMana) {
-              valorousPresence(unbuffedStr, buffsStr);
-              protectiveAura(unbuffedCon, buffsCon);
-              toolsOfTheTrade(unbuffedPer, buffsPer);
-            }
-          }
-          else if (sanitizedAlias == TRIPLE_BUFF_INT_CON_PER_ALIAS) {
-            var enoughMana = checkMana(mp, TRIPLE_BUFF_INT_CON_PER_MP_COST, false);
-            if (enoughMana) {
-              earthquake(unbuffedInt, buffsInt);
-              protectiveAura(unbuffedCon, buffsCon);
-              toolsOfTheTrade(unbuffedPer, buffsPer);
-            }
-          }
-          else if (sanitizedAlias == DOUBLE_BUFF_STR_INT_ALIAS) {
-            var enoughMana = checkMana(mp, DOUBLE_BUFF_STR_INT_MP_COST, false);
-            if (enoughMana) {
-              valorousPresence(unbuffedStr, buffsStr);
-              buffInt(unbuffedInt, buffsInt);
-            }
-          }
-          else if (sanitizedAlias == DOUBLE_BUFF_STR_CON_ALIAS) {
-            var enoughMana = checkMana(mp, DOUBLE_BUFF_STR_CON_MP_COST, false);
-            if (enoughMana) {
-              valorousPresence(unbuffedStr, buffsStr);
-              protectiveAura(unbuffedCon, buffsCon);
-            }
-          }
-          else if (sanitizedAlias == DOUBLE_BUFF_STR_PER_ALIAS) {
-            var enoughMana = checkMana(mp, DOUBLE_BUFF_STR_PER_MP_COST, false);
-            if (enoughMana) {
-              valorousPresence(unbuffedStr, buffsStr);
-              toolsOfTheTrade(unbuffedPer, buffsPer);
-            }
-          }
-          else if (sanitizedAlias == DOUBLE_BUFF_INT_CON_ALIAS) {
-            var enoughMana = checkMana(mp, DOUBLE_BUFF_INT_CON_MP_COST, false);
-            if (enoughMana) {
-              earthquake(unbuffedInt, buffsInt);
-              protectiveAura(unbuffedCon, buffsCon);
-            }
-          }
-          else if (sanitizedAlias == DOUBLE_BUFF_INT_PER_ALIAS) {
-            var enoughMana = checkMana(mp, DOUBLE_BUFF_INT_PER_MP_COST, false);
-            if (enoughMana) {
-              earthquake(unbuffedInt, buffsInt);
-              toolsOfTheTrade(unbuffedPer, buffsPer);
-            }
-          }
-          else if (sanitizedAlias == DOUBLE_BUFF_CON_PER_ALIAS) {
-            var enoughMana = checkMana(mp, DOUBLE_BUFF_CON_PER_MP_COST, false);
-            if (enoughMana) {
-              protectiveAura(unbuffedCon, buffsCon);
-              toolsOfTheTrade(unbuffedPer, buffsPer);
-            }
+          // Switch-case based on which button was pressed. All button-click actions are in a separate function.
+          switch (sanitizedAlias){
+            case OMNI_BUFF_ALIAS:
+              doButtonOmniBuff(mp, unbuffedStr, buffsStr, unbuffedInt, buffsInt, unbuffedCon, buffsCon, unbuffedPer, buffsPer);
+              break;
+            case VALOROUS_PRESENCE_SELF_ALIAS:
+              doButtonValorousPresenceSelf(mp, unbuffedStr, buffsStr);
+            case EARTHQUAKE_SELF_ALIAS:
+              doButtonEarthquakeSelf(mp, unbuffedInt, buffsInt);
+              break;
+            case PROTECTIVE_AURA_SELF_ALIAS:
+              doButtonProtectiveAuraSelf(mp, unbuffedCon, buffsCon);
+              break;
+             case TOOLS_OF_THE_TRADE_SELF_ALIAS:
+              doButtonToolsOfTheTradeSelf(mp, unbuffedPer, buffsPer); 
+              break;        
+             case TRIPLE_BUFF_STR_INT_CON_ALIAS:
+              doButtonTripeBuffStrIntCon(mp, unbuffedStr, buffsStr, unbuffedInt, buffsInt, unbuffedCon, buffsCon);
+              break;
+             case TRIPLE_BUFF_STR_INT_PER_ALIAS:
+              doButtonTripeBuffStrIntPer(mp, unbuffedStr, buffsStr, unbuffedInt, buffsInt, unbuffedPer, buffsPer);
+              break;
+             case TRIPLE_BUFF_STR_CON_PER_ALIAS:
+              doButtonTripeBuffStrConPer(mp, unbuffedStr, buffsStr, unbuffedCon, buffsCon, unbuffedPer, buffsPer);
+              break;
+             case TRIPLE_BUFF_INT_CON_PER_ALIAS:
+              doButtonTripleBuffIntConPer(mp, unbuffedInt, buffsInt, unbuffedCon, buffsCon, unbuffedPer, buffsPer);
+              break;
+             case DOUBLE_BUFF_STR_INT_ALIAS:
+              doButtonDoubleBuffStrInt(mp, unbuffedStr, buffsStr, unbuffedInt, buffsInt); 
+              break;
+             case DOUBLE_BUFF_STR_CON_ALIAS:
+              doButtonDoubleBuffStrCon(mp, unbuffedStr, buffsStr, unbuffedCon, buffsCon);
+              break;
+             case DOUBLE_BUFF_STR_PER_ALIAS:
+              doButtonDoubleBuffStrPer(mp, unbuffedStr, buffsStr, unbuffedPer, buffsPer);
+              break;
+             case DOUBLE_BUFF_INT_CON_ALIAS:
+              doButtonDoubleBuffIntCon(mp, unbuffedInt, buffsInt, unbuffedCon, buffsCon);
+              break;
+             case DOUBLE_BUFF_INT_PER_ALIAS:
+              doButtonDoubleBuffIntPer(mp, unbuffedInt, buffsInt, unbuffedPer, buffsPer);
+              break;
+             case DOUBLE_BUFF_CON_PER_ALIAS:
+              doButtonDoubleBuffConPer(mp, unbuffedCon, buffsCon, unbuffedPer, buffsPer);
+              break;
           }
         }
         // Save values to non-volatile memory, but only from within the rate-limited if-block (we don't want to save the timestamp unless the script ran)
@@ -518,6 +457,143 @@ function doPost(e) {
   }
   
   return HtmlService.createHtmlOutput();
+}
+
+// When the Omni-Buff button is clicked
+function doButtonOmniBuff(mp, unbuffedStr, buffsStr, unbuffedInt, buffsInt, unbuffedCon, buffsCon, unbuffedPer, buffsPer){
+  var enoughMana = checkMana(mp, OMNI_BUFF_MP_COST, false);
+  if (enoughMana) {
+    valorousPresence(unbuffedStr, buffsStr);
+    earthquake(unbuffedInt, buffsInt);
+    protectiveAura(unbuffedCon, buffsCon);
+    toolsOfTheTrade(unbuffedPer, buffsPer);
+  }
+}
+
+// When the Valorous Presence (Self) button is clicked
+function doButtonValorousPresenceSelf(mp, unbuffedStr, buffsStr){
+  var enoughMana = checkMana(mp, VALOROUS_PRESENCE_SELF_MP_COST, false);
+  if (enoughMana) {
+    valorousPresence(unbuffedStr, buffsStr);
+  }
+}
+
+// When the Earthquake (Self) button is clicked
+function doButtonEarthquakeSelf(mp, unbuffedInt, buffsInt){
+  var enoughMana = checkMana(mp, EARTHQUAKE_SELF_MP_COST, false);
+  if (enoughMana) {
+    earthquake(unbuffedInt, buffsInt);
+  }
+}
+
+// When the Protective Aura (Self) button is clicked
+function doButtonProtectiveAuraSelf(mp, unbuffedCon, buffsCon){
+  var enoughMana = checkMana(mp, PROTECTIVE_AURA_SELF_MP_COST, false);
+  if (enoughMana) {
+    protectiveAura(unbuffedCon, buffsCon);
+  }
+}
+
+// When the Tools of the Trade (Self) button is clicked
+function doButtonToolsOfTheTradeSelf(mp, unbuffedPer, buffsPer){
+  var enoughMana = checkMana(mp, TOOLS_OF_THE_TRADE_SELF_MP_COST, false);
+  if (enoughMana) {
+    toolsOfTheTrade(unbuffedPer, buffsPer);
+  }
+}
+
+// When the Tripe Buff StrIntCon button is clicked
+function doButtonTripeBuffStrIntCon(mp, unbuffedStr, buffsStr, unbuffedInt, buffsInt, unbuffedCon, buffsCon){
+  var enoughMana = checkMana(mp, TRIPLE_BUFF_STR_INT_CON_MP_COST, false);
+  if (enoughMana) {
+    valorousPresence(unbuffedStr, buffsStr);
+    earthquake(unbuffedInt, buffsInt);
+    protectiveAura(unbuffedCon, buffsCon);
+  }
+}
+
+// When the Tripe Buff StrIntPer button is clicked
+function doButtonTripeBuffStrIntPer(mp, unbuffedStr, buffsStr, unbuffedInt, buffsInt, unbuffedPer, buffsPer){
+  var enoughMana = checkMana(mp, TRIPLE_BUFF_STR_INT_PER_MP_COST, false);
+  if (enoughMana) {
+    valorousPresence(unbuffedStr, buffsStr);
+    earthquake(unbuffedInt, buffsInt);
+    toolsOfTheTrade(unbuffedPer, buffsPer);
+  }
+}
+
+// When the Tripe Buff StrConPer button is clicked
+function doButtonTripeBuffStrConPer(mp, unbuffedStr, buffsStr, unbuffedCon, buffsCon, unbuffedPer, buffsPer){
+  var enoughMana = checkMana(mp, TRIPLE_BUFF_STR_CON_PER_MP_COST, false);
+  if (enoughMana) {
+    valorousPresence(unbuffedStr, buffsStr);
+    protectiveAura(unbuffedCon, buffsCon);
+    toolsOfTheTrade(unbuffedPer, buffsPer);
+  }
+}
+
+// When the Triple Buff IntConPer button is clicked
+function doButtonTripleBuffIntConPer(mp, unbuffedInt, buffsInt, unbuffedCon, buffsCon, unbuffedPer, buffsPer){
+  var enoughMana = checkMana(mp, TRIPLE_BUFF_INT_CON_PER_MP_COST, false);
+  if (enoughMana) {
+    earthquake(unbuffedInt, buffsInt);
+    protectiveAura(unbuffedCon, buffsCon);
+    toolsOfTheTrade(unbuffedPer, buffsPer);
+  }
+}
+
+// When the Double Buff StrInt button is clicked
+function doButtonDoubleBuffStrInt(mp, unbuffedStr, buffsStr, unbuffedInt, buffsInt){
+  var enoughMana = checkMana(mp, DOUBLE_BUFF_STR_INT_MP_COST, false);
+  if (enoughMana) {
+    valorousPresence(unbuffedStr, buffsStr);
+    buffInt(unbuffedInt, buffsInt);
+  }
+}
+
+// When the Double Buff StrCon button is clicked
+function doButtonDoubleBuffStrCon(mp, unbuffedStr, buffsStr, unbuffedCon, buffsCon){
+  var enoughMana = checkMana(mp, DOUBLE_BUFF_STR_CON_MP_COST, false);
+  if (enoughMana) {
+    valorousPresence(unbuffedStr, buffsStr);
+    protectiveAura(unbuffedCon, buffsCon);
+  }
+}
+
+// When the Double Buff StrPer button is clicked
+function doButtonDoubleBuffStrPer(mp, unbuffedStr, buffsStr, unbuffedPer, buffsPer){
+  var enoughMana = checkMana(mp, DOUBLE_BUFF_STR_PER_MP_COST, false);
+  if (enoughMana) {
+    valorousPresence(unbuffedStr, buffsStr);
+    toolsOfTheTrade(unbuffedPer, buffsPer);
+  }
+}
+
+// When the Double Buff IntCon button is clicked
+function doButtonDoubleBuffIntCon(mp, unbuffedInt, buffsInt, unbuffedCon, buffsCon){
+  var enoughMana = checkMana(mp, DOUBLE_BUFF_INT_CON_MP_COST, false);
+  if (enoughMana) {
+    earthquake(unbuffedInt, buffsInt);
+    protectiveAura(unbuffedCon, buffsCon);
+  }
+}
+
+// When the Double Buff IntPer button is clicked
+function doButtonDoubleBuffIntPer(mp, unbuffedInt, buffsInt, unbuffedPer, buffsPer){
+  var enoughMana = checkMana(mp, DOUBLE_BUFF_INT_PER_MP_COST, false);
+  if (enoughMana) {
+    earthquake(unbuffedInt, buffsInt);
+    toolsOfTheTrade(unbuffedPer, buffsPer);
+  }
+}
+
+// When the Double Buff ConPer button is clicked
+function doButtonDoubleBuffConPer(mp, unbuffedCon, buffsCon, unbuffedPer, buffsPer){
+  var enoughMana = checkMana(mp, DOUBLE_BUFF_CON_PER_MP_COST, false);
+  if (enoughMana) {
+    protectiveAura(unbuffedCon, buffsCon);
+    toolsOfTheTrade(unbuffedPer, buffsPer);
+  }
 }
 
 // Create custom reward buttons
