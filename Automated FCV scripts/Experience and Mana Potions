@@ -141,7 +141,6 @@ function doPost(e) {
       var xpUsage = Number(scriptProperties.getProperty(xpUsageKey));
       var mpUsage = Number(scriptProperties.getProperty(mpUsageKey));
     
-      let hp = user.stats.hp;
       let exp = user.stats.exp;
       let mp = user.stats.mp;
       let gp = user.stats.gp;
