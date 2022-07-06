@@ -1210,8 +1210,6 @@ function parseAndCheckDuelEnd(inputString, indexEndDuel) {
 
 // For Duel End string, confirms the correct number of periods and semicolons
 function checkDuelEndPeriodsAndSemicolons(inputString){
-  let semicolonIndexFirst = 0;
-  let semicolonIndexSecond = 0;
   let periodIndexFirst = 0;
   let periodIndexSecond = 0;
   let periodIndexLast = 0;
