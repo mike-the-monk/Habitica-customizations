@@ -1,0 +1,203 @@
+// TABLE OF CONTENTS
+  // 1. API basics – functions made directly from Habitica's API. Each individual script probably won't use all of these, but that's okay.
+  // 2. Non-API functions 
+    // 2A. Basics – functions that can be used in a wide variety of scripts
+    // 2B. Skills – functions used to make custom skills
+    // 2X. Debug functions – while the specific kind of debug function depends greatly on the script, they do share some commonalities
+  // 3. Idiosyncratic functions – functions that are used only in a single script.
+    // If a script has no idiosyncratic functions (i.e. all its functions are accounted for in the above categories), it will not be listed in this section.
+    // Not listed here: Dueling Script – Announcer Bot, since you run that script from a secondary/bot account, not your main account, and thus won't run it alongside any other scripts.
+    // 3A. Editable Fix Character Values Buttons
+    // 3B. Dueling Script – Scoring
+
+// 2. NON-API FUNCTIONS
+
+  // 2X. DEBUG FUNCTIONS – SCRIPT DOES NOT TRIGGER THEM, THEY MUST BE TRIGGERED MANUALLY
+    
+    // RESET USAGE COUNTERS 
+      // Functions below can reset all counters or from one script.
+      // To reset one counter only, instead use "debugManuallyEditSavedValue".
+      // Also includes a function to reset saved HP/level (for Partial Healing) and duel values.
+
+      // Manually reset all usage counters.
+      function debugResetCountersAll() {
+        resetCounters();
+      }
+
+      function debugResetCountersXpAndMpPotion() {
+        scriptProperties.setProperty(XP_USAGE_KEY, 0);
+        scriptProperties.setProperty(MP_USAGE_KEY, 0);
+      }
+
+      function debugResetCountersAntiPotions(){
+        scriptProperties.setProperty(ANTI_MP_USAGE_KEY, 0);
+        scriptProperties.setProperty(ANTI_HP_USAGE_KEY, 0);
+        scriptProperties.setProperty(ANTI_XP_USAGE_KEY, 0);
+      }
+
+      function debugResetCountersHpOrXpForMp(){
+        scriptProperties.setProperty(HP_FOR_MP_KEY, 0);
+        scriptProperties.setProperty(XP_FOR_MP_KEY, 0);
+      }
+
+      function resetCountersLowConstitutionMode(){
+        scriptProperties.setProperty(ANTI_BUFF_AMOUNT_KEY, 0);
+        scriptProperties.setProperty(ANTI_BUFF_USAGE_KEY, 0);
+      }
+
+      // In case the Partial Healing script saved the wrong value for HP and level, use FCV to set them to the correct amounts and then run the function below to save them
+      function debugResetSavedHpAndLevel() {
+        const responseInit = api_getAuthenticatedUserProfile("stats");
+        user = JSON.parse(responseInit).data;
+          
+        var currentHp = user.stats.hp;
+        var currentLvl = user.stats.lvl;
+        
+        scriptProperties.setProperty(HP_KEY, currentHp);
+        scriptProperties.setProperty(LVL_KEY, currentLvl);
+      }
+
+      // Resets saved duel values
+      function debugResetDuelValues(){
+        resetDuelValues();
+      }
+    
+    // RETRIEVE SAVED COUNTERS/VALUES
+      // In case you want to know what values the script saved.
+      // Functions below can retrieve all counters or from one script. 
+      // Duel saved values/hashes and Partial Healing (HP and level) are always a separate function because they are so different from the usage counters.
+
+      // Retrieves saved counters and sends them as a private message
+      function debugGetSavedCountersAll(){
+        let cronCount = Number(scriptProperties.getProperty(CRON_COUNT_KEY));
+        let xpUsage = Number(scriptProperties.getProperty(XP_USAGE_KEY));
+        let mpUsage = Number(scriptProperties.getProperty(MP_USAGE_KEY));
+        let AntiMpUsage = Number(scriptProperties.getProperty(ANTI_MP_USAGE_KEY));
+        let AntiHpUsage = Number(scriptProperties.getProperty(ANTI_HP_USAGE_KEY));
+        let AntiXpUsage = Number(scriptProperties.getProperty(ANTI_XP_USAGE_KEY));
+        
+        // saving these will make my life easier
+        let MSG_JOINER_BEFORE = " is `";
+        let MSG_JOINER_AFTER = "`, "; 
+
+        api_sendPrivateMessageAlways({"message" : "Saved values are as follows: cronCount is `" + cronCount + MSG_JOINER_AFTER  + "xpUsage" + MSG_JOINER_BEFORE + xpUsage + MSG_JOINER_AFTER  + "mpUsage" + MSG_JOINER_BEFORE + mpUsage + "AntiMpUsage" + MSG_JOINER_BEFORE + AntiMpUsage + MSG_JOINER_AFTER + "AntiHpUsage" + MSG_JOINER_BEFORE + AntiHpUsage + MSG_JOINER_AFTER + "AntiXpUsage" + MSG_JOINER_BEFORE + AntiXpUsage + "HpForMpUsage" + MSG_JOINER_BEFORE + HpForMpUsage + MSG_JOINER_AFTER + "XpForMpUsage" + MSG_JOINER_BEFORE + XpForMpUsage + "antiBuffAmount" + MSG_JOINER_BEFORE + antiBuffAmount + MSG_JOINER_AFTER + "antiBuffUsage" + MSG_JOINER_BEFORE + antiBuffUsage + "`", "toUserId" : USER_ID});
+      }
+
+      function debugGetSavedCountersXpAndMpPotion(){
+        let cronCount = Number(scriptProperties.getProperty(CRON_COUNT_KEY));
+        let xpUsage = Number(scriptProperties.getProperty(XP_USAGE_KEY));
+        let mpUsage = Number(scriptProperties.getProperty(MP_USAGE_KEY));
+        
+        // saving these will make my life easier
+        let MSG_JOINER_BEFORE = " is `";
+        let MSG_JOINER_AFTER = "`, "; 
+        
+        api_sendPrivateMessageAlways({"message" : "Saved values are as follows: cronCount is `" + cronCount + MSG_JOINER_AFTER  + "xpUsage" + MSG_JOINER_BEFORE + xpUsage + MSG_JOINER_AFTER  + "mpUsage" + MSG_JOINER_BEFORE + mpUsage + "`", "toUserId" : USER_ID});
+      }
+
+      function debugGetSavedCountersAntiPotions(){
+        let cronCount = Number(scriptProperties.getProperty(CRON_COUNT_KEY));
+        let AntiMpUsage = Number(scriptProperties.getProperty(ANTI_MP_USAGE_KEY));
+        let AntiHpUsage = Number(scriptProperties.getProperty(ANTI_HP_USAGE_KEY));
+        let AntiXpUsage = Number(scriptProperties.getProperty(ANTI_XP_USAGE_KEY));
+          
+        // saving these will make my life easier
+        let MSG_JOINER_BEFORE = " is `";
+        let MSG_JOINER_AFTER = "`, "; 
+        
+        api_sendPrivateMessageAlways({"message" : "Saved values are as follows: cronCount is `" + cronCount + MSG_JOINER_AFTER + "AntiMpUsage" + MSG_JOINER_BEFORE + AntiMpUsage + MSG_JOINER_AFTER + "AntiHpUsage" + MSG_JOINER_BEFORE + AntiHpUsage + MSG_JOINER_AFTER + "AntiXpUsage" + MSG_JOINER_BEFORE + AntiXpUsage + "`", "toUserId" : USER_ID});
+      }
+
+      function debugGetSavedCountersHpOrXpForMp(){
+        let cronCount = Number(scriptProperties.getProperty(CRON_COUNT_KEY));
+        let HpForMpUsage = Number(scriptProperties.getProperty(HP_FOR_MP_KEY));
+        let XpForMpUsage = Number(scriptProperties.getProperty(XP_FOR_MP_KEY));
+        
+        // saving these will make my life easier
+        let MSG_JOINER_BEFORE = " is `";
+        let MSG_JOINER_AFTER = "`, "; 
+        
+        api_sendPrivateMessageAlways({"message" : "Saved values are as follows: cronCount is `" + cronCount + MSG_JOINER_AFTER + "HpForMpUsage" + MSG_JOINER_BEFORE + HpForMpUsage + MSG_JOINER_AFTER + "XpForMpUsage" + MSG_JOINER_BEFORE + XpForMpUsage + "`", "toUserId" : USER_ID});
+      }
+
+      function debugGetSavedCountersLowConstitutionMode(){
+        let cronCount = Number(scriptProperties.getProperty(CRON_COUNT_KEY));
+        let antiBuffAmount = Number(scriptProperties.getProperty(ANTI_BUFF_AMOUNT_KEY));
+        let antiBuffUsage = Number(scriptProperties.getProperty(ANTI_BUFF_USAGE_KEY));
+
+        // saving these will make my life easier
+        let MSG_JOINER_BEFORE = " is `";
+        let MSG_JOINER_AFTER = "`, "; 
+        
+        api_sendPrivateMessageAlways({"message" : "Saved values are as follows: cronCount is `" + cronCount + MSG_JOINER_AFTER + "antiBuffAmount" + MSG_JOINER_BEFORE + antiBuffAmount + MSG_JOINER_AFTER + "antiBuffUsage" + MSG_JOINER_BEFORE + antiBuffUsage + "`", "toUserId" : USER_ID});
+      }
+
+      // Retrieves saved values and sends them in a private message
+      function debugGetSavedHpAndLevel(){
+        let savedHp = Number(scriptProperties.getProperty(HP_KEY));
+        let savedLvl = scriptProperties.getProperty(LVL_KEY);
+        
+        // saving these will make my life easier
+        let MSG_JOINER_BEFORE = " is `";
+        let MSG_JOINER_AFTER = "`, "; 
+        
+        api_sendPrivateMessageAlways({"message" : "Saved values are as follows: savedHp is `" + savedHp + MSG_JOINER_AFTER
+                                      + "savedLvl" + MSG_JOINER_BEFORE + savedLvl + "`", "toUserId" : USER_ID});
+      }
+
+      // Retrieves saved duel values and sends them as a private message
+      function debugGetSavedDuelValues(){
+        let duelCurrentlyActive = Number(scriptProperties.getProperty(DUEL_CURRENTLY_ACTIVE_KEY));
+        let duelScore = Number(scriptProperties.getProperty(DUEL_SCORE_KEY));
+        let selfUsername = scriptProperties.getProperty(SELF_USERNAME_KEY);
+        let opponentUsername = scriptProperties.getProperty(OPPONENT_USERNAME_KEY);
+        let wager = Number(scriptProperties.getProperty(WAGER_KEY));
+        let scoreNeededGoal = Number(scriptProperties.getProperty(SCORE_NEEDED_GOAL_KEY));
+        let timestampIdentifier = Number(scriptProperties.getProperty(TIMESTAMP_IDENTIFIER_KEY));
+        let guildId = scriptProperties.getProperty(GUILD_ID_KEY);
+        let announcerBotUsername = scriptProperties.getProperty(ANNOUNCER_BOT_USERNAME_KEY);
+        let troubleshootingFlag = Number(scriptProperties.getProperty(TROUBLESHOOTING_KEY));
+        
+        // saving these will make my life easier
+        let MSG_JOINER_BEFORE = " is `";
+        let MSG_JOINER_AFTER = "`, "; 
+        
+        api_sendPrivateMessageAlways({"message" : "Saved values are as follows: duelCurrentlyActive is `" + duelCurrentlyActive + MSG_JOINER_AFTER + "duelScore" + MSG_JOINER_BEFORE + duelScore + MSG_JOINER_AFTER + "selfUsername" + MSG_JOINER_BEFORE + selfUsername + MSG_JOINER_AFTER + "opponentUsername" + MSG_JOINER_BEFORE + opponentUsername + MSG_JOINER_AFTER + "wager" + MSG_JOINER_BEFORE + wager + MSG_JOINER_AFTER + "scoreNeededGoal" + MSG_JOINER_BEFORE + scoreNeededGoal + MSG_JOINER_AFTER + "timestampIdentifier" + MSG_JOINER_BEFORE + timestampIdentifier + MSG_JOINER_AFTER + "guildId" + MSG_JOINER_BEFORE + guildId + MSG_JOINER_AFTER + "announcerBotUsername" + MSG_JOINER_BEFORE + announcerBotUsername + MSG_JOINER_AFTER + "troubleshootingFlag" + MSG_JOINER_BEFORE + troubleshootingFlag + "`", "toUserId" : USER_ID});
+      }
+
+      // Retrieves expected hashes for duel parameter and user ID and sum
+      function debugGetExpectedDuelHashes(){
+        let hashAllExpected = createDuelHash(SELF_USERNAME_KEY, OPPONENT_USERNAME_KEY, WAGER_KEY, SCORE_NEEDED_GOAL_KEY, TIMESTAMP_IDENTIFIER_KEY);
+        let hashSelfExpected = createHash(USER_ID);
+        let hashSumExpected = hashAllExpected + hashSelfExpected;
+        
+        api_sendPrivateMessageAlways({"message" : "Hashes are " + hashAllExpected + ", " + hashSelfExpected + ", " + hashSumExpected, "toUserId" : USER_ID});
+      }
+
+    // MANUALLY EDIT SAVED VALUES
+      // The first function lets you edit whichever saved value you want.
+      // The functions below it are for commonly-needed values to edit.
+
+      // Mannually edits and saves the selected value (in case it saved incorrectly)
+      function debugManuallyEditSavedValue() {
+        // Fill them in below. xpUsage is shown as a sample.
+        let newValue = 0; 
+        let key = XP_USAGE_KEY;
+        
+        // Save
+        scriptProperties.setProperty(key, newValue);
+      }
+
+      // If duelCurrentlyActive is stuck at 1, this function resets it to 0
+      function debugResetFlagDuelCurrentlyActive() {
+        var duelCurrentlyActiveKey = DUEL_CURRENTLY_ACTIVE_KEY;
+        var duelCurrentlyActive = Number(scriptProperties.getProperty(duelCurrentlyActiveKey));
+        duelCurrentlyActive = 0;
+        scriptProperties.setProperty(duelCurrentlyActiveKey, duelCurrentlyActive);
+      }
+
+      // Clears troubleshooting flag and therefore allows this script to post automated messages to the Guild
+      // A value of 0 allows automated messages to be posted. 1 and 2 to not. 1 indicates an error, 2 indicates valid/victory
+      function debugClearTroubleshootingFlag(){
+        scriptProperties.setProperty(TROUBLESHOOTING_KEY, 0);
+      }
