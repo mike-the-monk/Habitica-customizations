@@ -1,0 +1,225 @@
+// TABLE OF CONTENTS
+  // 1. API basics – functions made directly from Habitica's API. Each individual script probably won't use all of these, but that's okay.
+  // 2. Non-API functions 
+    // 2A. Basics – functions that can be used in a wide variety of scripts
+    // 2B. Skills – functions used to make custom skills
+    // 2X. Debug functions – while the specific kind of debug function depends greatly on the script, they do share some commonalities
+  // 3. Idiosyncratic functions – functions that are used only in a single script.
+    // If a script has no idiosyncratic functions (i.e. all its functions are accounted for in the above categories), it will not be listed in this section.
+    // Not listed here: Dueling Script – Announcer Bot, since you run that script from a secondary/bot account, not your main account, and thus won't run it alongside any other scripts.
+    // 3A. Editable Fix Character Values Buttons
+    // 3B. Dueling Script – Scoring
+
+// 3. IDIOSYNCRATIC FUNCTIONS
+  // If a script has no idiosyncratic functions (i.e. all its functions are accounted for in the above categories), that script will not be listed in this section.
+  
+  // 3A. EDITABLE FIX CHARACTER VALUES BUTTONS
+
+    // does parseAndEvaluate function for all four stat values
+    function multParseAndEvaluate(hp, xp, mp, gp, inputString) {
+      
+      // initialize these at their existing values
+      let newHp = hp;
+      let newXp = xp;
+      let newMp = mp;
+      let newGp = gp;
+      
+      // Compute total Intelligence
+      const responseContent = apiFree_getAllAvailableContentObjects();
+      content = JSON.parse(responseContent).data;
+      
+      let int = calculateIntelligence();
+      let maxMp = (2 * int) + 30;
+      
+      newHp = sanitizeInput(parseAndEvaluate(inputString, "HP:", hp), 0, 50);
+      newXp = sanitizeInput(parseAndEvaluate(inputString, "XP:", xp), 0, "none");
+      newMp = sanitizeInput(parseAndEvaluate(inputString, "MP:", mp), 0, maxMp);
+      newGp = sanitizeInput(parseAndEvaluate(inputString, "GP:", gp), 0, "none");
+
+      // check if an error happened; 0.184937265 is the value I randomly generated that I'm using to check errors, it's unlikely a user will input it.
+      if ( ( newHp == 0.184937265 ) || ( newXp == 0.184937265 ) || ( newMp == 0.184937265 ) || ( newGp == 0.184937265 ) ) {
+        // do nothing, the error message was already sent
+      }  
+      
+      // check if there was insufficient stat(s) to pay the cost; 0.562739481 is the value I'm using to check it, it's unlikely a user will input it.
+      else if ( ( newHp == 0.562739481 ) || ( newXp == 0.562739481 ) || ( newMp == 0.562739481 ) || ( newGp == 0.562739481 ) ) {
+        
+        // send error message based on which value is insufficient, starting with "missing all 4"
+        if ( ( newHp == 0.562739481 ) && ( newXp == 0.562739481 ) && ( newMp == 0.562739481 ) && ( newGp == 0.562739481 ) ) {
+          api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_4 + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID});
+        }
+        // now try scenarios where 3 stats are missing
+        else if ( ( newXp == 0.562739481 ) && ( newMp == 0.562739481 ) && ( newGp == 0.562739481 ) ) {
+          api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_3H + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID});
+        }
+        else if ( ( newHp == 0.562739481 ) && ( newMp == 0.562739481 ) && ( newGp == 0.562739481 ) ) {
+          api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_3X + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID});
+        }
+        else if ( ( newHp == 0.562739481 ) && ( newXp == 0.562739481 ) && ( newGp == 0.562739481 ) ) {
+          api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_3M + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID});
+        }
+        else if ( ( newHp == 0.562739481 ) && ( newXp == 0.562739481 ) && ( newMp == 0.562739481 ) ) {
+          api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_3G + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID});
+        }
+        // now try scenarios where 2 stats are missing
+        else if ( ( newHp == 0.562739481 ) && ( newXp == 0.562739481 ) ) {
+          api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_2HX + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID});
+        }
+        else if ( ( newHp == 0.562739481 ) && ( newMp == 0.562739481 ) ) {
+          api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_2HM + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID});
+        }
+        else if ( ( newHp == 0.562739481 ) && ( newGp == 0.562739481 ) ) {
+          api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_2HG + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID});
+        }
+        else if ( ( newXp == 0.562739481 ) && ( newMp == 0.562739481 ) ) {
+          api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_2XM + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID});
+        }
+        else if ( ( newXp == 0.562739481 ) && ( newGp == 0.562739481 ) ) {
+          api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_2XG + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID});
+        }
+        else if ( ( newMp == 0.562739481 ) && ( newGp == 0.562739481 ) ) {
+          api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_2MG + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID});
+        }
+        // finally try scenarios missing only 1 stat
+        else if ( ( newHp == 0.562739481 ) ) {
+          api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_1H + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID});
+        }
+        else if ( ( newXp == 0.562739481 ) ) {
+          api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_1X + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID});
+        }
+        else if ( ( newMp == 0.562739481 ) ) {
+          api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_1M + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID});
+        }
+        else if ( ( newGp == 0.562739481 ) ) {
+          api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_1G + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID});
+        }
+      }
+      else {
+        // update all four stats with a single POST call
+        api_updateUser({"stats.hp" : newHp, "stats.exp" : newXp, "stats.mp" : newMp, "stats.gp" : newGp});
+      }
+    }
+    
+    // checks input string for the search term and returns the new stat value
+    function parseAndEvaluate(inputString, searchTerm, statValue){
+      // Find if the search term exists in the string, and if yes, where it starts
+      let index = findIndex(searchTerm, inputString, false);
+      
+      // If search term isn't found, stat value stays the same
+      if ( index == -1 ) {
+        return statValue;
+      }
+      else {
+        // Find where the semicolon is in the string (following the search term)
+        let indexSemicolon = findIndexOfSemicolon(inputString, index, 3); // Offset is 3 to account for the search term
+        if ( indexSemicolon == -1 ) {
+          api_sendPrivateMessageAlways({"message" : SEMICOLON_ERROR_MSG_START + searchTerm + SEMICOLON_ERROR_MSG_END, "toUserId" : USER_ID});
+          return 0.184937265; // this signals to the script that there was an error
+        }
+        // if the two indices are too far apart, the semicolon is likely following the next search term, not the correct one.
+        else if ( ( indexSemicolon - index ) >= 15 ) {
+          api_sendPrivateMessageAlways({"message" : SEMICOLON_ERROR_MSG_START + searchTerm + SEMICOLON_ERROR_MSG_END, "toUserId" : USER_ID});
+          return 0.184937265; // this signals to the script that there was an error
+        }
+        else {
+          // Create a substring of the characters between the search term and the semicolon, and trim whitespace
+          let substring = createSubstring(inputString, index + 3, indexSemicolon);
+                
+          // Grab direction (up or down) and whether the number is a percent
+          let direction = findDirection(substring, searchTerm);
+          let isPercent = findPercent(substring);
+          
+          if ( direction == "error" ) {
+            return 0.184937265; // this signals to the script that there was an error
+          }
+            
+          // grab the smaller substring of just the numbers, which depends on if there's a percent sign at the end
+          let smallerSubstring = "";
+          let substringLength = substring.length;
+              
+          if (isPercent) {
+            smallerSubstring = createSubstring(substring, 1, substringLength - 1);
+          }
+          else {
+            smallerSubstring = createSubstring(substring, 1, substringLength);
+          }
+                
+          // turn it into a number
+          let smallerSubstringAsNumber = parseFloat(smallerSubstring);
+              
+          // If it's not a number, return an error
+          let isNan = Number.isNaN(smallerSubstringAsNumber);
+          if (isNan) {
+            api_sendPrivateMessageAlways({"message" : NUMBER_AFTER_DIRECTION_ERROR_MSG, "toUserId" : USER_ID});
+            return 0.184937265; // this signals to the script that there was an error
+          }
+          // If it is a number, proceed as normal
+          else {
+            if (isPercent) {
+              // turn the raw number into a percent
+              let percentFromNotes = (smallerSubstringAsNumber / 100); 
+              
+              if ( direction == "up") {
+                // multiply the percent times the stat value it's going to be the percent of
+                let percentOfStatValue = statValue * percentFromNotes;
+                
+                return ( statValue + percentOfStatValue );
+              }
+              else if (direction == "down") {
+                // we must sanitize entries that are beyond 0-100 since we don't want to subtract greater than 100% of a value; this didn't need to happen for positive, just for negative
+                let sanitizedPercent = sanitizeInput(percentFromNotes, 0, 100);
+                
+                // multiply the sanitized percent times the stat value it's going to be the percent of
+                let sanitizedPercentOfStatValue = statValue * sanitizedPercent;
+                
+                return ( statValue - sanitizedPercentOfStatValue);
+              }
+              else { // it shouldn't be possible for this "else" condition to happen, but just in case...
+                api_sendPrivateMessageAlways({"message" : MISSING_DIRECTION_ERROR_MSG_START + searchTerm + MISSING_DIRECTION_ERROR_MSG_END, "toUserId" : USER_ID});
+                return 0.184937265; // this signals to the script that there was an error
+              }
+            }
+            else {
+              if ( direction == "up") {
+                return ( statValue + smallerSubstringAsNumber );
+              }
+              else if (direction == "down") {
+                // check if stat value is sufficient to pay the cost
+                if ( ( statValue - smallerSubstringAsNumber ) < 0 ) {
+                  return 0.562739481; // this is the error-checking amount for insufficient stat to pay the cost
+                }
+                else {
+                  return ( statValue - smallerSubstringAsNumber );
+                }
+              }
+              else { // it shouldn't be possible for this "else" condition to happen, but just in case...
+                api_sendPrivateMessageAlways({"message" : MISSING_DIRECTION_ERROR_MSG_START + searchTerm + MISSING_DIRECTION_ERROR_MSG_END, "toUserId" : USER_ID});
+                return 0.184937265; // this signals to the script that there was an error
+              }
+            }
+          }
+        }
+      }
+    }
+
+    function findDirection(trimmedSubstring, searchTerm) {
+      if ( trimmedSubstring.charAt(0) == "+") {
+        return "up";
+      }
+      else if ( trimmedSubstring.charAt(0) == "-") {
+        return "down";
+      }
+      else {
+        api_sendPrivateMessageAlways({"message" : MISSING_DIRECTION_ERROR_MSG_START + searchTerm + MISSING_DIRECTION_ERROR_MSG_END, "toUserId" : USER_ID});
+        return "error";
+      }
+    }
+
+    function findPercent(trimmedSubstring) {
+      let length = trimmedSubstring.length;
+      let isPercent = false;
+      if ( trimmedSubstring.charAt(length - 1) == "%" ) {
+        isPercent = true;
+      }
+      return isPercent;
+    }
