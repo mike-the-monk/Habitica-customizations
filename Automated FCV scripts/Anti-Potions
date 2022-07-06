@@ -193,7 +193,7 @@ function doPost(e) {
           doButtonAntiMpPotion(lvl, mp, gp, AntiMpUsageKey, AntiMpUsage)
           break;
         case ANTI_HP_POTION_ALIAS:
-          doButtonAntiHpPotion(lvl, hp, gp, AntiHpUsageKey, AntiHpUsage)
+          doButtonAntiHpPotion(hp, gp, AntiHpUsageKey, AntiHpUsage)
           break;
         case ANTI_XP_POTION_ALIAS:
           doButtonAntiXpPotion(lvl, exp, gp, AntiXpUsageKey, AntiXpUsage);
@@ -255,7 +255,7 @@ function doButtonAntiHpPotion(lvl, hp, gp, AntiHpUsageKey, AntiHpUsage){
 // When the Anti-XP Potion button is clicked
 function doButtonAntiXpPotion(lvl, exp, gp, AntiXpUsageKey, AntiXpUsage){
   // If level lock fails, send failure message
-  let sufficientLevel = checkLevelLock(lvl, ANTI_XP_POTION_LEVEL_LOCK, MSG_ANTI_XP_POTION_LEVEL_LOCK_FAIL);
+  let sufficientLevel = checkLevelLock(ANTI_XP_POTION_LEVEL_LOCK, MSG_ANTI_XP_POTION_LEVEL_LOCK_FAIL);
   if (sufficientLevel) {
     // Check if they've exceeded daily usage. If yes, send failure message.
     let usageLimitOkay = checkUsageLimit(AntiXpUsage, 1, MAX_DAILY_ANTI_XP_POTION_USAGE, MSG_ANTI_XP_POTION_DAILY_USAGE_EXCEEDED);
