@@ -1399,14 +1399,6 @@ function duelEndButton(taskNotes, selfUsernameKey, opponentUsernameKey, wagerKey
 }
 
 
-// Finds index of a search term, not case-sensitive
-function findIndexCaseInsensitive(searchTerm, stringToSearch){
-  let uppercaseStringToSearch = stringToSearch.toUpperCase();
-  let index = findIndex(searchTerm, uppercaseStringToSearch);
-  
-  return index;
-}
-
 // Creates hash of the duel parameters
 function createDuelHash(selfUsernameKey, opponentUsernameKey, wagerKey, scoreNeededGoalKey, timestampIdentifierKey) {
   // Retrieve saved values
