@@ -478,7 +478,8 @@ function doButtonStealth(lvl, stealthedDailies, mp, totalDailies, perception){
       if ( (tasksStealth[i].isDue == true)  && (tasksStealth[i].completed == false) ) {
         tasksDueAndNotComplete++;
       }
-
+    }
+    
     // If already avoided all dailies that are due but not complete, send message and don't subtract MP cost
     if (stealthedDailies >= tasksDueAndNotComplete){
       api_sendPrivateMessageAlways({"message" : "You've already avoided all your Dailies, so additional uses of this skill have no effect.", "toUserId" : USER_ID});
