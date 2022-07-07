@@ -27,7 +27,7 @@ const TAG_FOR_DUEL_BUTTONS = "typeTagHere";
 /* [Users] Do not edit code below this line   */
 /* ========================================== */
 const AUTHOR_ID = "0034eb14-b4d8-494e-8386-d3f33cff7922";
-const SCRIPT_NAME = "Dueling Script - scoring";
+const SCRIPT_NAME = "Dueling Mode - scoring";
 const HEADERS = {
   "x-client" : AUTHOR_ID + " - " + SCRIPT_NAME,
   "x-api-user" : USER_ID,
