@@ -24,6 +24,6 @@ Here is a list of all of the customizations I've made, as well as a link to thei
 - **Partial Healing Mode** - normally, you fully heal upon leveling up. Players who want an added challenge can instead only partially heal upon level up. https://habitica.fandom.com/wiki/Partial_Healing
  - **Dueling Mode** - Challenge another player to a duel and the script keeps track of your score. Whoever wins gets the GP that both of you wagered. https://habitica.fandom.com/wiki/Dueling_Script
     
-***Just for fun***
+***Just for fun – customizations more on the silly side***
 
  - **Transform Yourself Year-Round** - why wait until the next Grand Gala to turn yourself into a snowman, flower, starfish, or ghost? Creates buttons that transform you for 15 GP (5 GP to turn back), including a never-before-seen Random Transformation item that randomly turns you into one of the four options. https://habitica.fandom.com/wiki/Transform_Yourself_Year-Round
