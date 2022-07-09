@@ -338,6 +338,7 @@ function api_createNewWebhook(payload) {
 // Sets initial properties that will be used/saved later.
 function initScriptProperties() {
   var timestampInit = Date.now();
+  scriptProperties.setProperty(CRON_COUNT_KEY, 0);
   scriptProperties.setProperty(TIMESTAMP_KEY, timestampInit);
 }
 
