@@ -185,6 +185,9 @@ function doPost(e) {
       if (cronCount != user.flags.cronCount) {
         cronCount = user.flags.cronCount;
         resetCounters();
+        
+        // Save to non-volatile memory
+        scriptProperties.setProperty(cronCountKey, cronCount);
       }
       
       // Switch-case based on which button was pressed. All button-click actions are in a separate function.
@@ -202,7 +205,6 @@ function doPost(e) {
       
       // Save values to non-volatile memory, but only from within the rate-limited if-block (we don't want to save the timestamp unless the script ran)
       timeStart = timeEnd;
-      scriptProperties.setProperty(cronCountKey, cronCount);
       scriptProperties.setProperty(timestampKey, timeStart);
     }
   }
