@@ -25,6 +25,10 @@ const HP_PERCENT_PER_LEVEL = 50.0; // Do not put a percent sign after the number
 /* [Users] Optional customizations to fill in */
 /* ========================================== */
 
+// Do you want a button that lets you enter/exit Partial Healing Mode? If yes, change the 0 to a 1 below.
+// If you don't have a button, you can still enter/exit the Mode by manually running the function "togglePartialHealingMode"
+const PARTIAL_HEALING_TOGGLE_BUTTON = 0;
+
 /* ========================================== */
 /* [Users] Do not edit code below this line   */
 /* ========================================== */
@@ -38,15 +42,45 @@ const HEADERS = {
 
 const scriptProperties = PropertiesService.getScriptProperties(); // Constants can have properties changed
 
+// Button title and notes change based on whether you are in Partial Healing Mode or not
+const PARTIAL_HEALING_MODE_TEXT_START = "Click to ";
+const PARTIAL_HEALING_MODE_TEXT_END = " Partial Healing Mode";
+const PARTIAL_HEALING_MODE_NOTES_START = "You are ";
+const PARTIAL_HEALING_MODE_NOTES_MID = "in Partial Healing Mode. Click this button to ";
+const PARTIAL_HEALING_MODE_NOTES_END = " that Mode.";
+
+const PARTIAL_HEALING_MODE_TEXT_EXIT = PARTIAL_HEALING_MODE_TEXT_START + "exit" + PARTIAL_HEALING_MODE_TEXT_END;
+const PARTIAL_HEALING_MODE_TEXT_ENTER = PARTIAL_HEALING_MODE_TEXT_START + "enter" + PARTIAL_HEALING_MODE_TEXT_END;
+
+const PARTIAL_HEALING_MODE_NOTES_EXIT = PARTIAL_HEALING_MODE_NOTES_START + "currently" + PARTIAL_HEALING_MODE_NOTES_MID + "exit" + PARTIAL_HEALING_MODE_NOTES_END;
+const PARTIAL_HEALING_MODE_NOTES_ENTER = PARTIAL_HEALING_MODE_NOTES_START + "not currently" + PARTIAL_HEALING_MODE_NOTES_MID + "enter" + PARTIAL_HEALING_MODE_NOTES_END;
+
+const PARTIAL_HEALING_MODE_ALIAS = "PARTIAL_HEALING_TOGGLE";
+const PARTIAL_HEALING_MODE_VALUE = "0";
+
+// Button initializes assuming they are in Partial Healing Mode
+const PARTIAL_HEALING_MODE_BUTTON = {
+    "text": PARTIAL_HEALING_MODE_TEXT_EXIT,
+    "type": "reward",
+    "alias": PARTIAL_HEALING_MODE_ALIAS,
+    "notes": PARTIAL_HEALING_MODE_NOTES_EXIT,
+    "value": PARTIAL_HEALING_MODE_VALUE,
+}
+
 const HP_KEY = "HP_KEY";
 const LVL_KEY = "LVL_KEY";
-const TIMESTAMP_KEY = "TIMESTAMP_KEY";
+const PARTIAL_HEALING_MODE_ACTIVE_KEY = "PARTIAL_HEALING_MODE_ACTIVE_KEY";
 
 var hpKey = "";
 var lvlKey = "";
-var timestampKey = "";
+var partialHealingModeActiveKey = "";
 
 function doOneTimeSetup() { 
+  // Create button if user indicated they want it
+  if (PARTIAL_HEALING_TOGGLE_BUTTON == 1) {
+    api_createNewTaskForUser([PARTIAL_HEALING_MODE_BUTTON]);
+  } 
+  
   // create the webhook
   const options = {
     "scored" : true,
@@ -69,16 +103,23 @@ function doPost(e) {
   const type = dataContents.type;
   
   if (type == "scored") {
-    var timestampKey = TIMESTAMP_KEY;
-    var timeStart = Number(scriptProperties.getProperty(timestampKey));
-    if ( (timeStart == 0) || (timeStart == "") || (timeStart == undefined) || (timeStart == null) ) {
-      timeStart = Date.now();
+    // Sanitize task alias
+    let sanitizedAlias = "sanitized"; // This will be the value if undefined, null, or blank
+    if ( (task.alias != undefined) && (task.alias != null) && (task.alias != "") ) {
+      sanitizedAlias = task.alias;
     }
-    var timeEnd = Date.now();
     
-    // Rate limiting: only grab HP and LVL if it's been 5 seconds between clicks
-    if ( (timeEnd - timeStart) >= 5000 ) {
+    var partialHealingModeActiveKey = PARTIAL_HEALING_MODE_ACTIVE_KEY;
+    var partialHealingModeActive = Number(scriptProperties.getProperty(partialHealingModeActiveKey));
     
+    // If they are not in Partial Healing Mode but pressed the toggle button, put them in that mode.
+    if (partialHealingModeActive == 0) {
+      if (sanitizedAlias == PARTIAL_HEALING_MODE_ALIAS) {
+        togglePartialHealingMode();
+      } 
+    } 
+    // If they are in Partial Healing Mode, do things as normal
+    if (partialHealingModeActive == 1) {
       var hpKey = HP_KEY;
       var lvlKey = LVL_KEY;
     
@@ -90,7 +131,7 @@ function doPost(e) {
     
       let currentHp = user.stats.hp;
       let currentLvl = user.stats.lvl;
-    
+      
       // See if they've leveled up
       if (currentLvl > prevLvl) {
         if ( VERSION == 2 ) {
@@ -113,23 +154,36 @@ function doPost(e) {
       
           prevHp = newHp;        
           prevLvl = currentLvl;
+          
+          // Since the values recently changed, save them.
+          scriptProperties.setProperty(hpKey, prevHp);
+          scriptProperties.setProperty(lvlKey, prevLvl);
         }
       }
+      // If they haven't leveled up since the last time the script ran...
       else {
-        // If previous and current HP are the same, no need to re-save
+        // If previous and current HP are the same, no need to re-save. Otherwise, do.
         if (prevHp != currentHp) {
           prevHp = currentHp;
+          scriptProperties.setProperty(hpKey, prevHp);
         }
       }
-      // Save values to non-volatile memory
-      timeStart = timeEnd;
-      scriptProperties.setProperty(hpKey, prevHp);
-      scriptProperties.setProperty(lvlKey, prevLvl);
-      scriptProperties.setProperty(timestampKey, timeStart);
       
       return HtmlService.createHtmlOutput();
     }
   }
+}
+
+// Enters or exits from Partial Healing Mode
+function togglePartialHealingMode(){
+  var partialHealingModeActiveKey = PARTIAL_HEALING_MODE_ACTIVE_KEY;
+  var partialHealingModeActive = Number(scriptProperties.getProperty(partialHealingModeActiveKey));
+  
+  if (partialHealingModeActive == 0) {
+    scriptProperties.setProperty(partialHealingModeActiveKey, 1);
+  } else if (partialHealingModeActive == 1) {
+    scriptProperties.setProperty(partialHealingModeActiveKey, 0);
+  } 
 }
 
 // Create a webhook if no duplicate exists
