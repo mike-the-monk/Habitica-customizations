@@ -167,6 +167,9 @@ function doPost(e) {
       if (cronCount != user.flags.cronCount) {
         cronCount = user.flags.cronCount;
         resetCounters();
+        
+        // Save to non-volatile memory
+        scriptProperties.setProperty(cronCountKey, cronCount);
       }
       
       // Switch-case based on which button was pressed. All button-click actions are in a separate function.
