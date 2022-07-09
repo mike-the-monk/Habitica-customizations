@@ -191,43 +191,30 @@ function doPost(e) {
       if ( (sanitizedAlias == SNOWBALL_ALIAS) || (sanitizedAlias == SPOOKY_SPARKLES_ALIAS) || (sanitizedAlias == SHINY_SEED_ALIAS) || 
       (sanitizedAlias == SEAFOAM_ALIAS) || (sanitizedAlias == RANDOM_ALIAS) ) {
       
-        // See if they've already transformed. If yes, subtract 5 GP (send error message if they don't have enough) and reset them to normal.
         let isSnowball = user.stats.buffs.snowball;
         let isSpookySparkles = user.stats.buffs.spookySparkles;
         let isShinySeed = user.stats.buffs.shinySeed;
         let isSeafoam = user.stats.buffs.seafoam;
         
-        if ( (isSnowball) || (isSpookySparkles) || (isShinySeed) || (isSeafoam) ) {
-          if ( gp >= 5 ) {
-            api_updateUser({"stats.buffs.snowball" : false, "stats.buffs.spookySparkles" : false, "stats.buffs.shinySeed" : false,
-              "stats.buffs.seafoam" : false, "stats.gp" : gp - 5});
-          } else {
-            api_sendPrivateMessage({"message" : "Insufficient gold: you need at least 5 GP to transform back.", "toUserId" : USER_ID});
-          }
-        }
-        // Otherwise, subtract 15 GP and do the correct transformation (if they don't have it, send error meesage)
-        else {
-          if (gp < 15) {
-            api_sendPrivateMessage({"message" : "Insufficient gold: you need at least 15 GP.", "toUserId" : USER_ID});
-          } else {
-            // Switch-case based on which button was pressed. All button-click actions are in a separate function.
-            switch (sanitizedAlias){
-              case SNOWBALL_ALIAS:
-                doButtonSnowballTransformation(gp);
-                break;
-              case SPOOKY_SPARKLES_ALIAS:
-                doButtonSpookySparklesTransformation(gp);
-                break;
-              case SHINY_SEED_ALIAS:
-                doButtonShinySeedTransformation(gp);
-                break;
-              case SEAFOAM_ALIAS:
-                doButtonSeafoamTransformation(gp);
-                break;
-              case RANDOM_ALIAS:
-                doButtonRandomTransformation(gp);
-                break;
-            }
+        let passesChecks = checkWhetherToTransform(isSnowball, isSpookySparkles, isShinySeed, isSeafoam, gp);
+        if (passesChecks){
+          // Switch-case based on which button was pressed. All button-click actions are in a separate function.
+          switch (sanitizedAlias){
+            case SNOWBALL_ALIAS:
+              doButtonSnowballTransformation(gp);
+              break;
+            case SPOOKY_SPARKLES_ALIAS:
+              doButtonSpookySparklesTransformation(gp);
+              break;
+            case SHINY_SEED_ALIAS:
+              doButtonShinySeedTransformation(gp);
+              break;
+            case SEAFOAM_ALIAS:
+              doButtonSeafoamTransformation(gp);
+              break;
+            case RANDOM_ALIAS:
+              doButtonRandomTransformation(gp);
+              break;
           }
         }
       }
@@ -236,6 +223,32 @@ function doPost(e) {
       scriptProperties.setProperty(timestampKey, timeStart);
     }
     return HtmlService.createHtmlOutput();
+  }
+}
+
+// Checks to run before transforming
+function checkWhetherToTransform(isSnowball, isSpookySparkles, isShinySeed, isSeafoam, gp){
+  // See if they've already transformed. If yes, subtract 5 GP (send error message if they don't have enough) and reset them to normal.
+  if ( (isSnowball) || (isSpookySparkles) || (isShinySeed) || (isSeafoam) ) {
+    if ( gp >= 5 ) {
+      api_updateUser({"stats.buffs.snowball" : false, "stats.buffs.spookySparkles" : false, "stats.buffs.shinySeed" : false,
+        "stats.buffs.seafoam" : false, "stats.gp" : gp - 5});
+      return false;
+    } else {
+      api_sendPrivateMessage({"message" : "Insufficient gold: you need at least 5 GP to transform back.", "toUserId" : USER_ID});
+      return false;
+    }
+  } 
+  // If they don't have the 15 GP, send error message
+  else {
+    if (gp < 15) {
+      api_sendPrivateMessage({"message" : "Insufficient gold: you need at least 15 GP.", "toUserId" : USER_ID});
+      return false;
+    } 
+    // Otherwise, all checks passes
+    else {
+      return true;
+    }
   }
 }
 
