@@ -236,7 +236,7 @@ function doButtonAntiMpPotion(lvl, mp, gp, AntiMpUsageKey, AntiMpUsage){
 }
 
 // When the Anti-HP Potion button is clicked
-function doButtonAntiHpPotion(lvl, hp, gp, AntiHpUsageKey, AntiHpUsage){
+function doButtonAntiHpPotion(hp, gp, AntiHpUsageKey, AntiHpUsage){
   // Check if they've exceeded daily usage. If yes, send failure message.
   let usageLimitOkay = checkUsageLimit(AntiHpUsage, 1, MAX_DAILY_ANTI_HP_POTION_USAGE, MSG_ANTI_HP_POTION_DAILY_USAGE_EXCEEDED);
   if (usageLimitOkay){
