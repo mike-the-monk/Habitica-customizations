@@ -12,12 +12,19 @@ const WEB_APP_URL = "PasteGeneratedWebAppUrlHere";
 /* [Users] Required customizations to fill in */
 /* ========================================== */
 
+// Do you want a button that lets you enter/exit Low Constitution Mode? If not, change the 1 to a 0 below.
+// If you don't have a button, you can still enter/exit the Mode by manually running the function "toggleLowConstitutionMode"
+const LOW_CONSTITUTION_TOGGLE_BUTTON = 1;
+
+// Do you want to automatically enter Low Constitution Mode each day at Cron? If yes, change the 0 to a 1 in the line below.
+const AUTOMATIC_LOW_CONSTITUTION = 0;
+
 /* ========================================== */
 /* [Users] Optional customizations to fill in */
 /* ========================================== */
 
 // Do you want to get private message notifications about when you enter or exit Low Constitution Mode?
-// Default is no notification. If you want them, change the 0 to a 1 in the line below
+// Default is no notification. If you want them, change the 0 to a 1 in the line below.
 const NOTIFICATIONS_ON = 0; 
 
 /* ========================================== */
@@ -55,7 +62,10 @@ var antiBuffAmountKey = "";
 var antiBuffUsageKey = "";
 
 function doOneTimeSetup() {
-  api_createNewTaskForUser([LOW_CON_MODE_BUTTON]);
+  // Create button if user indicated they want it
+  if (LOW_CONSTITUTION_TOGGLE_BUTTON == 1) {
+    api_createNewTaskForUser([LOW_CON_MODE_BUTTON]);
+  } 
   
   // Next, create the webhook
   const options = {
@@ -85,60 +95,81 @@ function doPost(e) {
     sanitizedAlias = task.alias;
   }
   
-  if ((type == "scored") && (sanitizedAlias == LOW_CON_MODE_ALIAS)) {
+  if (type == "scored"){
     const responseUser = api_getAuthenticatedUserProfile("stats,items.gear.equipped");
     user = JSON.parse(responseUser).data;
     
-    var cronCountKey = CRON_COUNT_KEY;
-    var antiBuffAmountKey = ANTI_BUFF_AMOUNT_KEY;
-    var antiBuffUsageKey = ANTI_BUFF_USAGE_KEY;
-    
+    var cronCountKey = CRON_COUNT_KEY;    
     var cronCount = Number(scriptProperties.getProperty(cronCountKey));
-    var antiBuffAmount = Number(scriptProperties.getProperty(antiBuffAmountKey));
-    var antiBuffUsage = Number(scriptProperties.getProperty(antiBuffUsageKey));
     
     // If they've Cronned, reset all counters
     if (cronCount != user.flags.cronCount) {
       cronCount = user.flags.cronCount;
       resetCounters();
+      
+      // Save values to non-volatile memory
+      scriptProperties.setProperty(cronCountKey, cronCount);
+      
+      // If they want to automatically enter Low Constitution Mode each day, do so
+      if (AUTOMATIC_LOW_CONSTITUTION == 1) {
+        // Wait 2 seconds  
+        Utilities.sleep(2000);
+        
+        toggleLowConstitutionMode();
+      }
     }
     
-    // If anti-buff usage is even, then user is currently not in Low Con Mode. Therefore, put them in it
-    if (antiBuffUsage % 2 == 0) {
-      const responseContent = apiFree_getAllAvailableContentObjects();
-      content = JSON.parse(responseContent).data;
+    // If they pressed the button, toggle into/out of Low Constitution Mode
+    if (sanitizedAlias == LOW_CON_MODE_ALIAS)) {
+      toggleLowConstitutionMode();
+    }
+  } 
     
-      // Using these, calculate total constitution and how much the anti-buff should be to set CON to 1
-      let buffsCon = user.stats.buffs.con;
-      if (!user.stats.buffs.con) { buffsCon = 0; }
-      let con = calculateConstitution();
-      let unbuffedConstitution = con - buffsCon;
-      let antiBuffCon = 1 - unbuffedConstitution;
-      
-      // Anti-buff user, save value, increment counter
-      api_updateUser({"stats.buffs.con" : antiBuffCon});
-      antiBuffAmount = antiBuffCon;
-      antiBuffUsage++;
-      
-      api_sendPrivateMessage({"message" : "Currently in Low Constitution Mode.", "toUserId" : USER_ID});
-    }
-    // If anti-buff usage is odd, then user is in Low Con Mode. Therefore, remove them from it
-    else {
-      // Reverse the anti-buff, unsave anti-buff value, increment counter
-      api_updateUser({"stats.buffs.con" : 1 - antiBuffCon});
-      antiBuffAmount = 0;
-      antiBuffUsage++;
-      
-      api_sendPrivateMessage({"message" : "Not currently in Low Constitution Mode.", "toUserId" : USER_ID})
-    }
+  return HtmlService.createHtmlOutput();
+}
+
+// If user is in Low Constitution Mode, remove them from it, and vice versa.
+function toggleLowConstitutionMode(){
+  var antiBuffAmountKey = ANTI_BUFF_AMOUNT_KEY;
+  var antiBuffUsageKey = ANTI_BUFF_USAGE_KEY;
+  
+  var antiBuffAmount = Number(scriptProperties.getProperty(antiBuffAmountKey));
+  var antiBuffUsage = Number(scriptProperties.getProperty(antiBuffUsageKey));
+  
+  // If anti-buff usage is even, then user is currently not in Low Con Mode. Therefore, put them in it
+  if (antiBuffUsage % 2 == 0) {
+    const responseUser = api_getAuthenticatedUserProfile("stats,items.gear.equipped");
+    user = JSON.parse(responseUser).data;
+    const responseContent = apiFree_getAllAvailableContentObjects();
+    content = JSON.parse(responseContent).data;
+
+    // Using these, calculate total constitution and how much the anti-buff should be to set CON to 1
+    let buffsCon = user.stats.buffs.con;
+    if (!user.stats.buffs.con) { buffsCon = 0; }
+    let con = calculateConstitution();
+    let unbuffedConstitution = con - buffsCon;
+    let antiBuffCon = 1 - unbuffedConstitution;
+
+    // Anti-buff user, save value, increment counter
+    api_updateUser({"stats.buffs.con" : antiBuffCon});
+    antiBuffAmount = antiBuffCon;
+    antiBuffUsage++;
+
+    api_sendPrivateMessage({"message" : "Currently in Low Constitution Mode.", "toUserId" : USER_ID});
+  }
+  // If anti-buff usage is odd, then user is in Low Con Mode. Therefore, remove them from it
+  else {
+    // Reverse the anti-buff, unsave anti-buff value, increment counter
+    api_updateUser({"stats.buffs.con" : 1 - antiBuffCon});
+    antiBuffAmount = 0;
+    antiBuffUsage++;
+
+    api_sendPrivateMessage({"message" : "Not currently in Low Constitution Mode.", "toUserId" : USER_ID})
   }
   
   // Save values to non-volatile memory
-  scriptProperties.setProperty(cronCountKey, cronCount)
   scriptProperties.setProperty(antiBuffAmountKey, antiBuffAmount);
   scriptProperties.setProperty(antiBuffUsageKey, antiBuffUsage);
-  
-  return HtmlService.createHtmlOutput();
 }
 
 // Create custom reward buttons
