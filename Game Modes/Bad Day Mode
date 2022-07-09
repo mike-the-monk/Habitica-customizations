@@ -92,25 +92,28 @@ function doPost(e) {
       let unbuffedConstitution = con - constitutionBuffs;
       let hp = user.stats.hp;
       
-      // Check if they're already in Bad Day Mode by seeing if CON is really high and all Dailies are Stealthed and HP is high
-      if ( ( constitutionBuffs > 8000 ) && ( stealthedDailies >= totalDailies ) && ( hp >= 45 ) ) {
-       api_sendPrivateMessage({"message" : "You are already in Bad Day Mode, so clicking the button additional times has no effect.", "toUserId" : USER_ID}); 
-      }
-      else {
-        // Full heal
-        api_updateUser({"stats.hp" : 50});
-        
-        // Set CON to 9999
-        let buffCon = 9999 - unbuffedConstitution;
-        api_updateUser({"stats.buffs.con" : buffCon});
-        
-        // Stealth all Dailies
-        api_updateUser({"stats.buffs.stealth" : totalDailies});
-      }
+      doButtonBadDayMode(constitutionBuffs, stealthedDailies, totalDailies, hp, unbuffedConstitution);
     }
   }
   return HtmlService.createHtmlOutput();
 }      
+
+function doButtonBadDayMode(constitutionBuffs, stealthedDailies, totalDailies, hp, unbuffedConstitution){
+  // Check if they're already in Bad Day Mode by seeing if CON is really high and all Dailies are Stealthed and HP is high
+  if ( ( constitutionBuffs > 8000 ) && ( stealthedDailies >= totalDailies ) && ( hp >= 45 ) ) {
+   api_sendPrivateMessage({"message" : "You are already in Bad Day Mode, so clicking the button additional times has no effect.", "toUserId" : USER_ID}); 
+  } else {
+    // Full heal
+    api_updateUser({"stats.hp" : 50});
+    
+    // Set CON to 9999
+    let buffCon = 9999 - unbuffedConstitution;
+    api_updateUser({"stats.buffs.con" : buffCon});
+    
+    // Stealth all Dailies
+    api_updateUser({"stats.buffs.stealth" : totalDailies});
+  }
+}
 
 // Create custom reward buttons
 function api_createNewTaskForUser(payload) {
