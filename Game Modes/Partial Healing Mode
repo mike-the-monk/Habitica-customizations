@@ -112,65 +112,62 @@ function doPost(e) {
     var partialHealingModeActiveKey = PARTIAL_HEALING_MODE_ACTIVE_KEY;
     var partialHealingModeActive = Number(scriptProperties.getProperty(partialHealingModeActiveKey));
     
-    // If they are not in Partial Healing Mode but pressed the toggle button, put them in that mode.
-    if (partialHealingModeActive == 0) {
-      if (sanitizedAlias == PARTIAL_HEALING_MODE_ALIAS) {
-        togglePartialHealingMode();
-      } 
-    } 
-    // If they are in Partial Healing Mode, do things as normal
-    if (partialHealingModeActive == 1) {
-      var hpKey = HP_KEY;
-      var lvlKey = LVL_KEY;
-    
-      var prevHp = Number(scriptProperties.getProperty(hpKey));
-      var prevLvl = Number(scriptProperties.getProperty(lvlKey));
-    
-      const response = api_getAuthenticatedUserProfile("stats");
-      user = JSON.parse(response).data;
-    
-      let currentHp = user.stats.hp;
-      let currentLvl = user.stats.lvl;
-      
-      // See if they've leveled up
-      if (currentLvl > prevLvl) {
-        if ( VERSION == 2 ) {
-          let valueToHeal = sanitizeInput (HP_SET_VALUE_PER_LEVEL, 0, 50);
-          let newHp = valueToHeal + prevHp;
+    // If they press the toggle button, do so
+    if (sanitizedAlias == PARTIAL_HEALING_MODE_ALIAS) {
+      togglePartialHealingMode();
+    } else { // If they didn't press the toggle button, do things as normal if they are in Partial Healing Mode
+      if (partialHealingModeActive == 1) {
+        var hpKey = HP_KEY;
+        var lvlKey = LVL_KEY;
+
+        var prevHp = Number(scriptProperties.getProperty(hpKey));
+        var prevLvl = Number(scriptProperties.getProperty(lvlKey));
+
+        const response = api_getAuthenticatedUserProfile("stats");
+        user = JSON.parse(response).data;
+
+        let currentHp = user.stats.hp;
+        let currentLvl = user.stats.lvl;
         
-          if (newHp >= 50) { api_updateUser({"stats.hp" : 50}); }
-          else { api_updateUser({"stats.hp" : newHp}); }
-      
-          prevHp = newHp;        
-          prevLvl = currentLvl;
+        // See if they've leveled up
+        if (currentLvl > prevLvl) {
+          if ( VERSION == 2 ) {
+            let valueToHeal = sanitizeInput (HP_SET_VALUE_PER_LEVEL, 0, 50);
+            let newHp = valueToHeal + prevHp;
+
+            if (newHp >= 50) { api_updateUser({"stats.hp" : 50}); }
+            else { api_updateUser({"stats.hp" : newHp}); }
+
+            prevHp = newHp;        
+            prevLvl = currentLvl;
+          }
+          else if ( VERSION == 3 ) {
+            let percentToHeal = sanitizeInput (HP_PERCENT_PER_LEVEL, 0, 100);
+            let healing = ( percentToHeal / 100 ) * ( 50 - prevHp );
+            let newHpPercent = healing + prevHp;
+
+            if (newHpPercent >= 50) { api_updateUser({"stats.hp" : 50}); }
+            else { api_updateUser({"stats.hp" : newHpPercent}); }
+
+            prevHp = newHp;        
+            prevLvl = currentLvl;
+
+            // Since the values recently changed, save them.
+            scriptProperties.setProperty(hpKey, prevHp);
+            scriptProperties.setProperty(lvlKey, prevLvl);
+          }
         }
-        else if ( VERSION == 3 ) {
-          let percentToHeal = sanitizeInput (HP_PERCENT_PER_LEVEL, 0, 100);
-          let healing = ( percentToHeal / 100 ) * ( 50 - prevHp );
-          let newHpPercent = healing + prevHp;
-        
-          if (newHpPercent >= 50) { api_updateUser({"stats.hp" : 50}); }
-          else { api_updateUser({"stats.hp" : newHpPercent}); }
-      
-          prevHp = newHp;        
-          prevLvl = currentLvl;
-          
-          // Since the values recently changed, save them.
-          scriptProperties.setProperty(hpKey, prevHp);
-          scriptProperties.setProperty(lvlKey, prevLvl);
+        // If they haven't leveled up since the last time the script ran...
+        else {
+          // If previous and current HP are the same, no need to re-save. Otherwise, do.
+          if (prevHp != currentHp) {
+            prevHp = currentHp;
+            scriptProperties.setProperty(hpKey, prevHp);
+          }
         }
       }
-      // If they haven't leveled up since the last time the script ran...
-      else {
-        // If previous and current HP are the same, no need to re-save. Otherwise, do.
-        if (prevHp != currentHp) {
-          prevHp = currentHp;
-          scriptProperties.setProperty(hpKey, prevHp);
-        }
-      }
-      
-      return HtmlService.createHtmlOutput();
     }
+    return HtmlService.createHtmlOutput();
   }
 }
 
