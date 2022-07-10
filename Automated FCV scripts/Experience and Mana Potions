@@ -161,7 +161,7 @@ function doPost(e) {
           doButtonXpPotion(lvl, gp, exp, xpUsage, xpUsageKey);
           break;
         case MP_POTION_ALIAS:
-          doButtonMpPotion(mp, lvl, gp, mpUsage, mpUsageKey);
+          doButtonMpPotion(lvl, gp, mp, mpUsage, mpUsageKey);
           break;
       }
 
