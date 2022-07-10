@@ -437,7 +437,7 @@ function multParseAndEvaluate(hp, xp, mp, gp, inputString) {
 // checks input string for the search term and returns the new stat value
 function parseAndEvaluate(inputString, searchTerm, statValue){
   // Find if the search term exists in the string, and if yes, where it starts
-  let index = findIndex(searchTerm, inputString, false);
+  let index = findIndex(searchTerm, inputString, true);
   
   // If search term isn't found, stat value stays the same
   if ( index == -1 ) {
@@ -649,4 +649,29 @@ function api_updateUser(payload) {
   
   const url = "https://habitica.com/api/v3/user";
   return UrlFetchApp.fetch(url, params);
+}
+
+// Ensures that the input is between the minimum and maximum. Can use "none" in either argument to indicate if there is either no minimum or no maximum.
+function sanitizeInput(input, minimum, maximum) {
+  if (minimum == "none"){ // Condition for if there is no minimum
+    if ( input > maximum ) {
+      return maximum;
+    } else { 
+      return input;
+    }
+  } else if (maximum == "none"){ // Condition for if there is no maximum
+    if ( input < minimum ) {
+      return minimum;
+    } else { 
+      return input;
+    }
+  } else { // Condition where there is both minimum and maximum
+    if ( input < minimum ) {
+      return minimum;
+    } else if ( input > maximum ) {
+      return maximum;
+    } else { 
+      return input;
+    }
+  }
 }
