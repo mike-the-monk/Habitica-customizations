@@ -1080,7 +1080,7 @@ function burstOfFlamesXp(int, per, nTimes) {
   for ( var i = 1; i <= nTimes; i++) {
     multiplier = criticalHit(per, 0.03);
     modifiedInt = int * multiplier;
-    let bonus = Math.ceil( (taskValue + 1) * (modifiedInt * 0.075 ) ) ;
+    bonus = Math.ceil( (taskValue + 1) * (modifiedInt * 0.075 ) ) ;
     newXpRunningTotal += ( ( 75 * bonus ) / ( bonus + 37.5) );
   }
   
