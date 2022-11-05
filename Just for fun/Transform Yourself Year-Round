@@ -42,9 +42,18 @@ const HEADERS = {
 
 const scriptProperties = PropertiesService.getScriptProperties() // Constants can have properties changed
 
+const COST_TO_TRANSFORM = 15
+const COST_TO_TRANSFORM_BACK = 5
+
+// Parts of messages that get reused
+const TRANSFORMATION_NOTES_END_1 = "Costs "
+const TRANSFORMATION_NOTES_END_2 = " GP, lasts until tomorrow. Click again to pay "
+const TRANSFORMATION_NOTES_END_3 = " GP to return to normal."
+const TRANSFORMATION_NOTES_END = TRANSFORMATION_NOTES_END_1 + COST_TO_TRANSFORM + TRANSFORMATION_NOTES_END_2 + COST_TO_TRANSFORM_BACK + TRANSFORMATION_NOTES_END_3
+
 const SNOWBALL_TEXT = "**Snowball (self only)**"
 const SNOWBALL_ALIAS = "snowball"
-const SNOWBALL_NOTES = "Turn yourself into a cool snowman! Costs 15 GP, lasts until tomorrow. Click again to pay 5 GP and return to normal."
+const SNOWBALL_NOTES = "Turn yourself into a cool snowman! " + TRANSFORMATION_NOTES_END
 const SNOWBALL_VALUE = "0"
 
 const SNOWBALL_BUTTON = {
@@ -57,7 +66,7 @@ const SNOWBALL_BUTTON = {
 
 const SHINY_SEED_TEXT = "**Shiny Seed (self only)**"
 const SHINY_SEED_ALIAS = "shiny_seed"
-const SHINY_SEED_NOTES = "Turn yourself into a joyous flower! Costs 15 GP, lasts until tomorrow. Click again to pay 5 GP and return to normal."
+const SHINY_SEED_NOTES = "Turn yourself into a joyous flower! "  + TRANSFORMATION_NOTES_END
 const SHINY_SEED_VALUE = "0"
 
 const SHINY_SEED_BUTTON = {
@@ -70,7 +79,7 @@ const SHINY_SEED_BUTTON = {
 
 const SEAFOAM_TEXT = "**Seafoam (self only)**"
 const SEAFOAM_ALIAS = "seafoam"
-const SEAFOAM_NOTES = "Turn yourself into a sea creature! Costs 15 GP, lasts until tomorrow. Click again to pay 5 GP and return to normal."
+const SEAFOAM_NOTES = "Turn yourself into a sea creature! "  + TRANSFORMATION_NOTES_END
 const SEAFOAM_VALUE = "0"
 
 const SEAFOAM_BUTTON = {
@@ -96,7 +105,7 @@ const SPOOKY_SPARKLES_BUTTON = {
 
 const RANDOM_TEXT = "**Random Transformation (self only)**"
 const RANDOM_ALIAS = "random"
-const RANDOM_NOTES = "Turn yourself into a snowman, flower, starfish, or ghost! Costs 15 GP, lasts until tomorrow. Click again to pay 5 GP and return to normal."
+const RANDOM_NOTES = "Turn yourself into a snowman, flower, starfish, or ghost! "  + TRANSFORMATION_NOTES_END
 const RANDOM_VALUE = "0"
 
 const RANDOM_BUTTON = {
@@ -154,14 +163,14 @@ function doPost(e) {
   const task = dataContents.task
   
   // Sanitize task alias
-  let sanitizedAlias = "sanitized"; // This will be the value if undefined, null, or blank
+  let sanitizedAlias = "sanitized" // This will be the value if undefined, null, or blank
   if ( (task.alias != undefined) && (task.alias != null) && (task.alias != "") ) {
     sanitizedAlias = task.alias
   }
   
   if (type == "scored"){
     var timestampKey = TIMESTAMP_KEY
-    let timeStart = Number(scriptProperties.getProperty(timestampKey));
+    let timeStart = Number(scriptProperties.getProperty(timestampKey))
     if ( (timeStart == 0) || (timeStart == "") || (timeStart == undefined) || (timeStart == null) ) {
       timeStart = Date.now()
     }
