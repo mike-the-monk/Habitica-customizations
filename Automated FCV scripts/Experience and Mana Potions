@@ -93,15 +93,12 @@ var xpUsageKey = ""
 var mpUsageKey = ""
 var timestampKey = ""
 
-function doOneTimeSetup() {
-  if ((CREATE_EXPERIENCE_POTION == 1) && (CREATE_MANA_POTION == 1)) {
-    api_createNewTaskForUser([MP_POTION_BUTTON, XP_POTION_BUTTON])
-  }
-  else if ((CREATE_EXPERIENCE_POTION == 1) && (CREATE_MANA_POTION == 0)) {
-    api_createNewTaskForUser([XP_POTION_BUTTON])
-  }
-  else if ((CREATE_EXPERIENCE_POTION == 0) && (CREATE_MANA_POTION == 1)) {
+function doOneTimeSetup() {  
+  if (CREATE_MANA_POTION == 1) {
     api_createNewTaskForUser([MP_POTION_BUTTON])
+  }
+  if (CREATE_EXPERIENCE_POTION == 1) {
+    api_createNewTaskForUser([XP_POTION_BUTTON])
   }
   
   // Next, create the webhook
