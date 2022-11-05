@@ -51,6 +51,13 @@ const HEADERS = {
 
 const scriptProperties = PropertiesService.getScriptProperties() // Constants can have properties changed
 
+// Parts of messages they get reused
+const MSG_NOTES_MP = " MP."
+const MSG_NOTES_TRIPLE_BUFF = "Buff these three of your stats according to each unbuffed value. "
+const MSG_NOTES_DOUBLE_BUFF = "Buff both of these stats for you according to each unbuffed value. "
+const MSG_INSUFFICIENT_MANA_SKILL = "Insufficient mana to use this skill."
+
+// Stats for each skill
 const LEVEL_LOCK = 13
 
 const OMNI_BUFF_MP_COST = 55
@@ -71,7 +78,7 @@ const DOUBLE_BUFF_CON_PER_MP_COST = 27.5
 
 const OMNI_BUFF_TEXT = "**Omni Buff (self only)**"
 const OMNI_BUFF_ALIAS = "omni"
-const OMNI_BUFF_NOTES = "Buff all four of your stats according to each unbuffed value. 55 MP."
+const OMNI_BUFF_NOTES = "Buff all four of your stats according to each unbuffed value. " + OMNI_BUFF_MP_COST + MSG_NOTES_MP
 const OMNI_BUFF_VALUE = "0"
 
 const OMNI_BUFF_BUTTON = {
@@ -84,7 +91,7 @@ const OMNI_BUFF_BUTTON = {
 
 const VALOROUS_PRESENCE_SELF_TEXT = "**Valorous Presence (self only)**"
 const VALOROUS_PRESENCE_SELF_ALIAS = "1str"
-const VALOROUS_PRESENCE_SELF_NOTES = "Your boldness buffs your Strength! (Based on: Unbuffed STR). 10 MP."
+const VALOROUS_PRESENCE_SELF_NOTES = "Your boldness buffs your Strength! (Based on: Unbuffed STR). " + VALOROUS_PRESENCE_SELF_MP_COST + MSG_NOTES_MP
 const VALOROUS_PRESENCE_SELF_VALUE = "0"
 
 const VALOROUS_PRESENCE_SELF_BUTTON = {
@@ -97,7 +104,7 @@ const VALOROUS_PRESENCE_SELF_BUTTON = {
 
 const EARTHQUAKE_SELF_TEXT = "**Earthquake (self only)**"
 const EARTHQUAKE_SELF_ALIAS = "1int"
-const EARTHQUAKE_SELF_NOTES = "Your mental power shakes the earth and buffs your Intelligence! (Based on: Unbuffed INT). 17.5 MP."
+const EARTHQUAKE_SELF_NOTES = "Your mental power shakes the earth and buffs your Intelligence! (Based on: Unbuffed INT). " + EARTHQUAKE_SELF_MP_COST + MSG_NOTES_MP
 const EARTHQUAKE_SELF_VALUE = "0"
 
 const EARTHQUAKE_SELF_BUTTON = {
@@ -110,7 +117,7 @@ const EARTHQUAKE_SELF_BUTTON = {
 
 const PROTECTIVE_AURA_SELF_TEXT = "**Protective Aura (self only)**"
 const PROTECTIVE_AURA_SELF_ALIAS = "1con"
-const PROTECTIVE_AURA_SELF_NOTES = "You shield yourself by buffing your Constitution! (Based on: Unbuffed CON). 15 MP."
+const PROTECTIVE_AURA_SELF_NOTES = "You shield yourself by buffing your Constitution! (Based on: Unbuffed CON). " + PROTECTIVE_AURA_SELF_MP_COST + MSG_NOTES_MP
 const PROTECTIVE_AURA_SELF_VALUE = "0"
 
 const PROTECTIVE_AURA_SELF_BUTTON = {
@@ -123,7 +130,7 @@ const PROTECTIVE_AURA_SELF_BUTTON = {
 
 const TOOLS_OF_THE_TRADE_SELF_TEXT = "**Tools of the Trade (self only)**"
 const TOOLS_OF_THE_TRADE_SELF_ALIAS = "1per"
-const TOOLS_OF_THE_TRADE_SELF_NOTES = "Your tricky talents buff your Perception! (Based on: Unbuffed PER). 12.5 MP."
+const TOOLS_OF_THE_TRADE_SELF_NOTES = "Your tricky talents buff your Perception! (Based on: Unbuffed PER). " + TOOLS_OF_THE_TRADE_SELF_MP_COST + MSG_NOTES_MP
 const TOOLS_OF_THE_TRADE_SELF_VALUE = "0"
 
 const TOOLS_OF_THE_TRADE_SELF_BUTTON = {
@@ -136,7 +143,7 @@ const TOOLS_OF_THE_TRADE_SELF_BUTTON = {
 
 const TRIPLE_BUFF_STR_INT_CON_TEXT = "**Triple Buff: Strength, Intelligence, and Constitution**"
 const TRIPLE_BUFF_STR_INT_CON_ALIAS = "3sic"
-const TRIPLE_BUFF_STR_INT_CON_NOTES = "Buff these three of your stats according to each unbuffed value. 42.5 MP."
+const TRIPLE_BUFF_STR_INT_CON_NOTES =  MSG_NOTES_TRIPLE_BUFF + TRIPLE_BUFF_STR_INT_CON_MP_COST + MSG_NOTES_MP
 const TRIPLE_BUFF_STR_INT_CON_VALUE = "0"
 
 const TRIPLE_BUFF_STR_INT_CON_BUTTON = {
@@ -149,7 +156,7 @@ const TRIPLE_BUFF_STR_INT_CON_BUTTON = {
 
 const TRIPLE_BUFF_STR_INT_PER_TEXT = "**Triple Buff: Strength, Intelligence, and Perception**"
 const TRIPLE_BUFF_STR_INT_PER_ALIAS = "3sip"
-const TRIPLE_BUFF_STR_INT_PER_NOTES = "Buff these three of your stats according to each unbuffed value. 40 MP."
+const TRIPLE_BUFF_STR_INT_PER_NOTES = MSG_NOTES_TRIPLE_BUFF + TRIPLE_BUFF_STR_INT_PER_MP_COST + MSG_NOTES_MP
 const TRIPLE_BUFF_STR_INT_PER_VALUE = "0"
 
 const TRIPLE_BUFF_STR_INT_PER_BUTTON = {
@@ -162,7 +169,7 @@ const TRIPLE_BUFF_STR_INT_PER_BUTTON = {
 
 const TRIPLE_BUFF_STR_CON_PER_TEXT = "**Triple Buff: Strength, Constitution, and Perception**"
 const TRIPLE_BUFF_STR_CON_PER_ALIAS = "3scp"
-const TRIPLE_BUFF_STR_CON_PER_NOTES = "Buff these three of your stats according to each unbuffed value. 37.5 MP."
+const TRIPLE_BUFF_STR_CON_PER_NOTES = MSG_NOTES_TRIPLE_BUFF + TRIPLE_BUFF_STR_CON_PER_MP_COST + MSG_NOTES_MP
 const TRIPLE_BUFF_STR_CON_PER_VALUE = "0"
 
 const TRIPLE_BUFF_STR_CON_PER_BUTTON = {
@@ -175,7 +182,7 @@ const TRIPLE_BUFF_STR_CON_PER_BUTTON = {
 
 const TRIPLE_BUFF_INT_CON_PER_TEXT = "**Triple Buff: Intelligence, Constitution, and Perception**"
 const TRIPLE_BUFF_INT_CON_PER_ALIAS = "3icp"
-const TRIPLE_BUFF_INT_CON_PER_NOTES = "Buff these three of your stats according to each unbuffed value. 45 MP."
+const TRIPLE_BUFF_INT_CON_PER_NOTES = MSG_NOTES_TRIPLE_BUFF + TRIPLE_BUFF_INT_CON_PER_MP_COST + MSG_NOTES_MP
 const TRIPLE_BUFF_INT_CON_PER_VALUE = "0"
 
 const TRIPLE_BUFF_INT_CON_PER_BUTTON = {
@@ -188,7 +195,7 @@ const TRIPLE_BUFF_INT_CON_PER_BUTTON = {
 
 const DOUBLE_BUFF_STR_INT_TEXT = "**Double Buff: Strength and Intelligence**"
 const DOUBLE_BUFF_STR_INT_ALIAS = "2si"
-const DOUBLE_BUFF_STR_INT_NOTES = "Buff both of these stats for you according to each unbuffed value. 27.5 MP."
+const DOUBLE_BUFF_STR_INT_NOTES = MSG_NOTES_DOUBLE_BUFF + DOUBLE_BUFF_STR_INT_MP_COST + MSG_NOTES_MP
 const DOUBLE_BUFF_STR_INT_VALUE = "0"
 
 const DOUBLE_BUFF_STR_INT_BUTTON = {
@@ -201,7 +208,7 @@ const DOUBLE_BUFF_STR_INT_BUTTON = {
 
 const DOUBLE_BUFF_STR_CON_TEXT = "**Double Buff: Strength and Constitution**"
 const DOUBLE_BUFF_STR_CON_ALIAS = "2sc"
-const DOUBLE_BUFF_STR_CON_NOTES = "Buff both of these stats for you according to each unbuffed value. 25 MP."
+const DOUBLE_BUFF_STR_CON_NOTES = MSG_NOTES_DOUBLE_BUFF + DOUBLE_BUFF_STR_CON_MP_COST + MSG_NOTES_MP
 const DOUBLE_BUFF_STR_CON_VALUE = "0"
 
 const DOUBLE_BUFF_STR_CON_BUTTON = {
@@ -214,7 +221,7 @@ const DOUBLE_BUFF_STR_CON_BUTTON = {
 
 const DOUBLE_BUFF_STR_PER_TEXT = "**Double Buff: Strength and Perception**"
 const DOUBLE_BUFF_STR_PER_ALIAS = "2sp"
-const DOUBLE_BUFF_STR_PER_NOTES = "Buff both of these stats for you according to each unbuffed value. 22.5 MP."
+const DOUBLE_BUFF_STR_PER_NOTES = MSG_NOTES_DOUBLE_BUFF + DOUBLE_BUFF_STR_PER_MP_COST + MSG_NOTES_MP
 const DOUBLE_BUFF_STR_PER_VALUE = "0"
 
 const DOUBLE_BUFF_STR_PER_BUTTON = {
@@ -227,7 +234,7 @@ const DOUBLE_BUFF_STR_PER_BUTTON = {
 
 const DOUBLE_BUFF_INT_CON_TEXT = "**Double Buff: Intelligence and Constitution**"
 const DOUBLE_BUFF_INT_CON_ALIAS = "2ic"
-const DOUBLE_BUFF_INT_CON_NOTES = "Buff both of these stats for you according to each unbuffed value. 32.5 MP."
+const DOUBLE_BUFF_INT_CON_NOTES = MSG_NOTES_DOUBLE_BUFF + DOUBLE_BUFF_INT_CON_MP_COST + MSG_NOTES_MP
 const DOUBLE_BUFF_INT_CON_VALUE = "0"
 
 const DOUBLE_BUFF_INT_CON_BUTTON = {
@@ -240,7 +247,7 @@ const DOUBLE_BUFF_INT_CON_BUTTON = {
 
 const DOUBLE_BUFF_INT_PER_TEXT = "**Double Buff: Intelligence and Perception**"
 const DOUBLE_BUFF_INT_PER_ALIAS = "2ip"
-const DOUBLE_BUFF_INT_PER_NOTES = "Buff both of these stats for you according to each unbuffed value. 30 MP."
+const DOUBLE_BUFF_INT_PER_NOTES = MSG_NOTES_DOUBLE_BUFF + DOUBLE_BUFF_INT_PER_MP_COST + MSG_NOTES_MP
 const DOUBLE_BUFF_INT_PER_VALUE = "0"
 
 const DOUBLE_BUFF_INT_PER_BUTTON = {
@@ -253,7 +260,7 @@ const DOUBLE_BUFF_INT_PER_BUTTON = {
 
 const DOUBLE_BUFF_CON_PER_TEXT = "**Double Buff: Constitution and Perception**"
 const DOUBLE_BUFF_CON_PER_ALIAS = "2cp"
-const DOUBLE_BUFF_CON_PER_NOTES = "Buff both of these stats for you according to each unbuffed value. 27.5 MP."
+const DOUBLE_BUFF_CON_PER_NOTES = MSG_NOTES_DOUBLE_BUFF + DOUBLE_BUFF_CON_PER_MP_COST + MSG_NOTES_MP
 const DOUBLE_BUFF_CON_PER_VALUE = "0"
 
 const DOUBLE_BUFF_CON_PER_BUTTON = {
@@ -852,7 +859,7 @@ function checkLevelLock(level, levelLock, message){
 // Checks if sufficient mana, sends message if not. Choose whether to deduct costs now or later.
 function checkMana(mp, mpCost, deductLater){
   if (mp < mpCost) {
-    api_sendPrivateMessage({"message" : "Insufficient mana to use this skill.", "toUserId" : USER_ID})
+    api_sendPrivateMessage({"message" : MSG_INSUFFICIENT_MANA_SKILL, "toUserId" : USER_ID})
     return false
   } else {
     if (deductLater) {
