@@ -4,44 +4,44 @@
 /* ========================================== */
 /* [Users] Required script data to fill in    */
 /* ========================================== */
-const USER_ID = "PasteYourUserIdHere";
-const API_TOKEN = "PasteYourApiTokenHere"; // Do not share this to anyone
-const WEB_APP_URL = "PasteGeneratedWebAppUrlHere";
+const USER_ID = "PasteYourUserIdHere"
+const API_TOKEN = "PasteYourApiTokenHere" // Do not share this to anyone
+const WEB_APP_URL = "PasteGeneratedWebAppUrlHere"
 
 /* ========================================== */
 /* [Users] Required customizations to fill in */
 /* ========================================== */
 
 // How many customizable buttons do you want? Enter any number between 1 and 5.
-const NUMBER_OF_BUTTONS = 2;
+const NUMBER_OF_BUTTONS = 2
 
 /* ========================================== */
 /* [Users] Optional customizations to fill in */
 /* ========================================== */
 
 // What do you want to call each button? Cutomize the titles here, or leave them as is (Editable Button)
-const BUTTON_1_TEXT = "Editable Button 1";
-const BUTTON_2_TEXT = "Editable Button 2";
-const BUTTON_3_TEXT = "Editable Button 3";
-const BUTTON_4_TEXT = "Editable Button 4";
-const BUTTON_5_TEXT = "Editable Button 5";
+const BUTTON_1_TEXT = "Editable Button 1"
+const BUTTON_2_TEXT = "Editable Button 2"
+const BUTTON_3_TEXT = "Editable Button 3"
+const BUTTON_4_TEXT = "Editable Button 4"
+const BUTTON_5_TEXT = "Editable Button 5"
 
 /* ========================================== */
 /* [Users] Do not edit code below this line   */
 /* ========================================== */
-const AUTHOR_ID = "0034eb14-b4d8-494e-8386-d3f33cff7922";
-const SCRIPT_NAME = "Editable Fix Character Values Buttons";
+const AUTHOR_ID = "0034eb14-b4d8-494e-8386-d3f33cff7922"
+const SCRIPT_NAME = "Editable Fix Character Values Buttons"
 const HEADERS = {
   "x-client" : AUTHOR_ID + " - " + SCRIPT_NAME,
   "x-api-user" : USER_ID,
   "x-api-key" : API_TOKEN,
 }
 
-const scriptProperties = PropertiesService.getScriptProperties(); // Constants can have properties changed
+const scriptProperties = PropertiesService.getScriptProperties() // Constants can have properties changed
 
-const BUTTON_1_ALIAS = "custom1";
-const BUTTON_1_NOTES = "HP: +0; XP: +0; MP: +0; GP: +0;";
-const BUTTON_1_VALUE = "0";
+const BUTTON_1_ALIAS = "custom1"
+const BUTTON_1_NOTES = "HP: +0; XP: +0; MP: +0; GP: +0;"
+const BUTTON_1_VALUE = "0"
 
 const BUTTON_1_BUTTON = {
     "text": BUTTON_1_TEXT,
@@ -51,9 +51,9 @@ const BUTTON_1_BUTTON = {
     "value": BUTTON_1_VALUE,
 }
 
-const BUTTON_2_ALIAS = "custom2";
-const BUTTON_2_NOTES = "HP: +0; XP: +0; MP: +0; GP: +0;";
-const BUTTON_2_VALUE = "0";
+const BUTTON_2_ALIAS = "custom2"
+const BUTTON_2_NOTES = "HP: +0; XP: +0; MP: +0; GP: +0;"
+const BUTTON_2_VALUE = "0"
 
 const BUTTON_2_BUTTON = {
     "text": BUTTON_2_TEXT,
@@ -63,9 +63,9 @@ const BUTTON_2_BUTTON = {
     "value": BUTTON_2_VALUE,
 }
 
-const BUTTON_3_ALIAS = "custom3";
-const BUTTON_3_NOTES = "HP: +0; XP: +0; MP: +0; GP: +0;";
-const BUTTON_3_VALUE = "0";
+const BUTTON_3_ALIAS = "custom3"
+const BUTTON_3_NOTES = "HP: +0; XP: +0; MP: +0; GP: +0;"
+const BUTTON_3_VALUE = "0"
 
 const BUTTON_3_BUTTON = {
     "text": BUTTON_3_TEXT,
@@ -75,9 +75,9 @@ const BUTTON_3_BUTTON = {
     "value": BUTTON_3_VALUE,
 }
 
-const BUTTON_4_ALIAS = "custom4";
-const BUTTON_4_NOTES = "HP: +0; XP: +0; MP: +0; GP: +0;";
-const BUTTON_4_VALUE = "0";
+const BUTTON_4_ALIAS = "custom4"
+const BUTTON_4_NOTES = "HP: +0; XP: +0; MP: +0; GP: +0;"
+const BUTTON_4_VALUE = "0"
 
 const BUTTON_4_BUTTON = {
     "text": BUTTON_4_TEXT,
@@ -87,9 +87,9 @@ const BUTTON_4_BUTTON = {
     "value": BUTTON_4_VALUE,
 }
 
-const BUTTON_5_ALIAS = "custom5";
-const BUTTON_5_NOTES = "HP: +0; XP: +0; MP: +0; GP: +0;";
-const BUTTON_5_VALUE = "0";
+const BUTTON_5_ALIAS = "custom5"
+const BUTTON_5_NOTES = "HP: +0; XP: +0; MP: +0; GP: +0;"
+const BUTTON_5_VALUE = "0"
 
 const BUTTON_5_BUTTON = {
     "text": BUTTON_5_TEXT,
@@ -100,57 +100,57 @@ const BUTTON_5_BUTTON = {
 }
 
 // error messages: semicolon
-const SEMICOLON_ERROR_MSG_START = "Error: there should be a semicolon following '";
-const SEMICOLON_ERROR_MSG_END = "'. For help formatting the notes section of the button, see the [wiki page](https://habitica.fandom.com/wiki/Editable_Fix_Character_Values_Buttons).";
+const SEMICOLON_ERROR_MSG_START = "Error: there should be a semicolon following '"
+const SEMICOLON_ERROR_MSG_END = "'. For help formatting the notes section of the button, see the [wiki page](https://habitica.fandom.com/wiki/Editable_Fix_Character_Values_Buttons)."
 
 // error message: number after + or -
-const NUMBER_AFTER_DIRECTION_ERROR_MSG = "Error: there should be a number after the direction sign (+ or -) and before the semicolon. For help formatting the notes section of the button, see the [wiki page](https://habitica.fandom.com/wiki/Editable_Fix_Character_Values_Buttons).";
+const NUMBER_AFTER_DIRECTION_ERROR_MSG = "Error: there should be a number after the direction sign (+ or -) and before the semicolon. For help formatting the notes section of the button, see the [wiki page](https://habitica.fandom.com/wiki/Editable_Fix_Character_Values_Buttons)."
 
 // error messages: missing a + or -
-const MISSING_DIRECTION_ERROR_MSG_START = "Error: there should be a '+' or a '-' after '"; 
-const MISSING_DIRECTION_ERROR_MSG_END = "'. For help formatting the notes section of the button, see the [wiki page](https://habitica.fandom.com/wiki/Editable_Fix_Character_Values_Buttons).";
+const MISSING_DIRECTION_ERROR_MSG_START = "Error: there should be a '+' or a '-' after '"
+const MISSING_DIRECTION_ERROR_MSG_END = "'. For help formatting the notes section of the button, see the [wiki page](https://habitica.fandom.com/wiki/Editable_Fix_Character_Values_Buttons)."
 
 // insufficient cost messages
 
-const INSUFFICIENT_COST_MSG_START = "You don't have enough ";
-const INSUFFICIENT_COST_MSG_END = " to pay for this skill.";
+const INSUFFICIENT_COST_MSG_START = "You don't have enough "
+const INSUFFICIENT_COST_MSG_END = " to pay for this skill."
 
-const INSUFFICIENT_COST_MSG_VARIABLE_4 = "HP or XP or MP or GP";
-const INSUFFICIENT_COST_MSG_VARIABLE_3H = "XP or MP or GP";
-const INSUFFICIENT_COST_MSG_VARIABLE_3X = "HP or MP or GP";
-const INSUFFICIENT_COST_MSG_VARIABLE_3M = "HP or XP or GP";
-const INSUFFICIENT_COST_MSG_VARIABLE_3G = "HP or XP or MP";
-const INSUFFICIENT_COST_MSG_VARIABLE_2HX = "HP or XP";
-const INSUFFICIENT_COST_MSG_VARIABLE_2HM = "HP or MP";
-const INSUFFICIENT_COST_MSG_VARIABLE_2HG = "HP or GP";
-const INSUFFICIENT_COST_MSG_VARIABLE_2XM = "XP or MP";
-const INSUFFICIENT_COST_MSG_VARIABLE_2XG = "XP or GP";
-const INSUFFICIENT_COST_MSG_VARIABLE_2MG = "MP or GP";
-const INSUFFICIENT_COST_MSG_VARIABLE_1H = "HP";
-const INSUFFICIENT_COST_MSG_VARIABLE_1X = "XP";
-const INSUFFICIENT_COST_MSG_VARIABLE_1M = "MP";
-const INSUFFICIENT_COST_MSG_VARIABLE_1G = "GP";
+const INSUFFICIENT_COST_MSG_VARIABLE_4 = "HP or XP or MP or GP"
+const INSUFFICIENT_COST_MSG_VARIABLE_3H = "XP or MP or GP"
+const INSUFFICIENT_COST_MSG_VARIABLE_3X = "HP or MP or GP"
+const INSUFFICIENT_COST_MSG_VARIABLE_3M = "HP or XP or GP"
+const INSUFFICIENT_COST_MSG_VARIABLE_3G = "HP or XP or MP"
+const INSUFFICIENT_COST_MSG_VARIABLE_2HX = "HP or XP"
+const INSUFFICIENT_COST_MSG_VARIABLE_2HM = "HP or MP"
+const INSUFFICIENT_COST_MSG_VARIABLE_2HG = "HP or GP"
+const INSUFFICIENT_COST_MSG_VARIABLE_2XM = "XP or MP"
+const INSUFFICIENT_COST_MSG_VARIABLE_2XG = "XP or GP"
+const INSUFFICIENT_COST_MSG_VARIABLE_2MG = "MP or GP"
+const INSUFFICIENT_COST_MSG_VARIABLE_1H = "HP"
+const INSUFFICIENT_COST_MSG_VARIABLE_1X = "XP"
+const INSUFFICIENT_COST_MSG_VARIABLE_1M = "MP"
+const INSUFFICIENT_COST_MSG_VARIABLE_1G = "GP"
 
-const TIMESTAMP_KEY = "TIMESTAMP_KEY";
-var timestampKey = "";
+const TIMESTAMP_KEY = "TIMESTAMP_KEY"
+var timestampKey = ""
 
 function doOneTimeSetup() { 
   // Create 1-5 buttons
-  var numberOfButtons = sanitizeInput (NUMBER_OF_BUTTONS, 1, 5);
+  var numberOfButtons = sanitizeInput (NUMBER_OF_BUTTONS, 1, 5)
   if ( numberOfButtons == 5 ) {
-    api_createNewTaskForUser([BUTTON_5_BUTTON, BUTTON_4_BUTTON, BUTTON_3_BUTTON, BUTTON_2_BUTTON, BUTTON_1_BUTTON]);
+    api_createNewTaskForUser([BUTTON_5_BUTTON, BUTTON_4_BUTTON, BUTTON_3_BUTTON, BUTTON_2_BUTTON, BUTTON_1_BUTTON])
   }
   else if ( numberOfButtons == 4 ) {
-    api_createNewTaskForUser([BUTTON_4_BUTTON, BUTTON_3_BUTTON, BUTTON_2_BUTTON, BUTTON_1_BUTTON]);
+    api_createNewTaskForUser([BUTTON_4_BUTTON, BUTTON_3_BUTTON, BUTTON_2_BUTTON, BUTTON_1_BUTTON])
   }
   else if ( numberOfButtons == 3 ) {
-    api_createNewTaskForUser([BUTTON_3_BUTTON, BUTTON_2_BUTTON, BUTTON_1_BUTTON]);
+    api_createNewTaskForUser([BUTTON_3_BUTTON, BUTTON_2_BUTTON, BUTTON_1_BUTTON])
   }
   else if ( numberOfButtons == 2 ) {
-    api_createNewTaskForUser([BUTTON_2_BUTTON, BUTTON_1_BUTTON]);
+    api_createNewTaskForUser([BUTTON_2_BUTTON, BUTTON_1_BUTTON])
   }
   else if ( numberOfButtons == 1 ) {
-    api_createNewTaskForUser([BUTTON_1_BUTTON]);
+    api_createNewTaskForUser([BUTTON_1_BUTTON])
   }
   
   // create the webhook
@@ -163,71 +163,71 @@ function doOneTimeSetup() {
     "type" : "taskActivity",
     "options" : options,
   }
-  apiMult_createNewWebhookNoDuplicates(payload);
+  apiMult_createNewWebhookNoDuplicates(payload)
   
   // set script properties so they carry over to next session
-  initScriptProperties();
+  initScriptProperties()
 }
 
 // do things when the webhook runs
 function doPost(e) {
-  const dataContents = JSON.parse(e.postData.contents);
-  const type = dataContents.type;
-  const task = dataContents.task;
+  const dataContents = JSON.parse(e.postData.contents)
+  const type = dataContents.type
+  const task = dataContents.task
   
   if (type == "scored") {
   
   // Sanitize task alias
   let sanitizedAlias = "sanitized"; // This will be the value if undefined, null, or blank
   if ( (task.alias != undefined) && (task.alias != null) && (task.alias != "") ) {
-    sanitizedAlias = task.alias;
+    sanitizedAlias = task.alias
   }
     
     if ( (sanitizedAlias == BUTTON_1_ALIAS) || (sanitizedAlias == BUTTON_2_ALIAS) || (sanitizedAlias == BUTTON_3_ALIAS)
     || (sanitizedAlias == BUTTON_4_ALIAS) || (sanitizedAlias == BUTTON_5_ALIAS) ) {
       
-      var timestampKey = TIMESTAMP_KEY;
-      var timeStart = Number(scriptProperties.getProperty(timestampKey));
+      var timestampKey = TIMESTAMP_KEY
+      var timeStart = Number(scriptProperties.getProperty(timestampKey))
       if ( (timeStart == 0) || (timeStart == "") || (timeStart == undefined) || (timeStart == null) ) {
-        timeStart = Date.now();
+        timeStart = Date.now()
       }
-      var timeEnd = Date.now();
+      var timeEnd = Date.now()
       
       // Rate limiting: If it's been less than 30 seconds since they last clicked one of these buttons, do nothing
       if ( (timeEnd - timeStart) >= 30000 ) {
         
-        const responseUser = api_getAuthenticatedUserProfile("stats,items.gear.equipped");
-        user = JSON.parse(responseUser).data;
+        const responseUser = api_getAuthenticatedUserProfile("stats,items.gear.equipped")
+        user = JSON.parse(responseUser).data
         
-        let hp = user.stats.hp;
-        let xp = user.stats.exp;
-        let mp = user.stats.mp;
-        let gp = user.stats.gp;
+        let hp = user.stats.hp
+        let xp = user.stats.exp
+        let mp = user.stats.mp
+        let gp = user.stats.gp
         
-        var notes = "initial value";
+        var notes = "initial value"
         
         // Get all tasks in order to grab notes section of the rewards buttons
-        const responseTasks = api_getUserTasks("rewards");
-        const tasksRewards = JSON.parse(responseTasks).data;
+        const responseTasks = api_getUserTasks("rewards")
+        const tasksRewards = JSON.parse(responseTasks).data
         
         // Grab notes from the button that was pressed
         for (var i in tasksRewards) {
           if (tasksRewards[i].alias == sanitizedAlias) {
-            notes = tasksRewards[i].notes;
+            notes = tasksRewards[i].notes
           }
         }
         
         // "notes" is now correct based on button, so this function can be outside of the if-statements and switch-case
-        multParseAndEvaluate(hp, xp, mp, gp, notes);
+        multParseAndEvaluate(hp, xp, mp, gp, notes)
         
         // Save values to non-volatile memory, but only from within the rate-limited if-block (we don't want to save the timestamp unless the script ran)
-        timeStart = timeEnd;
-        scriptProperties.setProperty(timestampKey, timeStart);
+        timeStart = timeEnd
+        scriptProperties.setProperty(timestampKey, timeStart)
       }
     }
   }
   
-  return HtmlService.createHtmlOutput();
+  return HtmlService.createHtmlOutput()
 }
 
 // Create custom reward buttons
@@ -240,49 +240,49 @@ function api_createNewTaskForUser(payload) {
     "muteHttpExceptions" : true,
   }
 
-  var url = "https://habitica.com/api/v3/tasks/user";
-  UrlFetchApp.fetch(url, params);
+  var url = "https://habitica.com/api/v3/tasks/user"
+  UrlFetchApp.fetch(url, params)
 }
 
 // Ensures that the input is between the minimum and maximum. Can use "none" in either argument to indicate if there is either no minimum or no maximum.
 function sanitizeInput(input, minimum, maximum) {
   if (minimum == "none"){ // Condition for if there is no minimum
     if ( input > maximum ) {
-      return maximum;
+      return maximum
     } else { 
-      return input;
+      return input
     }
   } else if (maximum == "none"){ // Condition for if there is no maximum
     if ( input < minimum ) {
-      return minimum;
+      return minimum
     } else { 
-      return input;
+      return input
     }
   } else { // Condition where there is both minimum and maximum
     if ( input < minimum ) {
-      return minimum;
+      return minimum
     } else if ( input > maximum ) {
-      return maximum;
+      return maximum
     } else { 
-      return input;
+      return input
     }
   }
 }
 
 // Create a webhook if no duplicate exists
 function apiMult_createNewWebhookNoDuplicates(payload) {
-  const response = api_getWebhooks();
-  const webhooks = JSON.parse(response).data;
-  var duplicateExists = 0;
+  const response = api_getWebhooks()
+  const webhooks = JSON.parse(response).data
+  var duplicateExists = 0
     
   for (var i in webhooks) {
     if (webhooks[i].label == payload.label) {
-      duplicateExists = 1;
+      duplicateExists = 1
     }
   }
   // If webhook to be created doesn't exist yet
   if (!duplicateExists) {
-    api_createNewWebhook(payload);
+    api_createNewWebhook(payload)
   }
 }
 
@@ -294,8 +294,8 @@ function api_getWebhooks() {
     "muteHttpExceptions" : true,
   }
   
-  const url = "https://habitica.com/api/v3/user/webhook";
-  return UrlFetchApp.fetch(url, params);
+  const url = "https://habitica.com/api/v3/user/webhook"
+  return UrlFetchApp.fetch(url, params)
 }
 
 // Creates a webhook (as part of the "don't make it if there's a duplicate" function)
@@ -308,8 +308,8 @@ function api_createNewWebhook(payload) {
     "muteHttpExceptions" : true,
   }
    
-  const url = "https://habitica.com/api/v3/user/webhook";
-  return UrlFetchApp.fetch(url, params);
+  const url = "https://habitica.com/api/v3/user/webhook"
+  return UrlFetchApp.fetch(url, params)
 }
 
 // Gets user info so I can use it, especially stats like mana, experience, and level
@@ -320,18 +320,18 @@ function api_getAuthenticatedUserProfile(userFields) {
     "muteHttpExceptions" : true,
   }
   
-  var url = "https://habitica.com/api/v3/user";
+  var url = "https://habitica.com/api/v3/user"
   if (userFields != "") {
-    url += "?userFields=" + userFields;
+    url += "?userFields=" + userFields
   }
 
-  return UrlFetchApp.fetch(url, params);
+  return UrlFetchApp.fetch(url, params)
 }
 
 // Sets initial properties that will be used/saved later.
 function initScriptProperties() {
-  var timestampInit = Date.now();
-  scriptProperties.setProperty(TIMESTAMP_KEY, timestampInit);
+  var timestampInit = Date.now()
+  scriptProperties.setProperty(TIMESTAMP_KEY, timestampInit)
 }
 
 function api_getUserTasks(type) {
@@ -341,34 +341,34 @@ function api_getUserTasks(type) {
     "muteHttpExceptions" : true,
   }
   
-  var url = "https://habitica.com/api/v3/tasks/user";
+  var url = "https://habitica.com/api/v3/tasks/user"
   if (type != "") {
-    url += "?type=" + type;
+    url += "?type=" + type
   }
 
-  return UrlFetchApp.fetch(url, params);
+  return UrlFetchApp.fetch(url, params)
 }
 
 // does parseAndEvaluate function for all four stat values
 function multParseAndEvaluate(hp, xp, mp, gp, inputString) {
   
   // initialize these at their existing values
-  let newHp = hp;
-  let newXp = xp;
-  let newMp = mp;
-  let newGp = gp;
+  let newHp = hp
+  let newXp = xp
+  let newMp = mp
+  let newGp = gp
   
   // Compute total Intelligence
-  const responseContent = apiFree_getAllAvailableContentObjects();
-  content = JSON.parse(responseContent).data;
+  const responseContent = apiFree_getAllAvailableContentObjects()
+  content = JSON.parse(responseContent).data
   
-  let int = calculateIntelligence();
-  let maxMp = (2 * int) + 30;
+  let int = calculateIntelligence()
+  let maxMp = (2 * int) + 30
   
-  newHp = sanitizeInput(parseAndEvaluate(inputString, "HP:", hp), 0, 50);
-  newXp = sanitizeInput(parseAndEvaluate(inputString, "XP:", xp), 0, "none");
-  newMp = sanitizeInput(parseAndEvaluate(inputString, "MP:", mp), 0, maxMp);
-  newGp = sanitizeInput(parseAndEvaluate(inputString, "GP:", gp), 0, "none");
+  newHp = sanitizeInput(parseAndEvaluate(inputString, "HP:", hp), 0, 50)
+  newXp = sanitizeInput(parseAndEvaluate(inputString, "XP:", xp), 0, "none")
+  newMp = sanitizeInput(parseAndEvaluate(inputString, "MP:", mp), 0, maxMp)
+  newGp = sanitizeInput(parseAndEvaluate(inputString, "GP:", gp), 0, "none")
   
   // check if an error happened; 0.184937265 is the value I randomly generated that I'm using to check errors, it's unlikely a user will input it.
   if ( ( newHp == 0.184937265 ) || ( newXp == 0.184937265 ) || ( newMp == 0.184937265 ) || ( newGp == 0.184937265 ) ) {
@@ -380,155 +380,155 @@ function multParseAndEvaluate(hp, xp, mp, gp, inputString) {
     
     // send error message based on which value is insufficient, starting with "missing all 4"
     if ( ( newHp == 0.562739481 ) && ( newXp == 0.562739481 ) && ( newMp == 0.562739481 ) && ( newGp == 0.562739481 ) ) {
-      api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_4 + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID});
+      api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_4 + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID})
     }
     // now try scenarios where 3 stats are missing
     else if ( ( newXp == 0.562739481 ) && ( newMp == 0.562739481 ) && ( newGp == 0.562739481 ) ) {
-      api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_3H + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID});
+      api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_3H + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID})
     }
     else if ( ( newHp == 0.562739481 ) && ( newMp == 0.562739481 ) && ( newGp == 0.562739481 ) ) {
-      api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_3X + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID});
+      api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_3X + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID})
     }
     else if ( ( newHp == 0.562739481 ) && ( newXp == 0.562739481 ) && ( newGp == 0.562739481 ) ) {
-      api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_3M + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID});
+      api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_3M + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID})
     }
     else if ( ( newHp == 0.562739481 ) && ( newXp == 0.562739481 ) && ( newMp == 0.562739481 ) ) {
-      api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_3G + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID});
+      api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_3G + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID})
     }
     // now try scenarios where 2 stats are missing
     else if ( ( newHp == 0.562739481 ) && ( newXp == 0.562739481 ) ) {
-      api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_2HX + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID});
+      api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_2HX + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID})
     }
     else if ( ( newHp == 0.562739481 ) && ( newMp == 0.562739481 ) ) {
-      api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_2HM + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID});
+      api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_2HM + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID})
     }
     else if ( ( newHp == 0.562739481 ) && ( newGp == 0.562739481 ) ) {
-      api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_2HG + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID});
+      api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_2HG + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID})
     }
     else if ( ( newXp == 0.562739481 ) && ( newMp == 0.562739481 ) ) {
-      api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_2XM + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID});
+      api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_2XM + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID})
     }
     else if ( ( newXp == 0.562739481 ) && ( newGp == 0.562739481 ) ) {
-      api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_2XG + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID});
+      api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_2XG + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID})
     }
     else if ( ( newMp == 0.562739481 ) && ( newGp == 0.562739481 ) ) {
-      api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_2MG + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID});
+      api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_2MG + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID})
     }
     // finally try scenarios missing only 1 stat
     else if ( ( newHp == 0.562739481 ) ) {
-      api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_1H + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID});
+      api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_1H + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID})
     }
     else if ( ( newXp == 0.562739481 ) ) {
-      api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_1X + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID});
+      api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_1X + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID})
     }
     else if ( ( newMp == 0.562739481 ) ) {
-      api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_1M + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID});
+      api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_1M + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID})
     }
     else if ( ( newGp == 0.562739481 ) ) {
-      api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_1G + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID});
+      api_sendPrivateMessageAlways({"message" : INSUFFICIENT_COST_MSG_START + INSUFFICIENT_COST_MSG_VARIABLE_1G + INSUFFICIENT_COST_MSG_END, "toUserId" : USER_ID})
     }
   }
   else {
     // update all four stats with a single POST call
-    api_updateUser({"stats.hp" : newHp, "stats.exp" : newXp, "stats.mp" : newMp, "stats.gp" : newGp});
+    api_updateUser({"stats.hp" : newHp, "stats.exp" : newXp, "stats.mp" : newMp, "stats.gp" : newGp})
   }
 }
 
 // checks input string for the search term and returns the new stat value
 function parseAndEvaluate(inputString, searchTerm, statValue){
   // Find if the search term exists in the string, and if yes, where it starts
-  let index = findIndex(searchTerm, inputString, true);
+  let index = findIndex(searchTerm, inputString, true)
   
   // If search term isn't found, stat value stays the same
   if ( index == -1 ) {
-    return statValue;
+    return statValue
   }
   else {
     // Find where the semicolon is in the string (following the search term)
     let indexSemicolon = findIndexOfSemicolon(inputString, index, 3); // Offset is 3 to account for the search term
     if ( indexSemicolon == -1 ) {
-      api_sendPrivateMessageAlways({"message" : SEMICOLON_ERROR_MSG_START + searchTerm + SEMICOLON_ERROR_MSG_END, "toUserId" : USER_ID});
-      return 0.184937265; // this signals to the script that there was an error
+      api_sendPrivateMessageAlways({"message" : SEMICOLON_ERROR_MSG_START + searchTerm + SEMICOLON_ERROR_MSG_END, "toUserId" : USER_ID})
+      return 0.184937265 // this signals to the script that there was an error
     }
     // if the two indices are too far apart, the semicolon is likely following the next search term, not the correct one.
     else if ( ( indexSemicolon - index ) >= 15 ) {
-      api_sendPrivateMessageAlways({"message" : SEMICOLON_ERROR_MSG_START + searchTerm + SEMICOLON_ERROR_MSG_END, "toUserId" : USER_ID});
-      return 0.184937265; // this signals to the script that there was an error
+      api_sendPrivateMessageAlways({"message" : SEMICOLON_ERROR_MSG_START + searchTerm + SEMICOLON_ERROR_MSG_END, "toUserId" : USER_ID})
+      return 0.184937265 // this signals to the script that there was an error
     }
     else {
       // Create a substring of the characters between the search term and the semicolon, and trim whitespace
-      var substring = createSubstring(inputString, index + 3, indexSemicolon);
+      var substring = createSubstring(inputString, index + 3, indexSemicolon)
             
       // Grab direction (up or down) and whether the number is a percent
-      let direction = findDirection(substring, searchTerm);
-      let isPercent = findPercent(substring);
+      let direction = findDirection(substring, searchTerm)
+      let isPercent = findPercent(substring)
       
       if ( direction == "error" ) {
-        return 0.184937265; // this signals to the script that there was an error
+        return 0.184937265 // this signals to the script that there was an error
       }
         
       // grab the smaller substring of just the numbers, which depends on if there's a percent sign at the end
-      var smallerSubstring = "";
-      let substringLength = substring.length;
+      var smallerSubstring = ""
+      let substringLength = substring.length
           
       if (isPercent) {
-        smallerSubstring = createSubstring(substring, 1, substringLength - 1);
+        smallerSubstring = createSubstring(substring, 1, substringLength - 1)
       }
       else {
-        smallerSubstring = createSubstring(substring, 1, substringLength);
+        smallerSubstring = createSubstring(substring, 1, substringLength)
       }
             
       // turn it into a number
-      let smallerSubstringAsNumber = parseFloat(smallerSubstring);
+      let smallerSubstringAsNumber = parseFloat(smallerSubstring)
           
       // If it's not a number, return an error
-      let isNan = Number.isNaN(smallerSubstringAsNumber);
+      let isNan = Number.isNaN(smallerSubstringAsNumber)
       if (isNan) {
-        api_sendPrivateMessageAlways({"message" : NUMBER_AFTER_DIRECTION_ERROR_MSG, "toUserId" : USER_ID});
-        return 0.184937265; // this signals to the script that there was an error
+        api_sendPrivateMessageAlways({"message" : NUMBER_AFTER_DIRECTION_ERROR_MSG, "toUserId" : USER_ID})
+        return 0.184937265 // this signals to the script that there was an error
       }
       // If it is a number, proceed as normal
       else {
         if (isPercent) {
           // turn the raw number into a percent
-          let percentFromNotes = (smallerSubstringAsNumber / 100); 
+          let percentFromNotes = (smallerSubstringAsNumber / 100)
           
           if ( direction == "up") {
             // multiply the percent times the stat value it's going to be the percent of
-            let percentOfStatValue = statValue * percentFromNotes;
+            let percentOfStatValue = statValue * percentFromNotes
             
-            return ( statValue + percentOfStatValue );
+            return (statValue + percentOfStatValue)
           }
           else if (direction == "down") {
             // we must sanitize entries that are beyond 0-100 since we don't want to subtract greater than 100% of a value; this didn't need to happen for positive, just for negative
-            let sanitizedPercent = sanitizeInput(percentFromNotes, 0, 100);
+            let sanitizedPercent = sanitizeInput(percentFromNotes, 0, 100)
             
             // multiply the sanitized percent times the stat value it's going to be the percent of
-            let sanitizedPercentOfStatValue = statValue * sanitizedPercent;
+            let sanitizedPercentOfStatValue = statValue * sanitizedPercent
             
-            return (statValue - sanitizedPercentOfStatValue);
+            return (statValue - sanitizedPercentOfStatValue)
           }
           else { // it shouldn't be possible for this "else" condition to happen, but just in case...
-            api_sendPrivateMessageAlways({"message" : MISSING_DIRECTION_ERROR_MSG_START + searchTerm + MISSING_DIRECTION_ERROR_MSG_END, "toUserId" : USER_ID});
-            return 0.184937265; // this signals to the script that there was an error
+            api_sendPrivateMessageAlways({"message" : MISSING_DIRECTION_ERROR_MSG_START + searchTerm + MISSING_DIRECTION_ERROR_MSG_END, "toUserId" : USER_ID})
+            return 0.184937265 // this signals to the script that there was an error
           }
         }
         else {
           if ( direction == "up") {
-            return ( statValue + smallerSubstringAsNumber );
+            return (statValue + smallerSubstringAsNumber)
           }
           else if (direction == "down") {
             // check if stat value is sufficient to pay the cost
             if ( ( statValue - smallerSubstringAsNumber ) < 0 ) {
-              return 0.562739481; // this is the error-checking amount for insufficient stat to pay the cost
+              return 0.562739481 // this is the error-checking amount for insufficient stat to pay the cost
             }
             else {
-              return ( statValue - smallerSubstringAsNumber );
+              return ( statValue - smallerSubstringAsNumber )
             }
           }
           else { // it shouldn't be possible for this "else" condition to happen, but just in case...
-            api_sendPrivateMessageAlways({"message" : MISSING_DIRECTION_ERROR_MSG_START + searchTerm + MISSING_DIRECTION_ERROR_MSG_END, "toUserId" : USER_ID});
-            return 0.184937265; // this signals to the script that there was an error
+            api_sendPrivateMessageAlways({"message" : MISSING_DIRECTION_ERROR_MSG_START + searchTerm + MISSING_DIRECTION_ERROR_MSG_END, "toUserId" : USER_ID})
+            return 0.184937265 // this signals to the script that there was an error
           }
         }
       }
@@ -539,12 +539,12 @@ function parseAndEvaluate(inputString, searchTerm, statValue){
 // Find the index of a given search term. Choose whether it's case-sensitive or not.
 function findIndex(searchTerm, stringToSearch, caseSensitive) {
   if (caseSensitive){
-    return stringToSearch.indexOf(searchTerm);
+    return stringToSearch.indexOf(searchTerm)
   } else {
-    let uppercaseStringToSearch = stringToSearch.toUpperCase();
-    let index = findIndex(searchTerm, uppercaseStringToSearch);
+    let uppercaseStringToSearch = stringToSearch.toUpperCase()
+    let index = findIndex(searchTerm, uppercaseStringToSearch)
 
-    return index;
+    return index
   }
 }
 
@@ -557,41 +557,41 @@ function api_sendPrivateMessageAlways(payload) {
     "payload" : JSON.stringify(payload),
     "muteHttpExceptions" : true,
   }
-  const url = "https://habitica.com/api/v3/members/send-private-message";
-  return UrlFetchApp.fetch(url, params);
+  const url = "https://habitica.com/api/v3/members/send-private-message"
+  return UrlFetchApp.fetch(url, params)
 }
 
 // Specifically, this finds the semicolon after the search term previously searched
 function findIndexOfSemicolon(stringToSearch, startingAt, offset) {
-  return stringToSearch.indexOf(";", startingAt + offset);
+  return stringToSearch.indexOf(";", startingAt + offset)
 }
 
 function createSubstring(string, startingIndex, endingIndex) {
-  var untrimmed = string.substring(startingIndex,endingIndex);
-  var trimmed = untrimmed.trim();
-  return trimmed;
+  var untrimmed = string.substring(startingIndex,endingIndex)
+  var trimmed = untrimmed.trim()
+  return trimmed
 }
 
 function findDirection(trimmedSubstring, searchTerm) {
   if ( trimmedSubstring.charAt(0) == "+") {
-    return "up";
+    return "up"
   }
   else if ( trimmedSubstring.charAt(0) == "-") {
-    return "down";
+    return "down"
   }
   else {
-    api_sendPrivateMessageAlways({"message" : MISSING_DIRECTION_ERROR_MSG_START + searchTerm + MISSING_DIRECTION_ERROR_MSG_END, "toUserId" : USER_ID});
-    return "error";
+    api_sendPrivateMessageAlways({"message" : MISSING_DIRECTION_ERROR_MSG_START + searchTerm + MISSING_DIRECTION_ERROR_MSG_END, "toUserId" : USER_ID})
+    return "error"
   }
 }
 
 function findPercent(trimmedSubstring) {
-  var length = trimmedSubstring.length;
-  var isPercent = false;
+  var length = trimmedSubstring.length
+  var isPercent = false
   if ( trimmedSubstring.charAt(length - 1) == "%" ) {
-    isPercent = true;
+    isPercent = true
   }
-  return isPercent;
+  return isPercent
 }
 
 function apiFree_getAllAvailableContentObjects() {
@@ -600,42 +600,42 @@ function apiFree_getAllAvailableContentObjects() {
     "muteHttpExceptions" : true,
   }
   
-  const url = "https://habitica.com/api/v3/content";
-  return UrlFetchApp.fetch(url, params);
+  const url = "https://habitica.com/api/v3/content"
+  return UrlFetchApp.fetch(url, params)
 }
 
 function calculateIntelligence() {
-  const levelIntRaw = Math.floor(user.stats.lvl / 2);
-  const levelInt = (levelIntRaw > 50) ? 50 : levelIntRaw;
+  const levelIntRaw = Math.floor(user.stats.lvl / 2)
+  const levelInt = (levelIntRaw > 50) ? 50 : levelIntRaw
   
-  var totalEquipmentAndClassInt = 0;
-  const allocatedInt = user.stats.int;
-  const buffsInt = user.stats.buffs.int;
+  var totalEquipmentAndClassInt = 0
+  const allocatedInt = user.stats.int
+  const buffsInt = user.stats.buffs.int
   
   // Get INT from equipped gear
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.weapon]);
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.shield]);
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.head]);
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.armor]);
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.headAccessory]);
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.eyewear]);
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.body]);
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.back]);
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.weapon])
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.shield])
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.head])
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.armor])
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.headAccessory])
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.eyewear])
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.body])
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.back])
 
-  return levelInt + totalEquipmentAndClassInt + allocatedInt + buffsInt;
+  return levelInt + totalEquipmentAndClassInt + allocatedInt + buffsInt
 }
 
 function calcEquipmentAndClassInt(equipment) {
   var equipmentAndClassInt = 0;
 
   if (equipment != undefined) {  
-    equipmentAndClassInt += equipment.int;
+    equipmentAndClassInt += equipment.int
     if ( (equipment.klass == user.stats.class) || ( (equipment.klass == "special") && (equipment.specialClass == user.stats.class) ) ) {
-      equipmentAndClassInt += equipment.int / 2;
+      equipmentAndClassInt += equipment.int / 2
     }
   }
   
-  return equipmentAndClassInt;
+  return equipmentAndClassInt
 }
 
 function api_updateUser(payload) { 
@@ -647,31 +647,31 @@ function api_updateUser(payload) {
     "muteHttpExceptions" : true,
   }
   
-  const url = "https://habitica.com/api/v3/user";
-  return UrlFetchApp.fetch(url, params);
+  const url = "https://habitica.com/api/v3/user"
+  return UrlFetchApp.fetch(url, params)
 }
 
 // Ensures that the input is between the minimum and maximum. Can use "none" in either argument to indicate if there is either no minimum or no maximum.
 function sanitizeInput(input, minimum, maximum) {
   if (minimum == "none"){ // Condition for if there is no minimum
     if ( input > maximum ) {
-      return maximum;
+      return maximum
     } else { 
-      return input;
+      return input
     }
   } else if (maximum == "none"){ // Condition for if there is no maximum
     if ( input < minimum ) {
-      return minimum;
+      return minimum
     } else { 
-      return input;
+      return input
     }
   } else { // Condition where there is both minimum and maximum
     if ( input < minimum ) {
-      return minimum;
+      return minimum
     } else if ( input > maximum ) {
-      return maximum;
+      return maximum
     } else { 
-      return input;
+      return input
     }
   }
 }
