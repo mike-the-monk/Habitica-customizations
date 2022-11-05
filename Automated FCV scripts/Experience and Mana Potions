@@ -364,19 +364,19 @@ function api_updateUser(payload) {
 // Send a notification as a private message, only if they're enabled
 function api_sendPrivateMessage(payload) {
   switch (NOTIFICATIONS_ON){ // Check if notifications are on, send message if yes
-        case 0:
-          break        
-        case 1:
-            const params = {
-              "method" : "post",
-              "headers" : HEADERS,
-              "contentType" : "application/json",
-              "payload" : JSON.stringify(payload),
-              "muteHttpExceptions" : true,
-            }
-            const url = "https://habitica.com/api/v3/members/send-private-message"
-            return UrlFetchApp.fetch(url, params)
-          break
+    case 0:
+      break        
+    case 1:
+      const params = {
+        "method" : "post",
+        "headers" : HEADERS,
+        "contentType" : "application/json",
+        "payload" : JSON.stringify(payload),
+        "muteHttpExceptions" : true,
+      }
+      const url = "https://habitica.com/api/v3/members/send-private-message"
+      return UrlFetchApp.fetch(url, params)
+      break
   }
 }
 
