@@ -4,9 +4,9 @@
 /* ========================================== */
 /* [Users] Required script data to fill in    */
 /* ========================================== */
-const USER_ID = "PasteYourUserIdHere";
-const API_TOKEN = "PasteYourApiTokenHere"; // Do not share this to anyone
-const WEB_APP_URL = "PasteGeneratedWebAppUrlHere";
+const USER_ID = "PasteYourUserIdHere"
+const API_TOKEN = "PasteYourApiTokenHere" // Do not share this to anyone
+const WEB_APP_URL = "PasteGeneratedWebAppUrlHere"
 
 /* ========================================== */
 /* [Users] Required customizations to fill in */
@@ -18,32 +18,32 @@ const WEB_APP_URL = "PasteGeneratedWebAppUrlHere";
 
 // Do you want to get private message notifications about when you enter or exit Low Constitution Mode?
 // Default is no notification. If you want them, change the 0 to a 1 in the line below.
-const NOTIFICATIONS_ON = 0; 
+const NOTIFICATIONS_ON = 0
 
 // Do you want a button that lets you enter/exit Low Constitution Mode? If not, change the 1 to a 0 below.
 // If you don't have a button, you can still enter/exit the Mode by manually running the function "toggleLowConstitutionMode"
-const LOW_CONSTITUTION_TOGGLE_BUTTON = 1;
+const LOW_CONSTITUTION_TOGGLE_BUTTON = 1
 
 // Do you want to automatically enter Low Constitution Mode each day at Cron? If yes, change the 0 to a 1 in the line below.
-const AUTOMATIC_LOW_CONSTITUTION = 0;
+const AUTOMATIC_LOW_CONSTITUTION = 0
 
 /* ========================================== */
 /* [Users] Do not edit code below this line   */
 /* ========================================== */
-const AUTHOR_ID = "0034eb14-b4d8-494e-8386-d3f33cff7922";
-const SCRIPT_NAME = "Low Constitution Mode";
+const AUTHOR_ID = "0034eb14-b4d8-494e-8386-d3f33cff7922"
+const SCRIPT_NAME = "Low Constitution Mode"
 const HEADERS = {
   "x-client" : AUTHOR_ID + " - " + SCRIPT_NAME,
   "x-api-user" : USER_ID,
   "x-api-key" : API_TOKEN,
 }
 
-const scriptProperties = PropertiesService.getScriptProperties(); // Constants can have properties changed
+const scriptProperties = PropertiesService.getScriptProperties() // Constants can have properties changed
 
-const LOW_CON_MODE_TEXT = "**Low Constitution Mode**";
-const LOW_CON_MODE_ALIAS = "LOW_CON";
-const LOW_CON_MODE_NOTES = "Press once to enter Low Constitution Mode, creating an anti-buff that sets your CON to 1 until you Cron tomorrow. Press again to exit Low Constitution Mode.";
-const LOW_CON_MODE_VALUE = "0";
+const LOW_CON_MODE_TEXT = "**Low Constitution Mode**"
+const LOW_CON_MODE_ALIAS = "LOW_CON"
+const LOW_CON_MODE_NOTES = "Press once to enter Low Constitution Mode, creating an anti-buff that sets your CON to 1 until you Cron tomorrow. Press again to exit Low Constitution Mode."
+const LOW_CON_MODE_VALUE = "0"
 
 const LOW_CON_MODE_BUTTON = {
     "text": LOW_CON_MODE_TEXT,
@@ -53,18 +53,18 @@ const LOW_CON_MODE_BUTTON = {
     "value": LOW_CON_MODE_VALUE,
 }
 
-const CRON_COUNT_KEY = "CRON_COUNT_KEY";
-const ANTI_BUFF_AMOUNT_KEY = "ANTI_BUFF_AMOUNT_KEY";
-const ANTI_BUFF_USAGE_KEY = "ANTI_BUFF_USAGE_KEY";
+const CRON_COUNT_KEY = "CRON_COUNT_KEY"
+const ANTI_BUFF_AMOUNT_KEY = "ANTI_BUFF_AMOUNT_KEY"
+const ANTI_BUFF_USAGE_KEY = "ANTI_BUFF_USAGE_KEY"
 
-var cronCountKey = "";
-var antiBuffAmountKey = "";
-var antiBuffUsageKey = "";
+var cronCountKey = ""
+var antiBuffAmountKey = ""
+var antiBuffUsageKey = ""
 
 function doOneTimeSetup() {
   // Create button if user indicated they want it
   if (LOW_CONSTITUTION_TOGGLE_BUTTON == 1) {
-    api_createNewTaskForUser([LOW_CON_MODE_BUTTON]);
+    api_createNewTaskForUser([LOW_CON_MODE_BUTTON])
   } 
   
   // Next, create the webhook
@@ -77,99 +77,99 @@ function doOneTimeSetup() {
     "type" : "taskActivity",
     "options" : options,
   }
-  apiMult_createNewWebhookNoDuplicates(payload);
+  apiMult_createNewWebhookNoDuplicates(payload)
   
   // set script properties so they carry over to next session
-  initScriptProperties();
+  initScriptProperties()
 }
 
 // do things when the webhook runs
 function doPost(e) {
-  const dataContents = JSON.parse(e.postData.contents);
-  const type = dataContents.type;
-  const task = dataContents.task;
+  const dataContents = JSON.parse(e.postData.contents)
+  const type = dataContents.type
+  const task = dataContents.task
   
   // Sanitize task alias
-  let sanitizedAlias = "sanitized"; // This will be the value if undefined, null, or blank
+  let sanitizedAlias = "sanitized" // This will be the value if undefined, null, or blank
   if ( (task.alias != undefined) && (task.alias != null) && (task.alias != "") ) {
-    sanitizedAlias = task.alias;
+    sanitizedAlias = task.alias
   }
   
   if (type == "scored"){
-    const responseUser = api_getAuthenticatedUserProfile("stats,items.gear.equipped");
-    user = JSON.parse(responseUser).data;
+    const responseUser = api_getAuthenticatedUserProfile("stats,items.gear.equipped")
+    user = JSON.parse(responseUser).data
     
     var cronCountKey = CRON_COUNT_KEY;    
-    var cronCount = Number(scriptProperties.getProperty(cronCountKey));
+    var cronCount = Number(scriptProperties.getProperty(cronCountKey))
     
     // If they've Cronned, reset all counters
     if (cronCount != user.flags.cronCount) {
-      cronCount = user.flags.cronCount;
-      resetCounters();
+      cronCount = user.flags.cronCount
+      resetCounters()
       
       // Save values to non-volatile memory
-      scriptProperties.setProperty(cronCountKey, cronCount);
+      scriptProperties.setProperty(cronCountKey, cronCount)
       
       // If they want to automatically enter Low Constitution Mode each day, do so
       if (AUTOMATIC_LOW_CONSTITUTION == 1) {
         // Wait 2 seconds  
-        Utilities.sleep(2000);
+        Utilities.sleep(2000)
         
-        toggleLowConstitutionMode();
+        toggleLowConstitutionMode()
       }
     }
     
     // If they pressed the button, toggle into/out of Low Constitution Mode
     if (sanitizedAlias == LOW_CON_MODE_ALIAS)) {
-      toggleLowConstitutionMode();
+      toggleLowConstitutionMode()
     }
   } 
     
-  return HtmlService.createHtmlOutput();
+  return HtmlService.createHtmlOutput()
 }
 
 // If user is in Low Constitution Mode, remove them from it, and vice versa.
 function toggleLowConstitutionMode(){
-  var antiBuffAmountKey = ANTI_BUFF_AMOUNT_KEY;
-  var antiBuffUsageKey = ANTI_BUFF_USAGE_KEY;
+  var antiBuffAmountKey = ANTI_BUFF_AMOUNT_KEY
+  var antiBuffUsageKey = ANTI_BUFF_USAGE_KEY
   
-  var antiBuffAmount = Number(scriptProperties.getProperty(antiBuffAmountKey));
-  var antiBuffUsage = Number(scriptProperties.getProperty(antiBuffUsageKey));
+  var antiBuffAmount = Number(scriptProperties.getProperty(antiBuffAmountKey))
+  var antiBuffUsage = Number(scriptProperties.getProperty(antiBuffUsageKey))
   
   // If anti-buff usage is even, then user is currently not in Low Con Mode. Therefore, put them in it
   if (antiBuffUsage % 2 == 0) {
-    const responseUser = api_getAuthenticatedUserProfile("stats,items.gear.equipped");
-    user = JSON.parse(responseUser).data;
-    const responseContent = apiFree_getAllAvailableContentObjects();
-    content = JSON.parse(responseContent).data;
+    const responseUser = api_getAuthenticatedUserProfile("stats,items.gear.equipped")
+    user = JSON.parse(responseUser).data
+    const responseContent = apiFree_getAllAvailableContentObjects()
+    content = JSON.parse(responseContent).data
 
     // Using these, calculate total constitution and how much the anti-buff should be to set CON to 1
-    let buffsCon = user.stats.buffs.con;
-    if (!user.stats.buffs.con) { buffsCon = 0; }
-    let con = calculateConstitution();
-    let unbuffedConstitution = con - buffsCon;
-    let antiBuffCon = 1 - unbuffedConstitution;
+    let buffsCon = user.stats.buffs.con
+    if (!user.stats.buffs.con) { buffsCon = 0 }
+    let con = calculateConstitution()
+    let unbuffedConstitution = con - buffsCon
+    let antiBuffCon = 1 - unbuffedConstitution
 
     // Anti-buff user, save value, increment counter
-    api_updateUser({"stats.buffs.con" : antiBuffCon});
-    antiBuffAmount = antiBuffCon;
-    antiBuffUsage++;
+    api_updateUser({"stats.buffs.con" : antiBuffCon})
+    antiBuffAmount = antiBuffCon
+    antiBuffUsage++
 
-    api_sendPrivateMessage({"message" : "Currently in Low Constitution Mode.", "toUserId" : USER_ID});
+    api_sendPrivateMessage({"message" : "Currently in Low Constitution Mode.", "toUserId" : USER_ID})
   }
   // If anti-buff usage is odd, then user is in Low Con Mode. Therefore, remove them from it
   else {
     // Reverse the anti-buff, unsave anti-buff value, increment counter
-    api_updateUser({"stats.buffs.con" : 1 - antiBuffCon});
-    antiBuffAmount = 0;
-    antiBuffUsage++;
+    api_updateUser({"stats.buffs.con" : 1 - antiBuffCon})
+    antiBuffAmount = 0
+    antiBuffUsage++
 
     api_sendPrivateMessage({"message" : "Not currently in Low Constitution Mode.", "toUserId" : USER_ID})
   }
   
   // Save values to non-volatile memory
-  scriptProperties.setProperty(antiBuffAmountKey, antiBuffAmount);
-  scriptProperties.setProperty(antiBuffUsageKey, antiBuffUsage);
+  scriptProperties.setProperty(antiBuffAmountKey, antiBuffAmount)
+  scriptProperties.setProperty(antiBuffUsageKey, antiBuffUsage)
 }
 
 // Create custom reward buttons
@@ -182,24 +182,24 @@ function api_createNewTaskForUser(payload) {
     "muteHttpExceptions" : true,
   }
 
-  var url = "https://habitica.com/api/v3/tasks/user";
-  UrlFetchApp.fetch(url, params);
+  var url = "https://habitica.com/api/v3/tasks/user"
+  UrlFetchApp.fetch(url, params)
 }
 
 // Create a webhook if no duplicate exists
 function apiMult_createNewWebhookNoDuplicates(payload) {
-  const response = api_getWebhooks();
-  const webhooks = JSON.parse(response).data;
-  var duplicateExists = 0;
+  const response = api_getWebhooks()
+  const webhooks = JSON.parse(response).data
+  var duplicateExists = 0
     
   for (var i in webhooks) {
     if (webhooks[i].label == payload.label) {
-      duplicateExists = 1;
+      duplicateExists = 1
     }
   }
   // If webhook to be created doesn't exist yet
   if (!duplicateExists) {
-    api_createNewWebhook(payload);
+    api_createNewWebhook(payload)
   }
 }
 
@@ -211,8 +211,8 @@ function api_getWebhooks() {
     "muteHttpExceptions" : true,
   }
   
-  const url = "https://habitica.com/api/v3/user/webhook";
-  return UrlFetchApp.fetch(url, params);
+  const url = "https://habitica.com/api/v3/user/webhook"
+  return UrlFetchApp.fetch(url, params)
 }
 
 // Creates a webhook (as part of the "don't make it if there's a duplicate" function)
@@ -225,15 +225,15 @@ function api_createNewWebhook(payload) {
     "muteHttpExceptions" : true,
   }
    
-  const url = "https://habitica.com/api/v3/user/webhook";
-  return UrlFetchApp.fetch(url, params);
+  const url = "https://habitica.com/api/v3/user/webhook"
+  return UrlFetchApp.fetch(url, params)
 }
 
 // Sets initial properties that will be used/saved later.
 function initScriptProperties() {
-  scriptProperties.setProperty(CRON_COUNT_KEY, 0);
-  scriptProperties.setProperty(ANTI_BUFF_AMOUNT_KEY, 0);
-  scriptProperties.setProperty(ANTI_BUFF_USAGE_KEY, 0);
+  scriptProperties.setProperty(CRON_COUNT_KEY, 0)
+  scriptProperties.setProperty(ANTI_BUFF_AMOUNT_KEY, 0)
+  scriptProperties.setProperty(ANTI_BUFF_USAGE_KEY, 0)
 }
 
 // Gets user info so I can use it, especially stats like mana, experience, and level
@@ -244,12 +244,12 @@ function api_getAuthenticatedUserProfile(userFields) {
     "muteHttpExceptions" : true,
   }
   
-  var url = "https://habitica.com/api/v3/user";
+  var url = "https://habitica.com/api/v3/user"
   if (userFields != "") {
-    url += "?userFields=" + userFields;
+    url += "?userFields=" + userFields
   }
 
-  return UrlFetchApp.fetch(url, params);
+  return UrlFetchApp.fetch(url, params)
 }
 
 function apiFree_getAllAvailableContentObjects() {
@@ -258,43 +258,43 @@ function apiFree_getAllAvailableContentObjects() {
     "muteHttpExceptions" : true,
   }
   
-  const url = "https://habitica.com/api/v3/content";
-  return UrlFetchApp.fetch(url, params);
+  const url = "https://habitica.com/api/v3/content"
+  return UrlFetchApp.fetch(url, params)
 }
 
 // Calculate total CON
 function calculateConstitution() {
-  const levelConRaw = Math.floor(user.stats.lvl / 2);
-  const levelCon = (levelConRaw > 50) ? 50 : levelConRaw;
+  const levelConRaw = Math.floor(user.stats.lvl / 2)
+  const levelCon = (levelConRaw > 50) ? 50 : levelConRaw
 
-  var totalEquipmentAndClassCon = 0;
-  const allocatedCon = user.stats.con;
-  const buffsCon = user.stats.buffs.con;
+  var totalEquipmentAndClassCon = 0
+  const allocatedCon = user.stats.con
+  const buffsCon = user.stats.buffs.con
 
   // Get CON from equipped gear
-  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.weapon]);
-  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.shield]);
-  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.head]);
-  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.armor]);
-  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.headAccessory]);
-  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.eyewear]);
-  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.body]);
-  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.back]);
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.weapon])
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.shield])
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.head])
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.armor])
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.headAccessory])
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.eyewear])
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.body])
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.back])
 
-  return levelCon + totalEquipmentAndClassCon + allocatedCon + buffsCon;
+  return levelCon + totalEquipmentAndClassCon + allocatedCon + buffsCon
 }
 
 function calcEquipmentAndClassCon(equipment) {
-  var equipmentAndClassCon = 0;
+  var equipmentAndClassCon = 0
 
   if (equipment != undefined) {  
-    equipmentAndClassCon += equipment.con;
+    equipmentAndClassCon += equipment.con
     if ( (equipment.klass == user.stats.class) || ( (equipment.klass == "special") && (equipment.specialClass == user.stats.class) ) ) {
-      equipmentAndClassCon += equipment.con / 2;
+      equipmentAndClassCon += equipment.con / 2
     }
   }
   
-  return equipmentAndClassCon;
+  return equipmentAndClassCon
 }
 
 // Changes stats
@@ -307,63 +307,63 @@ function api_updateUser(payload) {
     "muteHttpExceptions" : true,
   }
   
-  const url = "https://habitica.com/api/v3/user";
-  return UrlFetchApp.fetch(url, params);
+  const url = "https://habitica.com/api/v3/user"
+  return UrlFetchApp.fetch(url, params)
 }
 
 // Send a notification as a private message, only if they're enabled
 function api_sendPrivateMessage(payload) {
   switch (NOTIFICATIONS_ON){ // Check if notifications are on, send message if yes
-        case 0:
-          break;        
-        case 1:
-            const params = {
-              "method" : "post",
-              "headers" : HEADERS,
-              "contentType" : "application/json",
-              "payload" : JSON.stringify(payload),
-              "muteHttpExceptions" : true,
-            }
-            const url = "https://habitica.com/api/v3/members/send-private-message";
-            return UrlFetchApp.fetch(url, params);
-          break;
+    case 0:
+      break        
+    case 1:
+      const params = {
+        "method" : "post",
+        "headers" : HEADERS,
+        "contentType" : "application/json",
+        "payload" : JSON.stringify(payload),
+        "muteHttpExceptions" : true,
+      }
+      const url = "https://habitica.com/api/v3/members/send-private-message"
+      return UrlFetchApp.fetch(url, params)
+      break
   }
 }
 
 // Resets usage counters, usually done at Cron
 function resetCounters(){
-  scriptProperties.setProperty(ANTI_BUFF_AMOUNT_KEY, 0);
-  scriptProperties.setProperty(ANTI_BUFF_USAGE_KEY, 0);
+  scriptProperties.setProperty(ANTI_BUFF_AMOUNT_KEY, 0)
+  scriptProperties.setProperty(ANTI_BUFF_USAGE_KEY, 0)
 }
 
 // FUNCTIONS FOR DEBUGGING. SCRIPT DOES NOT USE THEM, THEY MUST BE TRIGGERED MANUALLY
 
 // Manually reset usage counters
 function debugResetCounters() {
-  resetCounters();
+  resetCounters()
 }
 
 // Retrieves saved values and sends them in a private message
 function debugGetSavedValues(){
-  let cronCount = Number(scriptProperties.getProperty(CRON_COUNT_KEY));
-  let antiBuffAmount = Number(scriptProperties.getProperty(ANTI_BUFF_AMOUNT_KEY));
-  let antiBuffUsage = Number(scriptProperties.getProperty(ANTI_BUFF_USAGE_KEY));
+  let cronCount = Number(scriptProperties.getProperty(CRON_COUNT_KEY))
+  let antiBuffAmount = Number(scriptProperties.getProperty(ANTI_BUFF_AMOUNT_KEY))
+  let antiBuffUsage = Number(scriptProperties.getProperty(ANTI_BUFF_USAGE_KEY))
 
   // saving these will make my life easier
-  let MSG_JOINER_BEFORE = " is `";
-  let MSG_JOINER_AFTER = "`, "; 
+  let MSG_JOINER_BEFORE = " is `"
+  let MSG_JOINER_AFTER = "`, "
   
   api_sendPrivateMessageAlways({"message" : "Saved values are as follows: cronCount is `" + cronCount + MSG_JOINER_AFTER
                                 + "antiBuffAmount" + MSG_JOINER_BEFORE + antiBuffAmount + MSG_JOINER_AFTER
-                                + "antiBuffUsage" + MSG_JOINER_BEFORE + antiBuffUsage + "`", "toUserId" : USER_ID});
+                                + "antiBuffUsage" + MSG_JOINER_BEFORE + antiBuffUsage + "`", "toUserId" : USER_ID})
 }
 
 // Mannually edits and saves the selected value (in case it saved incorrectly)
 function debugManuallyEditSavedValue() {
   // Fill them in below. antiBuffUsage is shown as a sample.
-  let newValue = 0; 
-  let key = ANTI_BUFF_USAGE_KEY;
+  let newValue = 0
+  let key = ANTI_BUFF_USAGE_KEY
   
   // Save
-  scriptProperties.setProperty(key, newValue);
+  scriptProperties.setProperty(key, newValue)
 }
