@@ -38,7 +38,7 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
 // Parts of messages that get reused// Parts of messages that get reused
 const MSG_LEVEL_LOCK_START = "You must be at least level "
 const MSG_LEVEL_LOCK_END = " to use this potion."
-const MSG_DAILY_USAGE_EXCEEDED_START = "You can only use this potion " 
+const MSG_DAILY_USAGE_EXCEEDED_START_POTION = "You can only use this potion " 
 const MSG_DAILY_USAGE_EXCEEDED_END = " times each day."
 
 // Conversion rate between stats
@@ -63,7 +63,7 @@ const MAX_DAILY_MP_POTION_USAGE = 4
 const MP_POTION_NOTES = "Recover " + MP_GAIN + " Mana (Instant Use). Maximum " + MAX_DAILY_MP_POTION_USAGE + " per day."
 const MP_POTION_LEVEL_LOCK = 11
 const MSG_MP_POTION_LEVEL_LOCK_FAIL = MSG_LEVEL_LOCK_START + MP_POTION_LEVEL_LOCK + MSG_LEVEL_LOCK_END
-const MSG_MP_POTION_DAILY_USAGE_EXCEEDED = MSG_DAILY_USAGE_EXCEEDED_START + MAX_DAILY_MP_POTION_USAGE + MSG_DAILY_USAGE_EXCEEDED_END
+const MSG_MP_POTION_DAILY_USAGE_EXCEEDED = MSG_DAILY_USAGE_EXCEEDED_START_POTION + MAX_DAILY_MP_POTION_USAGE + MSG_DAILY_USAGE_EXCEEDED_END
 const MSG_ALREADY_AT_MAX_MANA = "You are already have maximum mana. This potion had no effect and did not count towards your daily limit of "+MAX_DAILY_MP_POTION_USAGE+" potions."
 const MSG_NEAR_MAX_MANA = "This potion filled you to maximum Mana, but not beyond the max."
 
