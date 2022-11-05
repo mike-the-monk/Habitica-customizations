@@ -40,6 +40,10 @@ const HEADERS = {
 
 const scriptProperties = PropertiesService.getScriptProperties() // Constants can have properties changed
 
+// Messages
+const MSG_IN_LOW_CONSTITUTION_MODE = "Currently in Low Constitution Mode."
+const MSG_NOT_IN_LOW_CONSTITUTION_MODE = "Not currently in Low Constitution Mode." 
+
 const LOW_CON_MODE_TEXT = "**Low Constitution Mode**"
 const LOW_CON_MODE_ALIAS = "LOW_CON"
 const LOW_CON_MODE_NOTES = "Press once to enter Low Constitution Mode, creating an anti-buff that sets your CON to 1 until you Cron tomorrow. Press again to exit Low Constitution Mode."
@@ -155,7 +159,7 @@ function toggleLowConstitutionMode(){
     antiBuffAmount = antiBuffCon
     antiBuffUsage++
 
-    api_sendPrivateMessage({"message" : "Currently in Low Constitution Mode.", "toUserId" : USER_ID})
+    api_sendPrivateMessage({"message" : MSG_IN_LOW_CONSTITUTION_MODE, "toUserId" : USER_ID})
   }
   // If anti-buff usage is odd, then user is in Low Con Mode. Therefore, remove them from it
   else {
@@ -163,8 +167,8 @@ function toggleLowConstitutionMode(){
     api_updateUser({"stats.buffs.con" : 1 - antiBuffCon})
     antiBuffAmount = 0
     antiBuffUsage++
-
-    api_sendPrivateMessage({"message" : "Not currently in Low Constitution Mode.", "toUserId" : USER_ID})
+    
+    api_sendPrivateMessage({"message" : MSG_NOT_IN_LOW_CONSTITUTION_MODE, "toUserId" : USER_ID})
   }
   
   // Save values to non-volatile memory
