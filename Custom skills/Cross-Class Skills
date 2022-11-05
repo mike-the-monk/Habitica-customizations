@@ -96,6 +96,7 @@ const LEVEL_LOCK_BRUTAL_SMASH = 11
 const LEVEL_LOCK_RADIANT_SHIELD = 11
 const LEVEL_LOCK_SNEAK_ATTACK = 11
 
+// Level lock messages
 const MSG_LEVEL_LOCK_FAIL_START = "Insufficient level: you must be at least level "
 const MSG_LEVEL_LOCK_FAIL_END = " to use this skill."
 const MSG_LEVEL_LOCK_FAIL_PICKPOCKET = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LOCK_PICKPOCKET + MSG_LEVEL_LOCK_FAIL_END
@@ -107,6 +108,22 @@ const MSG_LEVEL_LOCK_FAIL_BURST_OF_FLAMES = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LO
 const MSG_LEVEL_LOCK_FAIL_BRUTAL_SMASH = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LOCK_BRUTAL_SMASH + MSG_LEVEL_LOCK_FAIL_END
 const MSG_LEVEL_LOCK_FAIL_RADIANT_SHIELD = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LOCK_RADIANT_SHIELD + MSG_LEVEL_LOCK_FAIL_END
 const MSG_LEVEL_LOCK_FAIL_SNEAK_ATTACK = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LOCK_SNEAK_ATTACK + MSG_LEVEL_LOCK_FAIL_END
+
+// Messages
+const MSG_ALL_DAILIES_AVOIDED = "You've already avoided all your Dailies, so additional uses of this skill have no effect."
+const MSG_ALREADY_AT_MAX_HP = "You are already at max HP."
+const MSG_ALREADY_USED_CHILLING_FROST = "You've already used this skill. Additional uses have no effect."
+const MSG_INSUFFICIENT_MANA_SKILL = "Insufficient mana to use this skill."
+const MSG_MULTI_USE_MANA_CHECK_1 = "Insufficient Mana. You will need "
+const MSG_MULTI_USE_MANA_CHECK_2 = " MP to use this skill, and it will do "
+const MSG_MULTI_USE_MANA_CHECK_3 = "damage"
+const MSG_MULTI_USE_MANA_CHECK_4A_1 = " and you will gain "
+const MSG_MULTI_USE_MANA_CHECK_4A_2 = " XP."
+const MSG_MULTI_USE_MANA_CHECK_4B = "."
+const MSG_TASK_ID_NOT_FOUND = "Task ID not found, so this script defaulted to the preset task value (version 2 in the Required Customization section). To find task value, see the [wiki page](https://habitica.fandom.com/wiki/Google_Apps_Script#Cross-Class_Skills) section on Required Customizations and then update the script using the instructions at the bottom of the wiki page."
+const MSG_ERROR_DAMAGE_SNEAK_ATTACK = "Error calculating Sneak Attack damage, please contact the author of this script so he can debug."
+const MSG_ERROR_DAMAGE_FINAL_ITERATION = "Error computing damage. Please contact the author of the script to debug (note to author: final iteration triggered this message)."
+const MSG_ERROR_DAMAGE_SETPOINT = "Error computing damage. Please contact the author of the script to debug (note to author: target damage not between low and high setpoints)."
 
 const MP_COST_PICKPOCKET = 15
 const MP_COST_BACKSTAB = 20
@@ -482,7 +499,7 @@ function doButtonStealth(lvl, stealthedDailies, mp, totalDailies, perception){
     
     // If already avoided all dailies that are due but not complete, send message and don't subtract MP cost
     if (stealthedDailies >= tasksDueAndNotComplete){
-      api_sendPrivateMessageAlways({"message" : "You've already avoided all your Dailies, so additional uses of this skill have no effect.", "toUserId" : USER_ID})
+      api_sendPrivateMessageAlways({"message" : MSG_ALL_DAILIES_AVOIDED, "toUserId" : USER_ID})
     }
     // Do skill as normal
     else {
@@ -506,7 +523,7 @@ function doButtonHealingLight(lvl, mp, hp, constitution, intelligence){
       }
     }
     else { // if already at max HP, do nothing
-      api_sendPrivateMessage({"message" : "You are already at max HP.", "toUserId" : USER_ID})
+      api_sendPrivateMessage({"message" : MSG_ALREADY_AT_MAX_HP, "toUserId" : USER_ID})
     }
   }
 }
@@ -519,7 +536,7 @@ function doButtonChillingFrost(lvl, mp, frostCast){
     if (enoughMana) {
       // Check if already cast, send message if yes
       if (frostCast == true){
-        api_sendPrivateMessageAlways({"message" : "You've already used this skill. Additional uses have no effect.", "toUserId" : USER_ID})
+        api_sendPrivateMessageAlways({"message" : MSG_ALREADY_USED_CHILLING_FROST, "toUserId" : USER_ID})
       }
       else {
         chillingFrost(mp, MP_COST_CHILLING_FROST) // includes deducting MP cost
@@ -882,7 +899,7 @@ function calcEquipmentAndClassPer(equipment) {
 // Checks if sufficient mana, sends message if not. Choose whether to deduct costs now or later.
 function checkMana(mp, mpCost, deductLater){
   if (mp < mpCost) {
-    api_sendPrivateMessage({"message" : "Insufficient mana to use this skill.", "toUserId" : USER_ID})
+    api_sendPrivateMessage({"message" : MSG_INSUFFICIENT_MANA_SKILL, "toUserId" : USER_ID})
     return false
   } else {
     if (deductLater) {
@@ -907,18 +924,18 @@ function checkManaMultiUse(mp, mpCost, damageOnce, isFlamesXp, int, per) {
     
     if (isFlamesXp) {
       let xpGain = burstOfFlamesXp(int, per, numberTimes)
-      api_sendPrivateMessage({"message" : "Insufficient Mana. You will need " + multiMpCost + " MP to use this skill, and it will do " + damageMultiForMessage + " damage and you will gain " + xpGain + " XP.", "toUserId" : USER_ID})
+      api_sendPrivateMessage({"message" : MSG_MULTI_USE_MANA_CHECK_1 + multiMpCost + MSG_MULTI_USE_MANA_CHECK_2 + damageMultiForMessage + MSG_MULTI_USE_MANA_CHECK_3 + MSG_MULTI_USE_MANA_CHECK_4A_1 + xpGain + MSG_MULTI_USE_MANA_CHECK_4A_2, "toUserId" : USER_ID})
       return 0
     }
     else {
-      api_sendPrivateMessage({"message" : "Insufficient Mana. You will need " + multiMpCost + " MP to use this skill, and it will do " + damageMultiForMessage + " damage.", "toUserId" : USER_ID})
+      api_sendPrivateMessage({"message" : MSG_MULTI_USE_MANA_CHECK_1 + multiMpCost + MSG_MULTI_USE_MANA_CHECK_2 + damageMultiForMessage + MSG_MULTI_USE_MANA_CHECK_3 + MSG_MULTI_USE_MANA_CHECK_4B, "toUserId" : USER_ID})
       return 0
     }
   }
   else {
     return numberTimes
   }
-}
+} 
 
 // Check if sufficient level, send message if not.
 function checkLevelLock(level, levelLock, message){
@@ -976,7 +993,7 @@ function getTaskValue(version, presetTaskValue, taskId) {
       }
       
       if (valueV4 == -100) {
-        api_sendPrivateMessageAlways({"message" : "Task ID not found, so this script defaulted to the preset task value (version 2 in the Required Customization section). To find task value, see the [wiki page](https://habitica.fandom.com/wiki/Google_Apps_Script#Cross-Class_Skills) section on Required Customizations and then update the script using the instructions at the bottom of the wiki page.", "toUserId" : USER_ID})
+        api_sendPrivateMessageAlways({"message" : MSG_TASK_ID_NOT_FOUND, "toUserId" : USER_ID})
         let valueIfError = sanitizeInput(presetTaskValue, 0, 21.27)
         return valueIfError
         break
@@ -1163,7 +1180,7 @@ function sneakDamageNoCrit(per) {
     return 45 + (10 * per) / (per + 4213)
   }
   else { // this scenario shouldn't be possible, but just in case…
-    api_sendPrivateMessage({"message" : "Error calculating Sneak Attack damage, please contact the creator of this script so he can debug.", "toUserId" : USER_ID})
+    api_sendPrivateMessage({"message" : MSG_ERROR_DAMAGE_SNEAK_ATTACK, "toUserId" : USER_ID})
   }
 }
 
@@ -1264,9 +1281,9 @@ function setpointIteration (low, high, targetDamage) {
       return high
     }
     else { // This condition shouldn't be possible, but just in case…
-      api_sendPrivateMessage({"message" : "Error computing damage. Please contact the creator of the script to debug (note to creator: final iteration triggered this message).", "toUserId" : USER_ID})
+      api_sendPrivateMessage({"message" : MSG_ERROR_DAMAGE_FINAL_ITERATION, "toUserId" : USER_ID})
     }
-  }
+  } 
   else { // keep iterating
     // Confirm target is between high and low
     if (targetAboveLow && targetBelowHigh) {
@@ -1279,7 +1296,7 @@ function setpointIteration (low, high, targetDamage) {
       }
     }
     else { // if it's not between low and high, something messed up. This condition shouldn't be possible, but just in case…
-      api_sendPrivateMessage({"message" : "Error computing damage. Please contact the creator of the script to debug (note to creator: target damage not between low and high setpoints).", "toUserId" : USER_ID})
+      api_sendPrivateMessage({"message" : MSG_ERROR_DAMAGE_SETPOINT, "toUserId" : USER_ID})
     }
   }
 }
