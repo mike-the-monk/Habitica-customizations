@@ -4,9 +4,9 @@
 /* ========================================== */
 /* [Users] Required script data to fill in    */
 /* ========================================== */
-const USER_ID = "PasteYourUserIdHere";
-const API_TOKEN = "PasteYourApiTokenHere"; // Do not share this to anyone
-const WEB_APP_URL = "PasteGeneratedWebAppUrlHere";
+const USER_ID = "PasteYourUserIdHere"
+const API_TOKEN = "PasteYourApiTokenHere" // Do not share this to anyone
+const WEB_APP_URL = "PasteGeneratedWebAppUrlHere"
 
 /* ========================================== */
 /* [Users] Required customizations to fill in */
@@ -18,23 +18,23 @@ const WEB_APP_URL = "PasteGeneratedWebAppUrlHere";
 
 // Do you want to get private message notifications if you've already entered Bad Day Mode?
 // If you don't want them, change the 1 to a 0 in the line below
-const NOTIFICATIONS_ON = 1; 
+const NOTIFICATIONS_ON = 1
 
 /* ========================================== */
 /* [Users] Do not edit code below this line   */
 /* ========================================== */
-const AUTHOR_ID = "0034eb14-b4d8-494e-8386-d3f33cff7922";
-const SCRIPT_NAME = "Bad Day Mode";
+const AUTHOR_ID = "0034eb14-b4d8-494e-8386-d3f33cff7922"
+const SCRIPT_NAME = "Bad Day Mode"
 const HEADERS = {
   "x-client" : AUTHOR_ID + " - " + SCRIPT_NAME,
   "x-api-user" : USER_ID,
   "x-api-key" : API_TOKEN,
 }
 
-const BAD_DAY_MODE_TEXT = "**Bad Day Mode**";
-const BAD_DAY_MODE_ALIAS = "badDayMode";
-const BAD_DAY_MODE_NOTES = "Declare today a 'day of low expectations', fully healing you, buffing your CON to 9999, and Stealthing all your Dailies so you take no damage if you don't complete them. This wears off tomorrow at Cron.";
-const BAD_DAY_MODE_VALUE = "0";
+const BAD_DAY_MODE_TEXT = "**Bad Day Mode**"
+const BAD_DAY_MODE_ALIAS = "badDayMode"
+const BAD_DAY_MODE_NOTES = "Declare today a 'day of low expectations', fully healing you, buffing your CON to 9999, and Stealthing all your Dailies so you take no damage if you don't complete them. This wears off tomorrow at Cron."
+const BAD_DAY_MODE_VALUE = "0"
 
 const BAD_DAY_MODE_BUTTON = {
     "text": BAD_DAY_MODE_TEXT,
@@ -46,7 +46,7 @@ const BAD_DAY_MODE_BUTTON = {
 
 function doOneTimeSetup() {
   // These are not "else if" statements on purpose
-  api_createNewTaskForUser([BAD_DAY_MODE_BUTTON]);
+  api_createNewTaskForUser([BAD_DAY_MODE_BUTTON])
   
   // Next, create the webhook
   const options = {
@@ -58,17 +58,17 @@ function doOneTimeSetup() {
     "type" : "taskActivity",
     "options" : options,
   }
-  apiMult_createNewWebhookNoDuplicates(payload);
+  apiMult_createNewWebhookNoDuplicates(payload)
 }
 
 // do things when the webhook runs
 function doPost(e) {
-  const dataContents = JSON.parse(e.postData.contents);
-  const type = dataContents.type;
-  const task = dataContents.task;
+  const dataContents = JSON.parse(e.postData.contents)
+  const type = dataContents.type
+  const task = dataContents.task
   
   // Sanitize task alias
-  let sanitizedAlias = "sanitized"; // This will be the value if undefined, null, or blank
+  let sanitizedAlias = "sanitized" // This will be the value if undefined, null, or blank
   if ( (task.alias != undefined) && (task.alias != null) && (task.alias != "") ) {
     sanitizedAlias = task.alias;
   }
@@ -76,26 +76,26 @@ function doPost(e) {
   if (type == "scored") {
     if (sanitizedAlias == BAD_DAY_MODE_ALIAS) {
       // Get user info
-      const responseUser = api_getAuthenticatedUserProfile("stats,tasksOrder,items.gear.equipped");
-      user = JSON.parse(responseUser).data;
+      const responseUser = api_getAuthenticatedUserProfile("stats,tasksOrder,items.gear.equipped")
+      user = JSON.parse(responseUser).data
       
       // Get equipment stats info
-      const responseContent = apiFree_getAllAvailableContentObjects();
-      content = JSON.parse(responseContent).data;
+      const responseContent = apiFree_getAllAvailableContentObjects()
+      content = JSON.parse(responseContent).data
       
-      let totalDailies = user.tasksOrder.dailys.length;
-      let stealthedDailies = user.stats.buffs.stealth;
-      if (!stealthedDailies) {stealthedDailies = 0};
-      let constitutionBuffs = user.stats.buffs.con;
-      if (!user.stats.buffs.con) { constitutionBuffs = 0; }
-      let con = calculateConstitution();
-      let unbuffedConstitution = con - constitutionBuffs;
-      let hp = user.stats.hp;
+      let totalDailies = user.tasksOrder.dailys.length
+      let stealthedDailies = user.stats.buffs.stealth
+      if (!stealthedDailies) {stealthedDailies = 0}
+      let constitutionBuffs = user.stats.buffs.con
+      if (!user.stats.buffs.con) { constitutionBuffs = 0 }
+      let con = calculateConstitution()
+      let unbuffedConstitution = con - constitutionBuffs
+      let hp = user.stats.hp
       
-      doButtonBadDayMode(constitutionBuffs, stealthedDailies, totalDailies, hp, unbuffedConstitution);
+      doButtonBadDayMode(constitutionBuffs, stealthedDailies, totalDailies, hp, unbuffedConstitution)
     }
   }
-  return HtmlService.createHtmlOutput();
+  return HtmlService.createHtmlOutput()
 }      
 
 function doButtonBadDayMode(constitutionBuffs, stealthedDailies, totalDailies, hp, unbuffedConstitution){
@@ -104,14 +104,14 @@ function doButtonBadDayMode(constitutionBuffs, stealthedDailies, totalDailies, h
    api_sendPrivateMessage({"message" : "You are already in Bad Day Mode, so clicking the button additional times has no effect.", "toUserId" : USER_ID}); 
   } else {
     // Full heal
-    api_updateUser({"stats.hp" : 50});
+    api_updateUser({"stats.hp" : 50})
     
     // Set CON to 9999
-    let buffCon = 9999 - unbuffedConstitution;
-    api_updateUser({"stats.buffs.con" : buffCon});
+    let buffCon = 9999 - unbuffedConstitution
+    api_updateUser({"stats.buffs.con" : buffCon})
     
     // Stealth all Dailies
-    api_updateUser({"stats.buffs.stealth" : totalDailies});
+    api_updateUser({"stats.buffs.stealth" : totalDailies})
   }
 }
 
@@ -125,24 +125,24 @@ function api_createNewTaskForUser(payload) {
     "muteHttpExceptions" : true,
   }
 
-  var url = "https://habitica.com/api/v3/tasks/user";
-  UrlFetchApp.fetch(url, params);
+  var url = "https://habitica.com/api/v3/tasks/user"
+  UrlFetchApp.fetch(url, params)
 }
 
 // Create a webhook if no duplicate exists
 function apiMult_createNewWebhookNoDuplicates(payload) {
-  const response = api_getWebhooks();
-  const webhooks = JSON.parse(response).data;
-  var duplicateExists = 0;
+  const response = api_getWebhooks()
+  const webhooks = JSON.parse(response).data
+  var duplicateExists = 0
     
   for (var i in webhooks) {
-    if (webhooks[i].label == payload.label) {
+    if (webhooks[i].label == paload.label) {
       duplicateExists = 1;
     }
   }
   // If webhook to be created doesn't exist yet
   if (!duplicateExists) {
-    api_createNewWebhook(payload);
+    api_createNewWebhook(payload)
   }
 }
 
@@ -154,8 +154,8 @@ function api_getWebhooks() {
     "muteHttpExceptions" : true,
   }
   
-  const url = "https://habitica.com/api/v3/user/webhook";
-  return UrlFetchApp.fetch(url, params);
+  const url = "https://habitica.com/api/v3/user/webhook"
+  return UrlFetchApp.fetch(url, params)
 }
 
 // Creates a webhook (as part of the "don't make it if there's a duplicate" function)
@@ -168,8 +168,8 @@ function api_createNewWebhook(payload) {
     "muteHttpExceptions" : true,
   }
    
-  const url = "https://habitica.com/api/v3/user/webhook";
-  return UrlFetchApp.fetch(url, params);
+  const url = "https://habitica.com/api/v3/user/webhook"
+  return UrlFetchApp.fetch(url, params)
 }
 
 // Gets user info so I can use it, especially stats like mana, experience, and level
@@ -180,12 +180,12 @@ function api_getAuthenticatedUserProfile(userFields) {
     "muteHttpExceptions" : true,
   }
   
-  var url = "https://habitica.com/api/v3/user";
+  var url = "https://habitica.com/api/v3/user"
   if (userFields != "") {
-    url += "?userFields=" + userFields;
+    url += "?userFields=" + userFields
   }
 
-  return UrlFetchApp.fetch(url, params);
+  return UrlFetchApp.fetch(url, params)
 }
 
 function apiFree_getAllAvailableContentObjects() {
@@ -194,62 +194,62 @@ function apiFree_getAllAvailableContentObjects() {
     "muteHttpExceptions" : true,
   }
   
-  const url = "https://habitica.com/api/v3/content";
-  return UrlFetchApp.fetch(url, params);
+  const url = "https://habitica.com/api/v3/content"
+  return UrlFetchApp.fetch(url, params)
 }
 
 // Send a notification as a private message, only if they're enabled
 function api_sendPrivateMessage(payload) {
   switch (NOTIFICATIONS_ON){ // Check if notifications are on, send message if yes
-        case 0:
-          break;        
-        case 1:
-            const params = {
-              "method" : "post",
-              "headers" : HEADERS,
-              "contentType" : "application/json",
-              "payload" : JSON.stringify(payload),
-              "muteHttpExceptions" : true,
-            }
-            const url = "https://habitica.com/api/v3/members/send-private-message";
-            return UrlFetchApp.fetch(url, params);
-          break;
+    case 0:
+      break        
+    case 1:
+      const params = {
+        "method" : "post",
+        "headers" : HEADERS,
+        "contentType" : "application/json",
+        "payload" : JSON.stringify(payload),
+        "muteHttpExceptions" : true,
+      }
+      const url = "https://habitica.com/api/v3/members/send-private-message"
+      return UrlFetchApp.fetch(url, params)
+      break
   }
 }
 
 // Calculate total CON
 function calculateConstitution() {
-  const levelConRaw = Math.floor(user.stats.lvl / 2);
-  const levelCon = (levelConRaw > 50) ? 50 : levelConRaw;
+  const levelConRaw = Math.floor(user.stats.lvl / 2)
+  const levelCon = (levelConRaw > 50) ? 50 : levelConRaw
 
-  var totalEquipmentAndClassCon = 0;
-  const allocatedCon = user.stats.con;
-  const buffsCon = user.stats.buffs.con;
+  var totalEquipmentAndClassCon = 0
+  const allocatedCon = user.stats.con
+  const buffsCon = user.stats.buffs.con
 
   // Get CON from equipped gear
-  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.weapon]);
-  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.shield]);
-  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.head]);
-  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.armor]);
-  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.headAccessory]);
-  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.eyewear]);
-  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.body]);
-  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.back]);
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.weapon])
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.shield])
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.head])
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.armor])
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.headAccessory])
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.eyewear])
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.body])
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.back])
 
-  return levelCon + totalEquipmentAndClassCon + allocatedCon + buffsCon;
+  return levelCon + totalEquipmentAndClassCon + allocatedCon + buffsCon
 }
 
 function calcEquipmentAndClassCon(equipment) {
-  var equipmentAndClassCon = 0;
+  var equipmentAndClassCon = 0
 
   if (equipment != undefined) {  
-    equipmentAndClassCon += equipment.con;
+    equipmentAndClassCon += equipment.con
     if ( (equipment.klass == user.stats.class) || ( (equipment.klass == "special") && (equipment.specialClass == user.stats.class) ) ) {
-      equipmentAndClassCon += equipment.con / 2;
+      equipmentAndClassCon += equipment.con / 2
     }
   }
   
-  return equipmentAndClassCon;
+  return equipmentAndClassCon
 }
 
 // Changes stats
@@ -262,6 +262,6 @@ function api_updateUser(payload) {
     "muteHttpExceptions" : true,
   }
   
-  const url = "https://habitica.com/api/v3/user";
-  return UrlFetchApp.fetch(url, params);
+  const url = "https://habitica.com/api/v3/user"
+  return UrlFetchApp.fetch(url, params)
 }
