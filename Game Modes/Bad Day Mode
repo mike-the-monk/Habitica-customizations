@@ -31,6 +31,9 @@ const HEADERS = {
   "x-api-key" : API_TOKEN,
 }
 
+// Messages
+const MSG_ALREADY_IN_BAD_DAY_MODE = "You are already in Bad Day Mode, so clicking the button additional times has no effect."
+
 const BAD_DAY_MODE_TEXT = "**Bad Day Mode**"
 const BAD_DAY_MODE_ALIAS = "badDayMode"
 const BAD_DAY_MODE_NOTES = "Declare today a 'day of low expectations', fully healing you, buffing your CON to 9999, and Stealthing all your Dailies so you take no damage if you don't complete them. This wears off tomorrow at Cron."
@@ -101,7 +104,7 @@ function doPost(e) {
 function doButtonBadDayMode(constitutionBuffs, stealthedDailies, totalDailies, hp, unbuffedConstitution){
   // Check if they're already in Bad Day Mode by seeing if CON is really high and all Dailies are Stealthed and HP is high
   if ( ( constitutionBuffs > 8000 ) && ( stealthedDailies >= totalDailies ) && ( hp >= 45 ) ) {
-   api_sendPrivateMessage({"message" : "You are already in Bad Day Mode, so clicking the button additional times has no effect.", "toUserId" : USER_ID}); 
+   api_sendPrivateMessage({"message" : MSG_ALREADY_IN_BAD_DAY_MODE, "toUserId" : USER_ID}); 
   } else {
     // Full heal
     api_updateUser({"stats.hp" : 50})
