@@ -4,9 +4,9 @@
 /* ========================================== */
 /* [Users] Required script data to fill in    */
 /* ========================================== */
-const USER_ID = "PasteYourUserIdHere";
-const API_TOKEN = "PasteYourApiTokenHere"; // Do not share this to anyone
-const WEB_APP_URL = "PasteGeneratedWebAppUrlHere";
+const USER_ID = "PasteYourUserIdHere"
+const API_TOKEN = "PasteYourApiTokenHere" // Do not share this to anyone
+const WEB_APP_URL = "PasteGeneratedWebAppUrlHere"
 
 /* ========================================== */
 /* [Users] Required customizations to fill in */
@@ -14,17 +14,17 @@ const WEB_APP_URL = "PasteGeneratedWebAppUrlHere";
 
 // For each skill you want to add, change the 0 to a 1. If you don't want it, keep it as a 0
 
-const CREATE_PICKPOCKET = 0; // Gain GP based on Perception. 15 MP. Unlocks at level 11.
-const CREATE_BACKSTAB = 0; // Gain GP and XP based on Strength. 20 MP. Unlocks at level 12.
-const CREATE_STEALTH = 0; // Take no damage from some undone Dailies, based on Perception. 50 MP. Unlocks at level 14.
-const CREATE_HEALING_LIGHT = 0; // Gain HP based on Intelligence and Constitution. 20 MP. Unlocks at level 11.
-const CREATE_CHILLING_FROST = 0; // Freeze streaks of all Dailies so they don't reset if incomplete. 45 MP. Unlocks at level 14.
-const CREATE_BURST_OF_FLAMES_XP_ONLY = 0; // Gain XP based on Intelligence. 10 MP. Unlocks at level 11.
-const CREATE_BURST_OF_FLAMES_DAMAGE_ONLY = 0; // Deal boss damage based on Intelligence. 10 MP per use, multi-use only (to deal 90+ damage). Unlocks at level 11.
-const CREATE_BURST_OF_FLAMES_XP_PLUS_DAMAGE = 0; // Deal boss damage and gain XP based on Intelligence. 15 MP per use, multi-use only (to deal 90+ damage). Unlocks at level 11.
-const CREATE_BRUTAL_SMASH = 0; // Deal boss damage based on Strength. 10 MP per use, multi-use only (to deal 90+ damage). Unlocks at level 11. 
-const CREATE_RADIANT_SHIELD = 0; // Deal boss damage based on Constitution. 7.5 MP per use, multi-use only (to deal 90+ damage). Unlocks at level 11.
-const CREATE_SNEAK_ATTACK = 0; // Deal boss damage based on Perception. 10 MP per use, multi-use only (to deal 90+ damage). Unlocks at level 11.
+const CREATE_PICKPOCKET = 0 // Gain GP based on Perception. 15 MP. Unlocks at level 11.
+const CREATE_BACKSTAB = 0 // Gain GP and XP based on Strength. 20 MP. Unlocks at level 12.
+const CREATE_STEALTH = 0 // Take no damage from some undone Dailies, based on Perception. 50 MP. Unlocks at level 14.
+const CREATE_HEALING_LIGHT = 0 // Gain HP based on Intelligence and Constitution. 20 MP. Unlocks at level 11.
+const CREATE_CHILLING_FROST = 0 // Freeze streaks of all Dailies so they don't reset if incomplete. 45 MP. Unlocks at level 14.
+const CREATE_BURST_OF_FLAMES_XP_ONLY = 0 // Gain XP based on Intelligence. 10 MP. Unlocks at level 11.
+const CREATE_BURST_OF_FLAMES_DAMAGE_ONLY = 0 // Deal boss damage based on Intelligence. 10 MP per use, multi-use only (to deal 90+ damage). Unlocks at level 11.
+const CREATE_BURST_OF_FLAMES_XP_PLUS_DAMAGE = 0 // Deal boss damage and gain XP based on Intelligence. 15 MP per use, multi-use only (to deal 90+ damage). Unlocks at level 11.
+const CREATE_BRUTAL_SMASH = 0 // Deal boss damage based on Strength. 10 MP per use, multi-use only (to deal 90+ damage). Unlocks at level 11. 
+const CREATE_RADIANT_SHIELD = 0 // Deal boss damage based on Constitution. 7.5 MP per use, multi-use only (to deal 90+ damage). Unlocks at level 11.
+const CREATE_SNEAK_ATTACK = 0 // Deal boss damage based on Perception. 10 MP per use, multi-use only (to deal 90+ damage). Unlocks at level 11.
 
 
 // Which version of the skill do you want to use? (you can do the same or different for each skill)
@@ -32,9 +32,9 @@ const CREATE_SNEAK_ATTACK = 0; // Deal boss damage based on Perception. 10 MP pe
 // Choose 3 if you want to average the task values of all your Dailies and use that.
 // Choose 4 if you want to select one task and always use that task with this skill.
 
-const PICKPOCKET_VERSION = 2;
-const BACKSTAB_VERSION = 2;
-const BURST_OF_FLAMES_VERSION = 2;
+const PICKPOCKET_VERSION = 2
+const BACKSTAB_VERSION = 2
+const BURST_OF_FLAMES_VERSION = 2
 
 
 // Based on the version you picked, scroll to the relevant section below
@@ -47,9 +47,9 @@ const BURST_OF_FLAMES_VERSION = 2;
 // A bright blue task has a value above 12
 // The maximum task value is 21.27
 
-const PICKPOCKET_TASK_VALUE = 10;
-const BACKSTAB_TASK_VALUE = 10;
-const BURST_OF_FLAMES_TASK_VALUE = 10;
+const PICKPOCKET_TASK_VALUE = 10
+const BACKSTAB_TASK_VALUE = 10
+const BURST_OF_FLAMES_TASK_VALUE = 10
 
 
 // If you picked version 3 for any of them, you don't have to do anything else in this section.
@@ -58,9 +58,9 @@ const BURST_OF_FLAMES_TASK_VALUE = 10;
 // If you picked version 4 for any of them, find the task ID of the task you want to use and paste below
 // Instructions for this are found in the wiki page
 
-const PICKPOCKET_TASK_ID = "620dc42a-b258-47a9-84fa-a5c437345a9";
-const BACKSTAB_TASK_ID = "620dc42a-b258-47a9-84fa-a5c437345a9";
-const BURST_OF_FLAMES_TASK_ID = "620dc42a-b258-47a9-84fa-a5c437345a9";
+const PICKPOCKET_TASK_ID = "620dc42a-b258-47a9-84fa-a5c437345a9"
+const BACKSTAB_TASK_ID = "620dc42a-b258-47a9-84fa-a5c437345a9"
+const BURST_OF_FLAMES_TASK_ID = "620dc42a-b258-47a9-84fa-a5c437345a9"
 
 
 
@@ -71,13 +71,13 @@ const BURST_OF_FLAMES_TASK_ID = "620dc42a-b258-47a9-84fa-a5c437345a9";
 
 // Do you want to get private message notifications for having insufficient mana or being too low of a level to use the skill?
 // If you don't want them, change the 1 to a 0 in the line below
-const NOTIFICATIONS_ON = 1; 
+const NOTIFICATIONS_ON = 1
 
 /* ========================================== */
 /* [Users] Do not edit code below this line   */
 /* ========================================== */
-const AUTHOR_ID = "0034eb14-b4d8-494e-8386-d3f33cff7922";
-const SCRIPT_NAME = "Cross-Class Skills";
+const AUTHOR_ID = "0034eb14-b4d8-494e-8386-d3f33cff7922"
+const SCRIPT_NAME = "Cross-Class Skills"
 const HEADERS = {
   "x-client" : AUTHOR_ID + " - " + SCRIPT_NAME,
   "x-api-user" : USER_ID,
@@ -86,44 +86,44 @@ const HEADERS = {
 
 const scriptProperties = PropertiesService.getScriptProperties(); // Constants can have properties changed
 
-const LEVEL_LOCK_PICKPOCKET = 11;
-const LEVEL_LOCK_BACKSTAB = 12;
-const LEVEL_LOCK_STEALTH = 14;
-const LEVEL_LOCK_HEALING_LIGHT = 11;
-const LEVEL_LOCK_CHILLING_FROST = 14;
-const LEVEL_LOCK_BURST_OF_FLAMES = 11;
-const LEVEL_LOCK_BRUTAL_SMASH = 11;
-const LEVEL_LOCK_RADIANT_SHIELD = 11;
-const LEVEL_LOCK_SNEAK_ATTACK = 11;
+const LEVEL_LOCK_PICKPOCKET = 11
+const LEVEL_LOCK_BACKSTAB = 12
+const LEVEL_LOCK_STEALTH = 14
+const LEVEL_LOCK_HEALING_LIGHT = 11
+const LEVEL_LOCK_CHILLING_FROST = 14
+const LEVEL_LOCK_BURST_OF_FLAMES = 11
+const LEVEL_LOCK_BRUTAL_SMASH = 11
+const LEVEL_LOCK_RADIANT_SHIELD = 11
+const LEVEL_LOCK_SNEAK_ATTACK = 11
 
-const MSG_LEVEL_LOCK_FAIL_START = "Insufficient level: you must be at least level ";
-const MSG_LEVEL_LOCK_FAIL_END = " to use this skill.";
-const MSG_LEVEL_LOCK_FAIL_PICKPOCKET = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LOCK_PICKPOCKET + MSG_LEVEL_LOCK_FAIL_END;
-const MSG_LEVEL_LOCK_FAIL_BACKSTAB = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LOCK_BACKSTAB + MSG_LEVEL_LOCK_FAIL_END;
-const MSG_LEVEL_LOCK_FAIL_STEALTH = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LOCK_STEALTH + MSG_LEVEL_LOCK_FAIL_END;
-const MSG_LEVEL_LOCK_FAIL_HEALING_LIGHT = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LOCK_HEALING_LIGHT + MSG_LEVEL_LOCK_FAIL_END;
-const MSG_LEVEL_LOCK_FAIL_CHILLING_FROST = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LOCK_CHILLING_FROST + MSG_LEVEL_LOCK_FAIL_END;
-const MSG_LEVEL_LOCK_FAIL_BURST_OF_FLAMES = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LOCK_BURST_OF_FLAMES + MSG_LEVEL_LOCK_FAIL_END;
-const MSG_LEVEL_LOCK_FAIL_BRUTAL_SMASH = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LOCK_BRUTAL_SMASH + MSG_LEVEL_LOCK_FAIL_END;
-const MSG_LEVEL_LOCK_FAIL_RADIANT_SHIELD = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LOCK_RADIANT_SHIELD + MSG_LEVEL_LOCK_FAIL_END;
-const MSG_LEVEL_LOCK_FAIL_SNEAK_ATTACK = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LOCK_SNEAK_ATTACK + MSG_LEVEL_LOCK_FAIL_END;
+const MSG_LEVEL_LOCK_FAIL_START = "Insufficient level: you must be at least level "
+const MSG_LEVEL_LOCK_FAIL_END = " to use this skill."
+const MSG_LEVEL_LOCK_FAIL_PICKPOCKET = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LOCK_PICKPOCKET + MSG_LEVEL_LOCK_FAIL_END
+const MSG_LEVEL_LOCK_FAIL_BACKSTAB = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LOCK_BACKSTAB + MSG_LEVEL_LOCK_FAIL_END
+const MSG_LEVEL_LOCK_FAIL_STEALTH = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LOCK_STEALTH + MSG_LEVEL_LOCK_FAIL_END
+const MSG_LEVEL_LOCK_FAIL_HEALING_LIGHT = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LOCK_HEALING_LIGHT + MSG_LEVEL_LOCK_FAIL_END
+const MSG_LEVEL_LOCK_FAIL_CHILLING_FROST = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LOCK_CHILLING_FROST + MSG_LEVEL_LOCK_FAIL_END
+const MSG_LEVEL_LOCK_FAIL_BURST_OF_FLAMES = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LOCK_BURST_OF_FLAMES + MSG_LEVEL_LOCK_FAIL_END
+const MSG_LEVEL_LOCK_FAIL_BRUTAL_SMASH = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LOCK_BRUTAL_SMASH + MSG_LEVEL_LOCK_FAIL_END
+const MSG_LEVEL_LOCK_FAIL_RADIANT_SHIELD = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LOCK_RADIANT_SHIELD + MSG_LEVEL_LOCK_FAIL_END
+const MSG_LEVEL_LOCK_FAIL_SNEAK_ATTACK = MSG_LEVEL_LOCK_FAIL_START + LEVEL_LOCK_SNEAK_ATTACK + MSG_LEVEL_LOCK_FAIL_END
 
-const MP_COST_PICKPOCKET = 15;
-const MP_COST_BACKSTAB = 20;
-const MP_COST_STEALTH = 50;
-const MP_COST_HEALING_LIGHT = 20;
-const MP_COST_CHILLING_FROST = 45;
-const MP_COST_BURST_OF_FLAMES_XP_ONLY = 10;
-const MP_COST_BURST_OF_FLAMES_DAMAGE_ONLY = 10;
-const MP_COST_BURST_OF_FLAMES_XP_PLUS_DAMAGE = 15;
-const MP_COST_BRUTAL_SMASH = 10;
-const MP_COST_RADIANT_SHIELD = 7.5;
-const MP_COST_SNEAK_ATTACK = 10;
+const MP_COST_PICKPOCKET = 15
+const MP_COST_BACKSTAB = 20
+const MP_COST_STEALTH = 50
+const MP_COST_HEALING_LIGHT = 20
+const MP_COST_CHILLING_FROST = 45
+const MP_COST_BURST_OF_FLAMES_XP_ONLY = 10
+const MP_COST_BURST_OF_FLAMES_DAMAGE_ONLY = 10
+const MP_COST_BURST_OF_FLAMES_XP_PLUS_DAMAGE = 15
+const MP_COST_BRUTAL_SMASH = 10
+const MP_COST_RADIANT_SHIELD = 7.5
+const MP_COST_SNEAK_ATTACK = 10 
 
-const PICKPOCKET_TEXT = "**Cross-Class Pickpocket**";
-const PICKPOCKET_ALIAS = "ccPickpocket";
-const PICKPOCKET_NOTES = "You rob a nearby task and gain gold! (Based on: PER). 15 MP.";
-const PICKPOCKET_VALUE = "0";
+const PICKPOCKET_TEXT = "**Cross-Class Pickpocket**"
+const PICKPOCKET_ALIAS = "ccPickpocket"
+const PICKPOCKET_NOTES = "You rob a nearby task and gain gold! (Based on: PER). " + MP_COST_PICKPOCKET + " MP."
+const PICKPOCKET_VALUE = "0"
 
 const PICKPOCKET_BUTTON = {
     "text": PICKPOCKET_TEXT,
@@ -133,10 +133,10 @@ const PICKPOCKET_BUTTON = {
     "value": PICKPOCKET_VALUE,
 }
 
-const BACKSTAB_TEXT = "**Cross-Class Backstab**";
-const BACKSTAB_ALIAS = "ccBackstab";
-const BACKSTAB_NOTES = "You betray a foolish task and gain gold and XP! (Based on: STR). 20 MP.";
-const BACKSTAB_VALUE = "0";
+const BACKSTAB_TEXT = "**Cross-Class Backstab**"
+const BACKSTAB_ALIAS = "ccBackstab"
+const BACKSTAB_NOTES = "You betray a foolish task and gain gold and XP! (Based on: STR). " + MP_COST_BACKSTAB + " MP."
+const BACKSTAB_VALUE = "0"
 
 const BACKSTAB_BUTTON = {
     "text": BACKSTAB_TEXT,
@@ -146,10 +146,10 @@ const BACKSTAB_BUTTON = {
     "value": BACKSTAB_VALUE,
 }
 
-const STEALTH_TEXT = "**Cross-Class Stealth**";
-const STEALTH_ALIAS = "ccStealth";
-const STEALTH_NOTES = "With each cast, a few of your undone Dailies won't cause damage tonight. Their streaks and colors won't change. (Based on: PER) (Cast multiple times to affect more Dailies.). 50 MP.";
-const STEALTH_VALUE = "0";
+const STEALTH_TEXT = "**Cross-Class Stealth**"
+const STEALTH_ALIAS = "ccStealth"
+const STEALTH_NOTES = "With each cast, a few of your undone Dailies won't cause damage tonight. Their streaks and colors won't change. (Based on: PER) (Cast multiple times to affect more Dailies.). " + MP_COST_STEALTH + " MP."
+const STEALTH_VALUE = "0"
 
 const STEALTH_BUTTON = {
     "text": STEALTH_TEXT,
@@ -159,10 +159,10 @@ const STEALTH_BUTTON = {
     "value": STEALTH_VALUE,
 }
 
-const HEALING_LIGHT_TEXT = "**Cross-Class Healing Light**";
-const HEALING_LIGHT_ALIAS = "ccHealingLight";
-const HEALING_LIGHT_NOTES = "Shining light restores your health! (Based on: CON and INT). 20 MP.";
-const HEALING_LIGHT_VALUE = "0";
+const HEALING_LIGHT_TEXT = "**Cross-Class Healing Light**"
+const HEALING_LIGHT_ALIAS = "ccHealingLight"
+const HEALING_LIGHT_NOTES = "Shining light restores your health! (Based on: CON and INT). " + MP_COST_HEALING_LIGHT + " MP."
+const HEALING_LIGHT_VALUE = "0"
 
 const HEALING_LIGHT_BUTTON = {
     "text": HEALING_LIGHT_TEXT,
@@ -172,10 +172,10 @@ const HEALING_LIGHT_BUTTON = {
     "value": HEALING_LIGHT_VALUE,
 }
 
-const CHILLING_FROST_TEXT = "**Cross-Class Chilling Frost**";
-const CHILLING_FROST_ALIAS = "ccChillingFrost";
-const CHILLING_FROST_NOTES = "With one cast, ice freezes all your streaks so they won't reset to zero tomorrow! 45 MP.";
-const CHILLING_FROST_VALUE = "0";
+const CHILLING_FROST_TEXT = "**Cross-Class Chilling Frost**"
+const CHILLING_FROST_ALIAS = "ccChillingFrost"
+const CHILLING_FROST_NOTES = "With one cast, ice freezes all your streaks so they won't reset to zero tomorrow! " + MP_COST_CHILLING_FROST + " MP."
+const CHILLING_FROST_VALUE = "0"
 
 const CHILLING_FROST_BUTTON = {
     "text": CHILLING_FROST_TEXT,
@@ -185,10 +185,10 @@ const CHILLING_FROST_BUTTON = {
     "value": CHILLING_FROST_VALUE,
 }
 
-const BURST_OF_FLAMES_XP_ONLY_TEXT = "**Cross-Class Burst of Flames (XP only, single use)**";
-const BURST_OF_FLAMES_XP_ONLY_ALIAS = "ccBurstOfFlamesXp";
-const BURST_OF_FLAMES_XP_ONLY_NOTES = "You summon fiery XP! (Based on: INT). 10 MP.";
-const BURST_OF_FLAMES_XP_ONLY_VALUE = "0";
+const BURST_OF_FLAMES_XP_ONLY_TEXT = "**Cross-Class Burst of Flames (XP only, single use)**"
+const BURST_OF_FLAMES_XP_ONLY_ALIAS = "ccBurstOfFlamesXp"
+const BURST_OF_FLAMES_XP_ONLY_NOTES = "You summon fiery XP! (Based on: INT). " + MP_COST_BURST_OF_FLAMES_XP_ONLY + " MP."
+const BURST_OF_FLAMES_XP_ONLY_VALUE = "0"
 
 const BURST_OF_FLAMES_XP_ONLY_BUTTON = {
     "text": BURST_OF_FLAMES_XP_ONLY_TEXT,
@@ -198,10 +198,10 @@ const BURST_OF_FLAMES_XP_ONLY_BUTTON = {
     "value": BURST_OF_FLAMES_XP_ONLY_VALUE,
 }
 
-const BURST_OF_FLAMES_DAMAGE_ONLY_TEXT = "**Cross-Class Burst of Flames (Damage only, multi-use)**";
-const BURST_OF_FLAMES_DAMAGE_ONLY_ALIAS = "ccBurstOfFlamesDamage";
-const BURST_OF_FLAMES_DAMAGE_ONLY_NOTES = "You summon a burst of fiery damage to Bosses! (Based on: INT). 10 MP per use.";
-const BURST_OF_FLAMES_DAMAGE_ONLY_VALUE = "0";
+const BURST_OF_FLAMES_DAMAGE_ONLY_TEXT = "**Cross-Class Burst of Flames (Damage only, multi-use)**"
+const BURST_OF_FLAMES_DAMAGE_ONLY_ALIAS = "ccBurstOfFlamesDamage"
+const BURST_OF_FLAMES_DAMAGE_ONLY_NOTES = "You summon a burst of fiery damage to Bosses! (Based on: INT). " + MP_COST_BURST_OF_FLAMES_DAMAGE_ONLY + " MP per use."
+const BURST_OF_FLAMES_DAMAGE_ONLY_VALUE = "0"
 
 const BURST_OF_FLAMES_DAMAGE_ONLY_BUTTON = {
     "text": BURST_OF_FLAMES_DAMAGE_ONLY_TEXT,
@@ -211,10 +211,10 @@ const BURST_OF_FLAMES_DAMAGE_ONLY_BUTTON = {
     "value": BURST_OF_FLAMES_DAMAGE_ONLY_VALUE,
 }
 
-const BURST_OF_FLAMES_XP_PLUS_DAMAGE_TEXT = "**Cross-Class Burst of Flames (XP and damage, multi-use)**";
-const BURST_OF_FLAMES_XP_PLUS_DAMAGE_ALIAS = "ccBurstOfFlamesBoth";
-const BURST_OF_FLAMES_XP_PLUS_DAMAGE_NOTES = "You summon a burst of flames and deal fiery damage to Bosses! (Based on: INT). 15 MP per use.";
-const BURST_OF_FLAMES_XP_PLUS_DAMAGE_VALUE = "0";
+const BURST_OF_FLAMES_XP_PLUS_DAMAGE_TEXT = "**Cross-Class Burst of Flames (XP and damage, multi-use)**"
+const BURST_OF_FLAMES_XP_PLUS_DAMAGE_ALIAS = "ccBurstOfFlamesBoth"
+const BURST_OF_FLAMES_XP_PLUS_DAMAGE_NOTES = "You summon a burst of flames and deal fiery damage to Bosses! (Based on: INT). " + MP_COST_BURST_OF_FLAMES_XP_PLUS_DAMAGE + " MP per use."
+const BURST_OF_FLAMES_XP_PLUS_DAMAGE_VALUE = "0"
 
 const BURST_OF_FLAMES_XP_PLUS_DAMAGE_BUTTON = {
     "text": BURST_OF_FLAMES_XP_PLUS_DAMAGE_TEXT,
@@ -224,10 +224,10 @@ const BURST_OF_FLAMES_XP_PLUS_DAMAGE_BUTTON = {
     "value": BURST_OF_FLAMES_XP_PLUS_DAMAGE_VALUE,
 }
 
-const BRUTAL_SMASH_TEXT = "**Cross-Class Brutal Smash (damage only, multi-use)**";
-const BRUTAL_SMASH_ALIAS = "ccBrutalSmash";
-const BRUTAL_SMASH_NOTES = "You deal extra damage to Bosses! (Based on: STR). 10 MP per use.";
-const BRUTAL_SMASH_VALUE = "0";
+const BRUTAL_SMASH_TEXT = "**Cross-Class Brutal Smash (damage only, multi-use)**"
+const BRUTAL_SMASH_ALIAS = "ccBrutalSmash"
+const BRUTAL_SMASH_NOTES = "You deal extra damage to Bosses! (Based on: STR). " + MP_COST_BRUTAL_SMASH + " MP per use."
+const BRUTAL_SMASH_VALUE = "0"
 
 const BRUTAL_SMASH_BUTTON = {
     "text": BRUTAL_SMASH_TEXT,
@@ -236,11 +236,11 @@ const BRUTAL_SMASH_BUTTON = {
     "notes": BRUTAL_SMASH_NOTES,
     "value": BRUTAL_SMASH_VALUE,
 }
-
-const RADIANT_SHIELD_TEXT = "**Radiant Shield (multi-use)**";
-const RADIANT_SHIELD_ALIAS = "ccRadiantShield";
-const RADIANT_SHIELD_NOTES = "A burst of light redirects some of your foes' attack back on them! Deals boss damage (Based on: CON). 7.5 MP per use.";
-const RADIANT_SHIELD_VALUE = "0";
+ 
+const RADIANT_SHIELD_TEXT = "**Radiant Shield (multi-use)**"
+const RADIANT_SHIELD_ALIAS = "ccRadiantShield"
+const RADIANT_SHIELD_NOTES = "A burst of light redirects some of your foes' attack back on them! Deals boss damage (Based on: CON). " + MP_COST_RADIANT_SHIELD + " MP per use."
+const RADIANT_SHIELD_VALUE = "0"
 
 const RADIANT_SHIELD_BUTTON = {
     "text": RADIANT_SHIELD_TEXT,
@@ -250,10 +250,10 @@ const RADIANT_SHIELD_BUTTON = {
     "value": RADIANT_SHIELD_VALUE,
 }
 
-const SNEAK_ATTACK_TEXT = "**Sneak Attack (multi-use)**";
-const SNEAK_ATTACK_ALIAS = "ccSneakAttack";
-const SNEAK_ATTACK_NOTES = "Your keen eyes notice a weak spot and deal damage to Bosses! (Based on: PER). 10 MP per use. ";
-const SNEAK_ATTACK_VALUE = "0";
+const SNEAK_ATTACK_TEXT = "**Sneak Attack (multi-use)**"
+const SNEAK_ATTACK_ALIAS = "ccSneakAttack"
+const SNEAK_ATTACK_NOTES = "Your keen eyes notice a weak spot and deal damage to Bosses! (Based on: PER). " + MP_COST_SNEAK_ATTACK + " MP per use."
+const SNEAK_ATTACK_VALUE = "0"
 
 const SNEAK_ATTACK_BUTTON = {
     "text": SNEAK_ATTACK_TEXT,
@@ -263,8 +263,8 @@ const SNEAK_ATTACK_BUTTON = {
     "value": SNEAK_ATTACK_VALUE,
 }
 
-const DAMAGE_TEXT = "Boss damage";
-const DAMAGE_NOTES = "used to create boss damage as part of a custom script";
+const DAMAGE_TEXT = "Boss damage"
+const DAMAGE_NOTES = "used to create boss damage as part of a custom script"
 
 const DAMAGE_BUTTON = {
     "text": DAMAGE_TEXT,
@@ -273,43 +273,43 @@ const DAMAGE_BUTTON = {
     "priority": 0.1,
 }
 
-const TIMESTAMP_KEY = "TIMESTAMP_KEY";
-var timestampKey = "";
+const TIMESTAMP_KEY = "TIMESTAMP_KEY"
+var timestampKey = ""
 
 function doOneTimeSetup() {
   // These are not "else if" statements on purpose
   if (CREATE_SNEAK_ATTACK == 1) {
-    api_createNewTaskForUser([SNEAK_ATTACK_BUTTON]);
+    api_createNewTaskForUser([SNEAK_ATTACK_BUTTON])
   }
   if (CREATE_RADIANT_SHIELD == 1) {
-    api_createNewTaskForUser([RADIANT_SHIELD_BUTTON]);
+    api_createNewTaskForUser([RADIANT_SHIELD_BUTTON])
   }
   if (CREATE_BRUTAL_SMASH == 1) {
-    api_createNewTaskForUser([BRUTAL_SMASH_BUTTON]);
+    api_createNewTaskForUser([BRUTAL_SMASH_BUTTON])
   }
   if (CREATE_BURST_OF_FLAMES_XP_PLUS_DAMAGE == 1) {
-    api_createNewTaskForUser([BURST_OF_FLAMES_XP_PLUS_DAMAGE_BUTTON]);
+    api_createNewTaskForUser([BURST_OF_FLAMES_XP_PLUS_DAMAGE_BUTTON])
   }
   if (CREATE_BURST_OF_FLAMES_DAMAGE_ONLY == 1) {
-    api_createNewTaskForUser([BURST_OF_FLAMES_DAMAGE_ONLY_BUTTON]);
+    api_createNewTaskForUser([BURST_OF_FLAMES_DAMAGE_ONLY_BUTTON])
   }
   if (CREATE_BURST_OF_FLAMES_XP_ONLY == 1) {
-    api_createNewTaskForUser([BURST_OF_FLAMES_XP_ONLY_BUTTON]);
+    api_createNewTaskForUser([BURST_OF_FLAMES_XP_ONLY_BUTTON])
   }
   if (CREATE_CHILLING_FROST == 1) {
-    api_createNewTaskForUser([CHILLING_FROST_BUTTON]);
+    api_createNewTaskForUser([CHILLING_FROST_BUTTON])
   }
   if (CREATE_HEALING_LIGHT == 1) {
-    api_createNewTaskForUser([HEALING_LIGHT_BUTTON]);
+    api_createNewTaskForUser([HEALING_LIGHT_BUTTON])
   }
   if (CREATE_STEALTH == 1) {
-    api_createNewTaskForUser([STEALTH_BUTTON]);
+    api_createNewTaskForUser([STEALTH_BUTTON])
   }
   if (CREATE_BACKSTAB == 1) {
-    api_createNewTaskForUser([BACKSTAB_BUTTON]);
+    api_createNewTaskForUser([BACKSTAB_BUTTON])
   }
   if (CREATE_PICKPOCKET == 1) {
-    api_createNewTaskForUser([PICKPOCKET_BUTTON]);
+    api_createNewTaskForUser([PICKPOCKET_BUTTON])
   }
   
   // Next, create the webhook
@@ -322,22 +322,22 @@ function doOneTimeSetup() {
     "type" : "taskActivity",
     "options" : options,
   }
-  apiMult_createNewWebhookNoDuplicates(payload);
+  apiMult_createNewWebhookNoDuplicates(payload)
   
   // set script properties so they carry over to next session
-  initScriptProperties();
+  initScriptProperties()
 }
 
 // do things when the webhook runs
 function doPost(e) {
-  const dataContents = JSON.parse(e.postData.contents);
-  const type = dataContents.type;
-  const task = dataContents.task;
+  const dataContents = JSON.parse(e.postData.contents)
+  const type = dataContents.type
+  const task = dataContents.task
   
   // Sanitize task alias
-  let sanitizedAlias = "sanitized"; // This will be the value if undefined, null, or blank
+  let sanitizedAlias = "sanitized" // This will be the value if undefined, null, or blank
   if ( (task.alias != undefined) && (task.alias != null) && (task.alias != "") ) {
-    sanitizedAlias = task.alias;
+    sanitizedAlias = task.alias
   }
   
   if (type == "scored") {
@@ -348,147 +348,147 @@ function doPost(e) {
       || (sanitizedAlias == BURST_OF_FLAMES_XP_PLUS_DAMAGE_ALIAS) || (sanitizedAlias == BRUTAL_SMASH_ALIAS) 
       || (sanitizedAlias == RADIANT_SHIELD_ALIAS) || (sanitizedAlias == SNEAK_ATTACK_ALIAS) ) {
       
-      var timestampKey = TIMESTAMP_KEY;
-      var timeStart = Number(scriptProperties.getProperty(timestampKey));
+      var timestampKey = TIMESTAMP_KEY
+      var timeStart = Number(scriptProperties.getProperty(timestampKey))
       if ( (timeStart == 0) || (timeStart == "") || (timeStart == undefined) || (timeStart == null) ) {
-        timeStart = Date.now();
+        timeStart = Date.now()
       }
-      var timeEnd = Date.now();
+      var timeEnd = Date.now()
       
       // Rate limiting: If it's been less than 30 seconds since they last clicked one of these buttons, do nothing
       if ( (timeEnd - timeStart) >= 30000 ) {
       
         // Get user info
-        const responseUser = api_getAuthenticatedUserProfile("stats,tasksOrder,items.gear.equipped");
-        user = JSON.parse(responseUser).data;
+        const responseUser = api_getAuthenticatedUserProfile("stats,tasksOrder,items.gear.equipped")
+        user = JSON.parse(responseUser).data
 
         // Get equipment stats info
-        const responseContent = apiFree_getAllAvailableContentObjects();
-        content = JSON.parse(responseContent).data;
+        const responseContent = apiFree_getAllAvailableContentObjects()
+        content = JSON.parse(responseContent).data
         
-        let lvl = user.stats.lvl;
-        let mp = user.stats.mp;
-        let hp = user.stats.hp;
-        let xp = user.stats.exp;
-        let gp = user.stats.gp;
+        let lvl = user.stats.lvl
+        let mp = user.stats.mp
+        let hp = user.stats.hp
+        let xp = user.stats.exp
+        let gp = user.stats.gp
         
-        let totalDailies = user.tasksOrder.dailys.length;
-        let stealthedDailies = user.stats.buffs.stealth;
-        if (!user.stats.buffs.stealth) {stealthedDailies = 0;}
-        let frostCast = user.stats.buffs.streaks;
+        let totalDailies = user.tasksOrder.dailys.length
+        let stealthedDailies = user.stats.buffs.stealth
+        if (!user.stats.buffs.stealth) {stealthedDailies = 0}
+        let frostCast = user.stats.buffs.streaks
         
-        let strength = calculateStrength();      
-        let intelligence = calculateIntelligence();
-        let constitution = calculateConstitution();     
-        let perception = calculatePerception();
+        let strength = calculateStrength() 
+        let intelligence = calculateIntelligence()
+        let constitution = calculateConstitution()     
+        let perception = calculatePerception()
         
-        let buffsStr = user.stats.buffs.str;
-        if (!user.stats.buffs.str) {buffsStr = 0;}
-        let buffsInt = user.stats.buffs.int;
-        if (!user.stats.buffs.int) {buffsInt = 0;}
-        let buffsCon = user.stats.buffs.con;
-        if (!user.stats.buffs.con) {buffsCon = 0;}
-        let buffsPer = user.stats.buffs.per;
-        if (!user.stats.buffs.per) {buffsPer = 0;}
+        let buffsStr = user.stats.buffs.str
+        if (!user.stats.buffs.str) {buffsStr = 0}
+        let buffsInt = user.stats.buffs.int
+        if (!user.stats.buffs.int) {buffsInt = 0}
+        let buffsCon = user.stats.buffs.con
+        if (!user.stats.buffs.con) {buffsCon = 0}
+        let buffsPer = user.stats.buffs.per
+        if (!user.stats.buffs.per) {buffsPer = 0}
         
-        let unbuffedStr = strength - buffsStr;
-        let unbuffedInt = intelligence - buffsInt;
-        let unbuffedCon = constitution - buffsCon;
-        let unbuffedPer = perception - buffsPer;
+        let unbuffedStr = strength - buffsStr
+        let unbuffedInt = intelligence - buffsInt
+        let unbuffedCon = constitution - buffsCon
+        let unbuffedPer = perception - buffsPer
         
         // Switch-case based on which button was pressed. All button-click actions are in a separate function.
         switch (sanitizedAlias){
           case PICKPOCKET_ALIAS:
-            doButtonPickpocket(lvl, mp, gp, perception);
-            break;
+            doButtonPickpocket(lvl, mp, gp, perception)
+            break
           case BACKSTAB_ALIAS:
-            doButtonBackstab(lvl, mp, gp, xp, strength);
-            break;
+            doButtonBackstab(lvl, mp, gp, xp, strength)
+            break
           case STEALTH_ALIAS:
-            doButtonStealth(lvl, stealthedDailies, mp, totalDailies, perception);
-            break;
+            doButtonStealth(lvl, stealthedDailies, mp, totalDailies, perception)
+            break
           case HEALING_LIGHT_ALIAS:
-            doButtonHealingLight(lvl, mp, hp, constitution, intelligence);
-            break;
+            doButtonHealingLight(lvl, mp, hp, constitution, intelligence)
+            break
           case CHILLING_FROST_ALIAS:
-            doButtonChillingFrost(lvl, mp, frostCast);
-            break;
+            doButtonChillingFrost(lvl, mp, frostCast)
+            break
           case BURST_OF_FLAMES_XP_ONLY_ALIAS:
-            doButtonBurstOfFlamesXpOnly(lvl, mp, xp, intelligence, perception);
-            break;
+            doButtonBurstOfFlamesXpOnly(lvl, mp, xp, intelligence, perception)
+            break
           case BURST_OF_FLAMES_DAMAGE_ONLY_ALIAS:
-            doButtonBurstOfFlamesDamageOnly(lvl, hp, xp, mp, gp, intelligence, perception, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer);
-            break;
+            doButtonBurstOfFlamesDamageOnly(lvl, hp, xp, mp, gp, intelligence, perception, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer)
+            break
           case BURST_OF_FLAMES_XP_PLUS_DAMAGE_ALIAS:
-            doButtonBurstOfFlamesXpAndDamage(lvl, hp, xp, mp, gp, intelligence, perception, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer);
-            break;
+            doButtonBurstOfFlamesXpAndDamage(lvl, hp, xp, mp, gp, intelligence, perception, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer)
+            break
           case BRUTAL_SMASH_ALIAS:
-            doButtonBrutalSmash(lvl, hp, xp, mp, gp, strength, intelligence, perception, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer);
-            break;
+            doButtonBrutalSmash(lvl, hp, xp, mp, gp, strength, intelligence, perception, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer)
+            break
           case RADIANT_SHIELD_ALIAS:
-            doButtonRadiantShield(lvl, hp, xp, mp, gp, constitution, intelligence, perception, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer);
-            break;
+            doButtonRadiantShield(lvl, hp, xp, mp, gp, constitution, intelligence, perception, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer)
+            break
           case SNEAK_ATTACK_ALIAS:
-            doButtonSneakAttack(lvl, hp, xp, mp, gp, perception, intelligence, strength, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer);
-            break;
+            doButtonSneakAttack(lvl, hp, xp, mp, gp, perception, intelligence, strength, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer)
+            break
         }
 
         // Save values to non-volatile memory, but only from within the rate-limited if-block (we don't want to save the timestamp unless the script ran)
-        timeStart = timeEnd;
-        scriptProperties.setProperty(timestampKey, timeStart);
+        timeStart = timeEnd
+        scriptProperties.setProperty(timestampKey, timeStart)
       }
     }
   }
   
-  return HtmlService.createHtmlOutput();
+  return HtmlService.createHtmlOutput()
 }
 
 // When the Pickpocket button is clicked
 function doButtonPickpocket(lvl, mp, gp, perception){
-  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_PICKPOCKET, MSG_LEVEL_LOCK_FAIL_PICKPOCKET);
+  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_PICKPOCKET, MSG_LEVEL_LOCK_FAIL_PICKPOCKET)
   if (sufficientLevel){
-    let enoughMana = checkMana(mp, MP_COST_PICKPOCKET, false);
+    let enoughMana = checkMana(mp, MP_COST_PICKPOCKET, false)
     if (enoughMana) {
-      pickpocket(gp, perception);
+      pickpocket(gp, perception)
     }
   }
 }
 
 // When the Backstab button is clicked
 function doButtonBackstab(lvl, mp, gp, xp, strength){
-  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_BACKSTAB, MSG_LEVEL_LOCK_FAIL_BACKSTAB);
+  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_BACKSTAB, MSG_LEVEL_LOCK_FAIL_BACKSTAB)
   if (sufficientLevel){
-    let enoughMana = checkMana(mp, MP_COST_BACKSTAB, false);
+    let enoughMana = checkMana(mp, MP_COST_BACKSTAB, false)
     if (enoughMana) {
-      backstab(gp, xp, strength);
+      backstab(gp, xp, strength)
     }
   }
 }
 
 // When the Stealth button is clicked
 function doButtonStealth(lvl, stealthedDailies, mp, totalDailies, perception){
-  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_STEALTH, MSG_LEVEL_LOCK_FAIL_STEALTH);
+  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_STEALTH, MSG_LEVEL_LOCK_FAIL_STEALTH)
   if (sufficientLevel){
     // Check how many Dailies due but aren't complete
-    const responseTaskStealth = api_getUserTasks("dailys");
-    const tasksStealth = JSON.parse(responseTaskStealth).data;
-    var tasksDueAndNotComplete = 0;
+    const responseTaskStealth = api_getUserTasks("dailys")
+    const tasksStealth = JSON.parse(responseTaskStealth).data
+    var tasksDueAndNotComplete = 0
 
     for (var i in tasksStealth) {
       if ( (tasksStealth[i].isDue == true)  && (tasksStealth[i].completed == false) ) {
-        tasksDueAndNotComplete++;
+        tasksDueAndNotComplete++
       }
     }
     
     // If already avoided all dailies that are due but not complete, send message and don't subtract MP cost
     if (stealthedDailies >= tasksDueAndNotComplete){
-      api_sendPrivateMessageAlways({"message" : "You've already avoided all your Dailies, so additional uses of this skill have no effect.", "toUserId" : USER_ID});
+      api_sendPrivateMessageAlways({"message" : "You've already avoided all your Dailies, so additional uses of this skill have no effect.", "toUserId" : USER_ID})
     }
     // Do skill as normal
     else {
-      let enoughMana = checkMana(mp, MP_COST_STEALTH, false);
+      let enoughMana = checkMana(mp, MP_COST_STEALTH, false)
       if (enoughMana) {
-        stealth (totalDailies, stealthedDailies, perception);
+        stealth (totalDailies, stealthedDailies, perception)
       }
     }
   }
@@ -496,33 +496,33 @@ function doButtonStealth(lvl, stealthedDailies, mp, totalDailies, perception){
 
 // When the Healing Light button is clicked
 function doButtonHealingLight(lvl, mp, hp, constitution, intelligence){
-  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_HEALING_LIGHT, MSG_LEVEL_LOCK_FAIL_HEALING_LIGHT);
+  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_HEALING_LIGHT, MSG_LEVEL_LOCK_FAIL_HEALING_LIGHT)
   if (sufficientLevel){
     // If not at max HP, subtract mana cost and do the skill
     if (hp < 50) {
-      let enoughMana = checkMana(mp, MP_COST_HEALING_LIGHT, false);
+      let enoughMana = checkMana(mp, MP_COST_HEALING_LIGHT, false)
       if (enoughMana) {
-        healingLight(hp, constitution, intelligence);
+        healingLight(hp, constitution, intelligence)
       }
     }
     else { // if already at max HP, do nothing
-      api_sendPrivateMessage({"message" : "You are already at max HP.", "toUserId" : USER_ID});
+      api_sendPrivateMessage({"message" : "You are already at max HP.", "toUserId" : USER_ID})
     }
   }
 }
 
 // When the Chilling Frost button is clicked
 function doButtonChillingFrost(lvl, mp, frostCast){
-  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_CHILLING_FROST, MSG_LEVEL_LOCK_FAIL_CHILLING_FROST);
+  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_CHILLING_FROST, MSG_LEVEL_LOCK_FAIL_CHILLING_FROST)
   if (sufficientLevel){
-    let enoughMana = checkMana(mp, MP_COST_CHILLING_FROST, true);
+    let enoughMana = checkMana(mp, MP_COST_CHILLING_FROST, true)
     if (enoughMana) {
       // Check if already cast, send message if yes
       if (frostCast == true){
-        api_sendPrivateMessageAlways({"message" : "You've already used this skill. Additional uses have no effect.", "toUserId" : USER_ID});
+        api_sendPrivateMessageAlways({"message" : "You've already used this skill. Additional uses have no effect.", "toUserId" : USER_ID})
       }
       else {
-        chillingFrost(mp, MP_COST_CHILLING_FROST); // includes deducting MP cost
+        chillingFrost(mp, MP_COST_CHILLING_FROST) // includes deducting MP cost
       }
     }
   }
@@ -530,93 +530,93 @@ function doButtonChillingFrost(lvl, mp, frostCast){
 
 // When the Burst of Flames (XP only) button is clicked
 function doButtonBurstOfFlamesXpOnly(lvl, mp, xp, intelligence, perception){
-  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_BURST_OF_FLAMES, MSG_LEVEL_LOCK_FAIL_BURST_OF_FLAMES);
+  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_BURST_OF_FLAMES, MSG_LEVEL_LOCK_FAIL_BURST_OF_FLAMES)
   if (sufficientLevel){
-    let enoughMana = checkMana(mp, MP_COST_BURST_OF_FLAMES_XP_ONLY, false);
+    let enoughMana = checkMana(mp, MP_COST_BURST_OF_FLAMES_XP_ONLY, false)
     if (enoughMana) {
-      var xpGain = burstOfFlamesXp(intelligence, perception, 1); 
-      api_updateUser({"stats.exp" : xp + xpGain});
+      var xpGain = burstOfFlamesXp(intelligence, perception, 1)
+      api_updateUser({"stats.exp" : xp + xpGain})
     }
   }
 }
 
 // When the Burst of Flames (damage only) button is clicked
 function doButtonBurstOfFlamesDamageOnly(lvl, hp, xp, mp, gp, intelligence, perception, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer){
-  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_BURST_OF_FLAMES, MSG_LEVEL_LOCK_FAIL_BURST_OF_FLAMES);
+  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_BURST_OF_FLAMES, MSG_LEVEL_LOCK_FAIL_BURST_OF_FLAMES)
   if (sufficientLevel){
     // Check how much damage it will deal once, and then whether they have enough MP for multi-use (to exceed 90.71 damage)
-    let damageOnce = flamesDamage(intelligence);
-    let numberTimes = checkManaMultiUse(mp, MP_COST_BURST_OF_FLAMES_DAMAGE_ONLY, damageOnce, false, intelligence, perception);
+    let damageOnce = flamesDamage(intelligence)
+    let numberTimes = checkManaMultiUse(mp, MP_COST_BURST_OF_FLAMES_DAMAGE_ONLY, damageOnce, false, intelligence, perception)
 
     // If mana is sufficient
     if (numberTimes > 0) {
-      let damageDealt = damageOnce * numberTimes;
-      doDamage(damageDealt, MP_COST_BURST_OF_FLAMES_DAMAGE_ONLY, numberTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, false, 0);
+      let damageDealt = damageOnce * numberTimes
+      doDamage(damageDealt, MP_COST_BURST_OF_FLAMES_DAMAGE_ONLY, numberTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, false, 0)
     }
   }
 }
 
 // When the Burst of Flames (XP and damage) button is clicked
 function doButtonBurstOfFlamesXpAndDamage(lvl, hp, xp, mp, gp, intelligence, perception, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer){
-  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_BURST_OF_FLAMES, MSG_LEVEL_LOCK_FAIL_BURST_OF_FLAMES);
+  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_BURST_OF_FLAMES, MSG_LEVEL_LOCK_FAIL_BURST_OF_FLAMES)
   if (sufficientLevel){
     // Check how much damage it will deal once, and then whether they have enough MP for multi-use (to exceed 90.71 damage)
-    let damageOnce = flamesDamage(intelligence);
-    let numberTimes = checkManaMultiUse(mp, MP_COST_BURST_OF_FLAMES_XP_PLUS_DAMAGE, damageOnce, true, intelligence, perception);
+    let damageOnce = flamesDamage(intelligence)
+    let numberTimes = checkManaMultiUse(mp, MP_COST_BURST_OF_FLAMES_XP_PLUS_DAMAGE, damageOnce, true, intelligence, perception)
 
     // If mana is sufficient
     if (numberTimes > 0) {
       let xpGain = burstOfFlamesXp(intelligence, perception, numberTimes);
-      let damageDealt = damageOnce * numberTimes;
-      doDamage(damageDealt, MP_COST_BURST_OF_FLAMES_XP_PLUS_DAMAGE, numberTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, true, xpGain);
+      let damageDealt = damageOnce * numberTimes
+      doDamage(damageDealt, MP_COST_BURST_OF_FLAMES_XP_PLUS_DAMAGE, numberTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, true, xpGain)
     }
   }
 }
 
 // When the Brutal Smash button is clicked
 function doButtonBrutalSmash(lvl, hp, xp, mp, gp, strength, intelligence, perception, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer){
-  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_BRUTAL_SMASH, MSG_LEVEL_LOCK_FAIL_BRUTAL_SMASH);
+  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_BRUTAL_SMASH, MSG_LEVEL_LOCK_FAIL_BRUTAL_SMASH)
   if (sufficientLevel){
     // Check how much damage it will deal once, and then whether they have enough MP for multi-use (to exceed 90.71 damage)
-    let damageOnce = smashDamageNoCrit(strength);
-    let numberTimes = checkManaMultiUse(mp, MP_COST_BRUTAL_SMASH, damageOnce, false, intelligence, perception);
+    let damageOnce = smashDamageNoCrit(strength)
+    let numberTimes = checkManaMultiUse(mp, MP_COST_BRUTAL_SMASH, damageOnce, false, intelligence, perception)
 
     // If mana is sufficient
     if (numberTimes > 0) {
-      let damageDealt = smashDamageActual(strength, constitution, numberTimes);
-      doDamage(damageDealt, MP_COST_BRUTAL_SMASH, numberTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, false, 0);
+      let damageDealt = smashDamageActual(strength, constitution, numberTimes)
+      doDamage(damageDealt, MP_COST_BRUTAL_SMASH, numberTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, false, 0)
     }
   }
 }
 
 // When the Radiant Shield button is clicked
 function doButtonRadiantShield(lvl, hp, xp, mp, gp, constitution, intelligence, perception, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer){
-  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_RADIANT_SHIELD, MSG_LEVEL_LOCK_FAIL_RADIANT_SHIELD);
+  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_RADIANT_SHIELD, MSG_LEVEL_LOCK_FAIL_RADIANT_SHIELD)
   if (sufficientLevel){
     // Check how much damage it will deal once, and then whether they have enough MP for multi-use (to exceed 90.71 damage)
-    let damageOnce = radiantDamageNoCrit(constitution);
-    let numberTimes = checkManaMultiUse(mp, MP_COST_RADIANT_SHIELD, damageOnce, false, intelligence, perception);
+    let damageOnce = radiantDamageNoCrit(constitution)
+    let numberTimes = checkManaMultiUse(mp, MP_COST_RADIANT_SHIELD, damageOnce, false, intelligence, perception)
 
     // If mana is sufficient
     if (numberTimes > 0) {
-      let damageDealt = radiantDamageActual(constitution, intelligence, numberTimes);
-      doDamage(damageDealt, MP_COST_RADIANT_SHIELD, numberTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, false, 0);
+      let damageDealt = radiantDamageActual(constitution, intelligence, numberTimes)
+      doDamage(damageDealt, MP_COST_RADIANT_SHIELD, numberTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, false, 0)
     }
   }
 }
 
 // When the Sneak Attack button is clicked
 function doButtonSneakAttack(lvl, hp, xp, mp, gp, perception, intelligence, strength, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer) {
-  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_SNEAK_ATTACK, MSG_LEVEL_LOCK_FAIL_SNEAK_ATTACK);
+  let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_SNEAK_ATTACK, MSG_LEVEL_LOCK_FAIL_SNEAK_ATTACK)
   if (sufficientLevel){
     // Check how much damage it will deal once, and then whether they have enough MP for multi-use (to exceed 90.71 damage)
-    let damageOnce = sneakDamageNoCrit(perception);
-    let numberTimes = checkManaMultiUse(mp, MP_COST_SNEAK_ATTACK, damageOnce, false, intelligence, perception);
+    let damageOnce = sneakDamageNoCrit(perception)
+    let numberTimes = checkManaMultiUse(mp, MP_COST_SNEAK_ATTACK, damageOnce, false, intelligence, perception)
 
     // If mana is sufficient
     if (numberTimes > 0) {
-      let damageDealt = sneakDamageActual(perception, strength, numberTimes);
-      doDamage(damageDealt, MP_COST_SNEAK_ATTACK, numberTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, false, 0);
+      let damageDealt = sneakDamageActual(perception, strength, numberTimes)
+      doDamage(damageDealt, MP_COST_SNEAK_ATTACK, numberTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, false, 0)
     }
   }
 }
@@ -631,24 +631,24 @@ function api_createNewTaskForUser(payload) {
     "muteHttpExceptions" : true,
   }
 
-  var url = "https://habitica.com/api/v3/tasks/user";
-  UrlFetchApp.fetch(url, params);
+  var url = "https://habitica.com/api/v3/tasks/user"
+  UrlFetchApp.fetch(url, params)
 }
 
 // Create a webhook if no duplicate exists
 function apiMult_createNewWebhookNoDuplicates(payload) {
-  const response = api_getWebhooks();
-  const webhooks = JSON.parse(response).data;
-  var duplicateExists = 0;
+  const response = api_getWebhooks()
+  const webhooks = JSON.parse(response).data
+  var duplicateExists = 0
     
   for (var i in webhooks) {
     if (webhooks[i].label == payload.label) {
-      duplicateExists = 1;
+      duplicateExists = 1
     }
   }
   // If webhook to be created doesn't exist yet
   if (!duplicateExists) {
-    api_createNewWebhook(payload);
+    api_createNewWebhook(payload)
   }
 }
 
@@ -660,8 +660,8 @@ function api_getWebhooks() {
     "muteHttpExceptions" : true,
   }
   
-  const url = "https://habitica.com/api/v3/user/webhook";
-  return UrlFetchApp.fetch(url, params);
+  const url = "https://habitica.com/api/v3/user/webhook"
+  return UrlFetchApp.fetch(url, params)
 }
 
 // Creates a webhook (as part of the "don't make it if there's a duplicate" function)
@@ -674,14 +674,14 @@ function api_createNewWebhook(payload) {
     "muteHttpExceptions" : true,
   }
    
-  const url = "https://habitica.com/api/v3/user/webhook";
-  return UrlFetchApp.fetch(url, params);
+  const url = "https://habitica.com/api/v3/user/webhook"
+  return UrlFetchApp.fetch(url, params)
 }
 
 // Sets initial properties that will be used/saved later.
 function initScriptProperties() {
-  var timestampInit = Date.now();
-  scriptProperties.setProperty(TIMESTAMP_KEY, timestampInit);
+  var timestampInit = Date.now()
+  scriptProperties.setProperty(TIMESTAMP_KEY, timestampInit)
 }
 
 // Gets user info so I can use it, especially stats like mana, experience, and level
@@ -692,12 +692,12 @@ function api_getAuthenticatedUserProfile(userFields) {
     "muteHttpExceptions" : true,
   }
   
-  var url = "https://habitica.com/api/v3/user";
+  var url = "https://habitica.com/api/v3/user"
   if (userFields != "") {
-    url += "?userFields=" + userFields;
+    url += "?userFields=" + userFields
   }
 
-  return UrlFetchApp.fetch(url, params);
+  return UrlFetchApp.fetch(url, params)
 }
 
 function apiFree_getAllAvailableContentObjects() {
@@ -706,8 +706,8 @@ function apiFree_getAllAvailableContentObjects() {
     "muteHttpExceptions" : true,
   }
   
-  const url = "https://habitica.com/api/v3/content";
-  return UrlFetchApp.fetch(url, params);
+  const url = "https://habitica.com/api/v3/content"
+  return UrlFetchApp.fetch(url, params)
 }
 
 
@@ -715,7 +715,7 @@ function apiFree_getAllAvailableContentObjects() {
 function api_sendPrivateMessage(payload) {
   switch (NOTIFICATIONS_ON){ // Check if notifications are on, send message if yes
     case 0:
-      break;        
+      break
     case 1:
       const params = {
         "method" : "post",
@@ -724,9 +724,9 @@ function api_sendPrivateMessage(payload) {
         "payload" : JSON.stringify(payload),
         "muteHttpExceptions" : true,
       }
-      const url = "https://habitica.com/api/v3/members/send-private-message";
-      return UrlFetchApp.fetch(url, params);
-    break;
+      const url = "https://habitica.com/api/v3/members/send-private-message"
+      return UrlFetchApp.fetch(url, params)
+      break
   }
 }
 
@@ -739,194 +739,194 @@ function api_sendPrivateMessageAlways(payload) {
     "payload" : JSON.stringify(payload),
     "muteHttpExceptions" : true,
   }
-  const url = "https://habitica.com/api/v3/members/send-private-message";
-  return UrlFetchApp.fetch(url, params);
+  const url = "https://habitica.com/api/v3/members/send-private-message"
+  return UrlFetchApp.fetch(url, params)
 }
 
 function calculateStrength() {
-  const levelStrRaw = Math.floor(user.stats.lvl / 2);
-  const levelStr = (levelStrRaw > 50) ? 50 : levelStrRaw;
+  const levelStrRaw = Math.floor(user.stats.lvl / 2)
+  const levelStr = (levelStrRaw > 50) ? 50 : levelStrRaw
   
-  var totalEquipmentAndClassStr = 0;
-  const allocatedStr = user.stats.str;
-  const buffsStr = user.stats.buffs.str;
+  var totalEquipmentAndClassStr = 0
+  const allocatedStr = user.stats.str
+  const buffsStr = user.stats.buffs.str
   
   // Get STR from equipped gear
-  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.weapon]);
-  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.shield]);
-  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.head]);
-  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.armor]);
-  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.headAccessory]);
-  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.eyewear]);
-  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.body]);
-  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.back]);
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.weapon])
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.shield])
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.head])
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.armor])
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.headAccessory])
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.eyewear])
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.body])
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.back])
 
-  return levelStr + totalEquipmentAndClassStr + allocatedStr + buffsStr;
+  return levelStr + totalEquipmentAndClassStr + allocatedStr + buffsStr
 }
 
 function calcEquipmentAndClassStr(equipment) {
-  var equipmentAndClassStr = 0;
+  var equipmentAndClassStr = 0
 
   if (equipment != undefined) {  
-    equipmentAndClassStr += equipment.str;
+    equipmentAndClassStr += equipment.str
     if ( (equipment.klass == user.stats.class) || ( (equipment.klass == "special") && (equipment.specialClass == user.stats.class) ) ) {
-      equipmentAndClassStr += equipment.str / 2;
+      equipmentAndClassStr += equipment.str / 2
     }
   }
   
-  return equipmentAndClassStr;
+  return equipmentAndClassStr
 }
 
 function calculateIntelligence() {
-  const levelIntRaw = Math.floor(user.stats.lvl / 2);
-  const levelInt = (levelIntRaw > 50) ? 50 : levelIntRaw;
+  const levelIntRaw = Math.floor(user.stats.lvl / 2)
+  const levelInt = (levelIntRaw > 50) ? 50 : levelIntRaw
   
-  var totalEquipmentAndClassInt = 0;
-  const allocatedInt = user.stats.int;
-  const buffsInt = user.stats.buffs.int;
+  var totalEquipmentAndClassInt = 0
+  const allocatedInt = user.stats.int
+  const buffsInt = user.stats.buffs.int
 
   // Get INT from equipped gear
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.weapon]);
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.shield]);
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.head]);
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.armor]);
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.headAccessory]);
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.eyewear]);
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.body]);
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.back]);
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.weapon])
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.shield])
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.head])
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.armor])
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.headAccessory])
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.eyewear])
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.body])
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.back])
 
-  return levelInt + totalEquipmentAndClassInt + allocatedInt + buffsInt;
+  return levelInt + totalEquipmentAndClassInt + allocatedInt + buffsInt
 }
 
 function calcEquipmentAndClassInt(equipment) {
-  var equipmentAndClassInt = 0;
+  var equipmentAndClassInt = 0
 
   if (equipment != undefined) {  
-    equipmentAndClassInt += equipment.int;
+    equipmentAndClassInt += equipment.int
     if ( (equipment.klass == user.stats.class) || ( (equipment.klass == "special") && (equipment.specialClass == user.stats.class) ) ) {
-      equipmentAndClassInt += equipment.int / 2;
+      equipmentAndClassInt += equipment.int / 2
     }
   }
   
-  return equipmentAndClassInt;
+  return equipmentAndClassInt
 }
 
 function calculateConstitution() {
-  const levelConRaw = Math.floor(user.stats.lvl / 2);
-  const levelCon = (levelConRaw > 50) ? 50 : levelConRaw;
+  const levelConRaw = Math.floor(user.stats.lvl / 2)
+  const levelCon = (levelConRaw > 50) ? 50 : levelConRaw
   
-  var totalEquipmentAndClassCon = 0;
-  const allocatedCon = user.stats.con;
-  const buffsCon = user.stats.buffs.con;
+  var totalEquipmentAndClassCon = 0
+  const allocatedCon = user.stats.con
+  const buffsCon = user.stats.buffs.con
   
   // Get CON from equipped gear
-  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.weapon]);
-  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.shield]);
-  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.head]);
-  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.armor]);
-  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.headAccessory]);
-  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.eyewear]);
-  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.body]);
-  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.back]);
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.weapon])
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.shield])
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.head])
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.armor])
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.headAccessory])
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.eyewear])
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.body])
+  totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.back])
 
-  return levelCon + totalEquipmentAndClassCon + allocatedCon + buffsCon;
+  return levelCon + totalEquipmentAndClassCon + allocatedCon + buffsCon
 }
 
 function calcEquipmentAndClassCon(equipment) {
-  var equipmentAndClassCon = 0;
+  var equipmentAndClassCon = 0
 
   if (equipment != undefined) {  
-    equipmentAndClassCon += equipment.con;
+    equipmentAndClassCon += equipment.con
     if ( (equipment.klass == user.stats.class) || ( (equipment.klass == "special") && (equipment.specialClass == user.stats.class) ) ) {
-      equipmentAndClassCon += equipment.con / 2;
+      equipmentAndClassCon += equipment.con / 2
     }
   }
   
-  return equipmentAndClassCon;
+  return equipmentAndClassCon
 }
 
 function calculatePerception() {
-  const levelPerRaw = Math.floor(user.stats.lvl / 2);
-  const levelPer = (levelPerRaw > 50) ? 50 : levelPerRaw;
+  const levelPerRaw = Math.floor(user.stats.lvl / 2)
+  const levelPer = (levelPerRaw > 50) ? 50 : levelPerRaw
   
-  var totalEquipmentAndClassPer = 0;
-  const allocatedPer = user.stats.per;
-  const buffsPer = user.stats.buffs.per;
+  var totalEquipmentAndClassPer = 0
+  const allocatedPer = user.stats.per
+  const buffsPer = user.stats.buffs.per
   
   // Get PER from equipped gear
-  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.weapon]);
-  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.shield]);
-  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.head]);
-  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.armor]);
-  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.headAccessory]);
-  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.eyewear]);
-  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.body]);
-  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.back]);
+  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.weapon])
+  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.shield])
+  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.head])
+  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.armor])
+  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.headAccessory])
+  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.eyewear])
+  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.body])
+  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.back])
 
-  return levelPer + totalEquipmentAndClassPer + allocatedPer + buffsPer;
+  return levelPer + totalEquipmentAndClassPer + allocatedPer + buffsPer
 }
 
 function calcEquipmentAndClassPer(equipment) {
-  var equipmentAndClassPer = 0;
+  var equipmentAndClassPer = 0
 
   if (equipment != undefined) {  
-    equipmentAndClassPer += equipment.per;
+    equipmentAndClassPer += equipment.per
     if ( (equipment.klass == user.stats.class) || ( (equipment.klass == "special") && (equipment.specialClass == user.stats.class) ) ) {
-      equipmentAndClassPer += equipment.per / 2;
+      equipmentAndClassPer += equipment.per / 2
     }
   }
   
-  return equipmentAndClassPer;
+  return equipmentAndClassPer
 }
 
 // Checks if sufficient mana, sends message if not. Choose whether to deduct costs now or later.
 function checkMana(mp, mpCost, deductLater){
   if (mp < mpCost) {
-    api_sendPrivateMessage({"message" : "Insufficient mana to use this skill.", "toUserId" : USER_ID});
-    return false;
+    api_sendPrivateMessage({"message" : "Insufficient mana to use this skill.", "toUserId" : USER_ID})
+    return false
   } else {
     if (deductLater) {
-      return true;
+      return true
     } else {
-      api_updateUser({"stats.mp" : mp - mpCost});
-      return true;
+      api_updateUser({"stats.mp" : mp - mpCost})
+      return true
     }
   }
 }
 
 // How many uses of the skill are required to exceed 90.71 damage? At that damage or higher, crit is guaranteed and thus the script can accurately dial in damage
 function checkManaMultiUse(mp, mpCost, damageOnce, isFlamesXp, int, per) {
-  let numberTimes = Math.ceil(90.71/damageOnce);
-  let damageMulti = damageOnce * numberTimes;
-  let multiMpCost = mpCost * numberTimes;
+  let numberTimes = Math.ceil(90.71/damageOnce)
+  let damageMulti = damageOnce * numberTimes
+  let multiMpCost = mpCost * numberTimes
   
   // If insufficient MP for multi use, send an error message including expected damage (and if Flames with XP, expected XP)
   if ( multiMpCost > mp ) {
     // round the damage to one decimal point (for the sake of the message)
-    let damageMultiForMessage = Math.round(damageMulti*10) / 10;
+    let damageMultiForMessage = Math.round(damageMulti*10) / 10
     
     if (isFlamesXp) {
-      let xpGain = burstOfFlamesXp(int, per, numberTimes); 
-      api_sendPrivateMessage({"message" : "Insufficient Mana. You will need " + multiMpCost + " MP to use this skill, and it will do " + damageMultiForMessage + " damage and you will gain " + xpGain + " XP.", "toUserId" : USER_ID});
-      return 0;
+      let xpGain = burstOfFlamesXp(int, per, numberTimes)
+      api_sendPrivateMessage({"message" : "Insufficient Mana. You will need " + multiMpCost + " MP to use this skill, and it will do " + damageMultiForMessage + " damage and you will gain " + xpGain + " XP.", "toUserId" : USER_ID})
+      return 0
     }
     else {
-      api_sendPrivateMessage({"message" : "Insufficient Mana. You will need " + multiMpCost + " MP to use this skill, and it will do " + damageMultiForMessage + " damage.", "toUserId" : USER_ID});
-      return 0;
+      api_sendPrivateMessage({"message" : "Insufficient Mana. You will need " + multiMpCost + " MP to use this skill, and it will do " + damageMultiForMessage + " damage.", "toUserId" : USER_ID})
+      return 0
     }
   }
   else {
-    return numberTimes;
+    return numberTimes
   }
 }
 
 // Check if sufficient level, send message if not.
 function checkLevelLock(level, levelLock, message){
   if (level < levelLock){
-    api_sendPrivateMessage({"message" : message, "toUserId" : USER_ID});
-    return false;
+    api_sendPrivateMessage({"message" : message, "toUserId" : USER_ID})
+    return false
   } else {
-    return true;
+    return true
   }
 }
 
@@ -940,52 +940,52 @@ function api_updateUser(payload) {
     "muteHttpExceptions" : true,
   }
   
-  const url = "https://habitica.com/api/v3/user";
-  return UrlFetchApp.fetch(url, params);
+  const url = "https://habitica.com/api/v3/user"
+  return UrlFetchApp.fetch(url, params)
 }
 
 function getTaskValue(version, presetTaskValue, taskId) {
   switch (version){
     case 2:
-      let value = sanitizeInput(presetTaskValue, 0, 21.27);
-      return value;
-      break;        
+      let value = sanitizeInput(presetTaskValue, 0, 21.27)
+      return value
+      break  
     case 3:
-      const responseV3 = api_getUserTasks("dailys");
-      const tasksV3 = JSON.parse(responseV3).data;
+      const responseV3 = api_getUserTasks("dailys")
+      const tasksV3 = JSON.parse(responseV3).data
       
       // loop over all Dailies, then average the task value
-      let taskCount = 0;
-      let taskValueTotal = 0;
+      let taskCount = 0
+      let taskValueTotal = 0
       for (var i in tasksV3) {
-        taskValueTotal += tasksV3[i].value;
-        taskCount++;
+        taskValueTotal += tasksV3[i].value
+        taskCount++
       }
-      let average = sanitizeInput((taskValueTotal/taskCount), 0, 21.27);
-      return average;
-      break;
+      let average = sanitizeInput((taskValueTotal/taskCount), 0, 21.27)
+      return average
+      break
     case 4:
-      const responseV4 = api_getUserTasks("dailys");
-      const tasksV4 = JSON.parse(responseV4).data;
-      let valueV4 = -100;
+      const responseV4 = api_getUserTasks("dailys")
+      const tasksV4 = JSON.parse(responseV4).data
+      let valueV4 = -100
           
       for (var j in tasksV4) {
         if (tasksV4[j]._id == taskId) {
-          valueV4 = tasksV4[j].value;
+          valueV4 = tasksV4[j].value
         }
       }
       
       if (valueV4 == -100) {
-        api_sendPrivateMessageAlways({"message" : "Task ID not found, so this script defaulted to the preset task value (version 2 in the Required Customization section). To find task value, see the [wiki page](https://habitica.fandom.com/wiki/Google_Apps_Script#Cross-Class_Skills) section on Required Customizations and then update the script using the instructions at the bottom of the wiki page.", "toUserId" : USER_ID});
-        let valueIfError = sanitizeInput(presetTaskValue, 0, 21.27);
-        return valueIfError;
-        break;
+        api_sendPrivateMessageAlways({"message" : "Task ID not found, so this script defaulted to the preset task value (version 2 in the Required Customization section). To find task value, see the [wiki page](https://habitica.fandom.com/wiki/Google_Apps_Script#Cross-Class_Skills) section on Required Customizations and then update the script using the instructions at the bottom of the wiki page.", "toUserId" : USER_ID})
+        let valueIfError = sanitizeInput(presetTaskValue, 0, 21.27)
+        return valueIfError
+        break
       }
       else {
         // grab value of task ID
-        let valueById = sanitizeInput(valueV4, 0, 21.27);
-        return valueById;
-        break;
+        let valueById = sanitizeInput(valueV4, 0, 21.27)
+        return valueById
+        break
       }
   }
 }
@@ -994,153 +994,153 @@ function getTaskValue(version, presetTaskValue, taskId) {
 function sanitizeInput(input, minimum, maximum) {
   if (minimum == "none"){ // Condition for if there is no minimum
     if ( input > maximum ) {
-      return maximum;
+      return maximum
     } else { 
-      return input;
+      return input
     }
   } else if (maximum == "none"){ // Condition for if there is no maximum
     if ( input < minimum ) {
-      return minimum;
+      return minimum
     } else { 
-      return input;
+      return input
     }
   } else { // Condition where there is both minimum and maximum
     if ( input < minimum ) {
-      return minimum;
+      return minimum
     } else if ( input > maximum ) {
-      return maximum;
+      return maximum
     } else { 
-      return input;
+      return input
     }
   }
 }
 
 function criticalHit (stat, chance) {
-  let targetToBeat = chance * ( (1 + stat ) / 100 );
+  let targetToBeat = chance * ( (1 + stat ) / 100 )
   if (Math.random() <= targetToBeat) {
-    return (1.5 +  ( 4 * stat ) / ( stat + 200 ) );
+    return (1.5 +  ( 4 * stat ) / ( stat + 200 ) )
   }
   else {
-    return 1;
+    return 1
   }
 }
 
 function pickpocket (gp, per) {
-  let taskValue = getTaskValue(PICKPOCKET_VERSION, PICKPOCKET_TASK_VALUE, PICKPOCKET_TASK_ID);
-  let bonus = ( (taskValue + 1) + (per * 0.5 ) );
-  let newGp = gp + ( ( 25 * bonus ) / ( bonus + 75) );
+  let taskValue = getTaskValue(PICKPOCKET_VERSION, PICKPOCKET_TASK_VALUE, PICKPOCKET_TASK_ID)
+  let bonus = ( (taskValue + 1) + (per * 0.5 ) )
+  let newGp = gp + ( ( 25 * bonus ) / ( bonus + 75) )
   
-  api_updateUser({"stats.gp" : newGp});
+  api_updateUser({"stats.gp" : newGp})
 }
 
 function backstab (gp, xp, str) {
-  let multiplier = criticalHit(str, 0.3);
-  let modifiedStr = str * multiplier;
-  let taskValue = getTaskValue(BACKSTAB_VERSION, BACKSTAB_TASK_VALUE, BACKSTAB_TASK_ID);
+  let multiplier = criticalHit(str, 0.3)
+  let modifiedStr = str * multiplier
+  let taskValue = getTaskValue(BACKSTAB_VERSION, BACKSTAB_TASK_VALUE, BACKSTAB_TASK_ID)
   let bonus = ( (taskValue + 1) + (modifiedStr * 0.5 ) )
-  let newXp = xp + ( ( 75 * bonus ) / ( bonus + 50) );
-  let newGp = gp + ( ( 18 * bonus ) / ( bonus + 75) );
+  let newXp = xp + ( ( 75 * bonus ) / ( bonus + 50) )
+  let newGp = gp + ( ( 18 * bonus ) / ( bonus + 75) )
 
-  api_updateUser({"stats.gp" : newGp, "stats.exp" : newXp});
+  api_updateUser({"stats.gp" : newGp, "stats.exp" : newXp})
 }
 
 function stealth (totalDailies, prevStealthedDailies, per) {
-  let newDailiesDodged = Math.ceil( ( 0.64 * totalDailies * ( per / (per + 55) ) ) );
+  let newDailiesDodged = Math.ceil( ( 0.64 * totalDailies * ( per / (per + 55) ) ) )
   
   // If they'd Stealth more than total Dailies, instead only Stealth the total
   if ( ( prevStealthedDailies + newDailiesDodged ) >= totalDailies ) {
-    api_updateUser({"stats.buffs.stealth" : totalDailies});
+    api_updateUser({"stats.buffs.stealth" : totalDailies})
   }
   else {
-    api_updateUser({"stats.buffs.stealth" : prevStealthedDailies + newDailiesDodged});
+    api_updateUser({"stats.buffs.stealth" : prevStealthedDailies + newDailiesDodged})
   }
 }
 
 function healingLight (hp, con, int) {
-  let healing = ( ( con + int + 5 ) * 0.075 );
+  let healing = ( ( con + int + 5 ) * 0.075 )
   if (hp + healing >= 50) {
-    api_updateUser({"stats.hp" : 50});
+    api_updateUser({"stats.hp" : 50})
   }
   else {
-    api_updateUser({"stats.hp" : hp + healing});
+    api_updateUser({"stats.hp" : hp + healing})
   }
 }
 
 function chillingFrost(mp, mpCost) {
-  api_updateUser({"stats.buffs.streaks" : true, "stats.mp" : mp - mpCost});
+  api_updateUser({"stats.buffs.streaks" : true, "stats.mp" : mp - mpCost})
 }
 
 function burstOfFlamesXp(int, per, nTimes) {
-  let taskValue = getTaskValue(BURST_OF_FLAMES_VERSION, BURST_OF_FLAMES_TASK_VALUE, BURST_OF_FLAMES_TASK_ID);
-  let multiplier = 1;
-  let modifiedInt = int;
-  let bonus = 1;
-  let newXpRunningTotal = 0;
+  let taskValue = getTaskValue(BURST_OF_FLAMES_VERSION, BURST_OF_FLAMES_TASK_VALUE, BURST_OF_FLAMES_TASK_ID)
+  let multiplier = 1
+  let modifiedInt = int
+  let bonus = 1
+  let newXpRunningTotal = 0
   
   for ( var i = 1; i <= nTimes; i++) {
-    multiplier = criticalHit(per, 0.03);
-    modifiedInt = int * multiplier;
-    bonus = Math.ceil( (taskValue + 1) * (modifiedInt * 0.075 ) ) ;
-    newXpRunningTotal += ( ( 75 * bonus ) / ( bonus + 37.5) );
+    multiplier = criticalHit(per, 0.03)
+    modifiedInt = int * multiplier
+    bonus = Math.ceil( (taskValue + 1) * (modifiedInt * 0.075 ) )
+    newXpRunningTotal += ( ( 75 * bonus ) / ( bonus + 37.5) )
   }
   
-  return newXpRunningTotal;
+  return newXpRunningTotal
 }
 
 // Expected and actual damage for Burst of Flames
 function flamesDamage (int) {
-  return Math.ceil(int/10);
+  return Math.ceil(int/10)
 }
 
 // Expected damage for Brutal Smash. Since this is expected damage only (not actual), don't crit.
 function smashDamageNoCrit (str) {
-  return (55*str)/(str+70);
+  return (55*str)/(str+70)
 }
 
 // Actual damage for Brutal Smash, including crit. Since there's a chance of crit at each iteration, loop through for each use of the skill rather than doing it once and multiplying by number of times
 function smashDamageActual (str, con, nTimes) { 
-  let smashRunningTotal = 0;
-  let multiplier = 1;
-  let modifiedStr = str;
+  let smashRunningTotal = 0
+  let multiplier = 1
+  let modifiedStr = str
   
   for ( var i = 1; i <= nTimes; i++) {
-    multiplier = criticalHit(con, 0.03);
-    modifiedStr = str * multiplier;
-    smashRunningTotal += (55*modifiedStr)/(modifiedStr+70);
+    multiplier = criticalHit(con, 0.03)
+    modifiedStr = str * multiplier
+    smashRunningTotal += (55*modifiedStr)/(modifiedStr+70)
   }
   
-  return smashRunningTotal;
+  return smashRunningTotal
 }
 
 // Expected damage for Radiant Shield. Since this is expected damage only (not actual), don't crit.
 function radiantDamageNoCrit(con) {
   // CON above 225 has no additional in-game benefits elsewhere in Habitica (reducing damage from your own tasks), so I will cap damage here as well
   if (con > 225) {
-    return 25;
+    return 25
   }
   else { // base damage of 10 ensure this skill isn't too weak at low levels
-    return 10 + (con/15);
+    return 10 + (con/15)
   }
 }
 
 // Actual damage for Radiant Shield, including crit. Since there's a chance of crit at each iteration, loop through for each use of the skill rather than doing it once and multiplying by number of times
 function radiantDamageActual(con, int, nTimes) {
-  let radiantRunningTotal = 0;
-  let multiplier = 1;
-  let modifiedCon = con;
+  let radiantRunningTotal = 0
+  let multiplier = 1
+  let modifiedCon = con
   
   for ( var i = 1; i <= nTimes; i++) {
-    multiplier = criticalHit(int, 0.03);
-    modifiedCon = con * multiplier;
+    multiplier = criticalHit(int, 0.03)
+    modifiedCon = con * multiplier
     if ( modifiedCon > 225) { // Max damage of 25 occurs at 225 CON. Since this is weaker than the other damage skills, the skill has a lower MP cost
-      radiantRunningTotal += 25;
+      radiantRunningTotal += 25
     }
-    else { // based damage of 10 insurers it's not too weak at low levels
-      radiantRunningTotal += ( 10 + (modifiedCon/15) );
+    else { // based damage of 10 ensures it's not too weak at low levels
+      radiantRunningTotal += ( 10 + (modifiedCon/15) )
     }
   }
   
-  return radiantRunningTotal;
+  return radiantRunningTotal
 }
 
 // Expected damage for Sneak Attack. Since this is expected damage only (not actual), don't crit.
@@ -1152,76 +1152,76 @@ function sneakDamageNoCrit(per) {
   
   // Up to 35 damage (PER = 122.5), Sneak Attack is identical to Brutal Smash
   if (per <= 122.5) {
-    return (55 * per) / (per + 70);
+    return (55 * per) / (per + 70)
   }
   // 35 damage from the previous "tier" formula rolls over, then aim to be at 45 total damage at 1486 PER
   else if ( (per > 122.5) && (per <= 1486) ) {
-    return 35 + (20 * per) / (per + 1486);
+    return 35 + (20 * per) / (per + 1486)
   }
   // 45 damage from the previous "tier" formula rolls over, then aim to be at 50 total damage at 4213 PER
   else if (per > 1486) {
-    return 45 + (10 * per) / (per + 4213);
+    return 45 + (10 * per) / (per + 4213)
   }
   else { // this scenario shouldn't be possible, but just in case…
-    api_sendPrivateMessage({"message" : "Error calculating Sneak Attack damage, please contact the creator of this script so he can debug.", "toUserId" : USER_ID});
+    api_sendPrivateMessage({"message" : "Error calculating Sneak Attack damage, please contact the creator of this script so he can debug.", "toUserId" : USER_ID})
   }
 }
 
 // Actual damage for Sneak Attack, including crit. Since there's a chance of crit at each iteration, loop through for each use of the skill rather than doing it once and multiplying by number of times
 function sneakDamageActual(per, str, nTimes) { 
-  let sneakRunningTotal = 0;
-  let multiplier = 1;
-  let modifiedPer = per;
+  let sneakRunningTotal = 0
+  let multiplier = 1
+  let modifiedPer = per
   
   for ( var i = 1; i <= nTimes; i++) {
-    multiplier = criticalHit(str, 0.03);
-    modifiedPer = per * multiplier;
+    multiplier = criticalHit(str, 0.03)
+    modifiedPer = per * multiplier
     
     // Instead of using PER for the cutoff points, use modifiedPer because it's PER times crit multiplier
     if (modifiedPer <= 122.5) {
-      sneakRunningTotal += (55*modifiedPer)/(modifiedPer+70);
+      sneakRunningTotal += (55*modifiedPer)/(modifiedPer+70)
     }
     else if ( (modifiedPer > 122.5) && (modifiedPer <= 1486) ) {
-      sneakRunningTotal += 35 + ( (20*modifiedPer)/(modifiedPer+1486) );
+      sneakRunningTotal += 35 + ( (20*modifiedPer)/(modifiedPer+1486) )
     }
     else if (modifiedPer > 1486) {
-      sneakRunningTotal += 45 + ( (10*modifiedPer)/(modifiedPer+4213) );
+      sneakRunningTotal += 45 + ( (10*modifiedPer)/(modifiedPer+4213) )
     }
   }
   
-  return sneakRunningTotal;
+  return sneakRunningTotal
 }
 
 // Deals boss damage
 function doDamage(damage, mpCost, nTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, isFlamesXp, valueToChange) {
-  let totalMpCost = mpCost * nTimes;
+  let totalMpCost = mpCost * nTimes
   
   // calculate STR setpoint needed to achieve expected damage. Damage = (1+(STR*0.005)) * (1.5 + ((4*STR)/(200+STR)) ) * 1, since crit is 100% guaranteed and task value delta resolves to 1
   // lowest STR setpoint is 3244, which guarantees a crit, for 90.71 damage. Highest setpoint is 6500, for 180.25 damage, since that's the most this script will do in one use.
-  let setpoint = setpointIteration(3244, 6500, damage);
+  let setpoint = setpointIteration(3244, 6500, damage)
   
   // Create one To-Do so I can check it off in order to do damage
-  api_createNewTaskForUser(DAMAGE_BUTTON);
+  api_createNewTaskForUser(DAMAGE_BUTTON)
         
   // pause for 1 second
-  Utilities.sleep(1000);
+  Utilities.sleep(1000)
         
   // buff STR up to setpoint, INT and PER down to 1
-  api_updateUser({"stats.buffs.str" : setpoint - unbuffedStr, "stats.buffs.int" : 1 - unbuffedInt, "stats.buffs.per" : 1 - unbuffedPer});
+  api_updateUser({"stats.buffs.str" : setpoint - unbuffedStr, "stats.buffs.int" : 1 - unbuffedInt, "stats.buffs.per" : 1 - unbuffedPer})
         
   // pause for 1 second
-  Utilities.sleep(1000);
+  Utilities.sleep(1000)
         
   // check off the To-Do created
-  const responseTask = api_getUserTasks("todos");
-  const tasksForDamage = JSON.parse(responseTask).data;
-  let taskIdForDamage = "";
+  const responseTask = api_getUserTasks("todos")
+  const tasksForDamage = JSON.parse(responseTask).data
+  let taskIdForDamage = ""
   
   // loop through all To-Do's, see which one matches Text and Notes for the previously-created Damage Button
   for (var j in tasksForDamage) { 
     if ( (tasksForDamage[j].text == DAMAGE_TEXT) && (tasksForDamage[j].notes == DAMAGE_NOTES) ) {
-      taskIdForDamage = tasksForDamage[j]._id; // if it's a match, save ID of the task since that's the easiest way for me to grab it
-      api_scoreTask(taskIdForDamage, "up"); // this is the task for me to score
+      taskIdForDamage = tasksForDamage[j]._id // if it's a match, save ID of the task since that's the easiest way for me to grab it
+      api_scoreTask(taskIdForDamage, "up") // this is the task for me to score
     }
   }
         
@@ -1229,42 +1229,42 @@ function doDamage(damage, mpCost, nTimes, unbuffedStr, unbuffedInt, unbuffedPer,
   // if XP needs to increase (Burst of Flames), do this in this step also
   if (isFlamesXp) {
     api_updateUser({"stats.buffs.str" : buffsStr, "stats.buffs.int" : buffsInt, "stats.buffs.per" : buffsPer,
-                    "stats.hp" : hp, "stats.exp" : xp + valueToChange, "stats.mp" : mp - totalMpCost, "stats.gp" : gp, "stats.lvl" : lvl});
+                    "stats.hp" : hp, "stats.exp" : xp + valueToChange, "stats.mp" : mp - totalMpCost, "stats.gp" : gp, "stats.lvl" : lvl})
   }
   else {
     api_updateUser({"stats.buffs.str" : buffsStr, "stats.buffs.int" : buffsInt, "stats.buffs.per" : buffsPer,
-                    "stats.hp" : hp, "stats.exp" : xp, "stats.mp" : mp - totalMpCost, "stats.gp" : gp, "stats.lvl" : lvl});
+                    "stats.hp" : hp, "stats.exp" : xp, "stats.mp" : mp - totalMpCost, "stats.gp" : gp, "stats.lvl" : lvl})
   }
 }
 
 // calculate setpoint, inputting a low guess and a high guess
 function setpointIteration (low, high, targetDamage) {
-  let midpoint = Math.floor(((low+high)/2));
+  let midpoint = Math.floor(((low+high)/2))
   
   // damage at each setpoint
-  let damageLow = damageAtSetpoint(low);
-  let damageMidpoint = damageAtSetpoint(midpoint);
-  let damageHigh = damageAtSetpoint(high);
+  let damageLow = damageAtSetpoint(low)
+  let damageMidpoint = damageAtSetpoint(midpoint)
+  let damageHigh = damageAtSetpoint(high)
   
   // truth conditions regarding damage and where it falls (compared to the setpoints)
-  let targetAboveLow = (damageLow < targetDamage) ? true : false;
-  let targetAboveMidpoint = (damageMidpoint < targetDamage) ? true : false;
-  let targetBelowHigh = (damageHigh > targetDamage) ? true : false;
+  let targetAboveLow = (damageLow < targetDamage) ? true : false
+  let targetAboveMidpoint = (damageMidpoint < targetDamage) ? true : false
+  let targetBelowHigh = (damageHigh > targetDamage) ? true : false
   
   // if these values are within 2 of each other, iteration is done
   if ( ( high - low ) <= 2) {
     // whichever setpoint exceeds target damage is our setpoint
     if (!targetAboveLow) {
-      return low;
+      return low
     }
     else if (!targetAboveMidpoint) {
-      return midpoint;
+      return midpoint
     }
     else if (targetBelowHigh) {
-      return high;
+      return high
     }
     else { // This condition shouldn't be possible, but just in case…
-      api_sendPrivateMessage({"message" : "Error computing damage. Please contact the creator of the script to debug (note to creator: final iteration triggered this message).", "toUserId" : USER_ID});
+      api_sendPrivateMessage({"message" : "Error computing damage. Please contact the creator of the script to debug (note to creator: final iteration triggered this message).", "toUserId" : USER_ID})
     }
   }
   else { // keep iterating
@@ -1272,21 +1272,21 @@ function setpointIteration (low, high, targetDamage) {
     if (targetAboveLow && targetBelowHigh) {
       // is it above or below midpoint? If above it, run it again but with midpoint and high being the new low/high, else run it with mid/low being new low/high
       if (targetAboveMidpoint) {
-        return setpointIteration (midpoint, high, targetDamage);
+        return setpointIteration (midpoint, high, targetDamage)
       }
       else {
-        return setpointIteration (low, midpoint, targetDamage);
+        return setpointIteration (low, midpoint, targetDamage)
       }
     }
     else { // if it's not between low and high, something messed up. This condition shouldn't be possible, but just in case…
-      api_sendPrivateMessage({"message" : "Error computing damage. Please contact the creator of the script to debug (note to creator: target damage not between low and high setpoints).", "toUserId" : USER_ID});
+      api_sendPrivateMessage({"message" : "Error computing damage. Please contact the creator of the script to debug (note to creator: target damage not between low and high setpoints).", "toUserId" : USER_ID})
     }
   }
 }
 
 // calculate damage for checking off one task at a given value of STR
 function damageAtSetpoint (str) {
-  return (1+(str*0.005)) * (1.5 + ((4*str)/(200+str)) );
+  return (1+(str*0.005)) * (1.5 + ((4*str)/(200+str)) )
 }
 
 function api_getUserTasks(type) {
@@ -1296,12 +1296,12 @@ function api_getUserTasks(type) {
     "muteHttpExceptions" : true,
   }
   
-  var url = "https://habitica.com/api/v3/tasks/user";
+  var url = "https://habitica.com/api/v3/tasks/user"
   if (type != "") {
-    url += "?type=" + type;
+    url += "?type=" + type
   }
 
-  return UrlFetchApp.fetch(url, params);
+  return UrlFetchApp.fetch(url, params)
 }
 
 // Score a task
@@ -1312,9 +1312,9 @@ function api_scoreTask(aliasOrId, direction) {
     "muteHttpExceptions" : true,
   }
 
-  var url = "https://habitica.com/api/v3/tasks/";
+  var url = "https://habitica.com/api/v3/tasks/"
   if ( (aliasOrId != "") && (direction != "") ) {
-    url += aliasOrId + "/score/" + direction;
+    url += aliasOrId + "/score/" + direction
   }
-  return UrlFetchApp.fetch(url, params);
+  return UrlFetchApp.fetch(url, params)
 }
