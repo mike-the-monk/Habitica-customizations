@@ -178,7 +178,7 @@ function doPost(e) {
   if (type == "scored") {
   
   // Sanitize task alias
-  let sanitizedAlias = "sanitized"; // This will be the value if undefined, null, or blank
+  let sanitizedAlias = "sanitized" // This will be the value if undefined, null, or blank
   if ( (task.alias != undefined) && (task.alias != null) && (task.alias != "") ) {
     sanitizedAlias = task.alias
   }
