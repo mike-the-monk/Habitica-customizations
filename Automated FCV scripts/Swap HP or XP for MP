@@ -4,15 +4,15 @@
 /* ========================================== */
 /* [Users] Required script data to fill in    */
 /* ========================================== */
-const USER_ID = "PasteYourUserIdHere";
-const API_TOKEN = "PasteYourApiTokenHere"; // Do not share this to anyone
-const WEB_APP_URL = "PasteGeneratedWebAppUrlHere";
+const USER_ID = "PasteYourUserIdHere"
+const API_TOKEN = "PasteYourApiTokenHere" // Do not share this to anyone
+const WEB_APP_URL = "PasteGeneratedWebAppUrlHere"
 
 /* ========================================== */
 /* [Users] Required customizations to fill in */
 /* ========================================== */
-const CREATE_HP_FOR_MP = 1; // Change this 1 to a 0 if you don't want to create a skill that swaps HP for MP
-const CREATE_XP_FOR_MP = 1; // Change this 1 to a 0 if you don't want to create a skill that swaps XP for MP
+const CREATE_HP_FOR_MP = 1 // Change this 1 to a 0 if you don't want to create a skill that swaps HP for MP
+const CREATE_XP_FOR_MP = 1 // Change this 1 to a 0 if you don't want to create a skill that swaps XP for MP
 
 /* ========================================== */
 /* [Users] Optional customizations to fill in */
@@ -20,43 +20,78 @@ const CREATE_XP_FOR_MP = 1; // Change this 1 to a 0 if you don't want to create 
 
 // Do you want to get private message notifications? (examples include if you're already at max Mana or exceeded the limit for daily potion usage) 
 // If you don't want them, change the 1 to a 0 in the line below
-const NOTIFICATIONS_ON = 1; 
+const NOTIFICATIONS_ON = 1
 
 /* ========================================== */
 /* [Users] Do not edit code below this line   */
 /* ========================================== */
-const AUTHOR_ID = "0034eb14-b4d8-494e-8386-d3f33cff7922";
-const SCRIPT_NAME = "Swap HP or XP for MP";
+const AUTHOR_ID = "0034eb14-b4d8-494e-8386-d3f33cff7922"
+const SCRIPT_NAME = "Swap HP or XP for MP"
 const HEADERS = {
   "x-client" : AUTHOR_ID + " - " + SCRIPT_NAME,
   "x-api-user" : USER_ID,
   "x-api-key" : API_TOKEN,
 }
 
-const scriptProperties = PropertiesService.getScriptProperties(); // Constants can have properties changed
+const scriptProperties = PropertiesService.getScriptProperties() // Constants can have properties changed
 
-const HP_FOR_MP_TEXT = "**Swap Health for Mana**";
-const HP_FOR_MP_ALIAS = "HPforMP";
-const HP_FOR_MP_NOTES = "Pay 5 HP, gain 10 MP. Maximum 12 per day.";
-const HP_FOR_MP_VALUE = "0";
-const HP_FOR_MP_LEVEL_LOCK = 11;
-const MAX_DAILY_HP_FOR_MP_USAGE = 12;
-const MSG_HP_FOR_MP_LEVEL_LOCK_FAIL = "You must be at least level 11 to use this skill.";
-const MSG_HP_FOR_MP_DAILY_USAGE_EXCEEDED = "You can only use this skill 12 times each day.";
-const MSG_INSUFFICIENT_HP = "Insufficient Health to use this skill."
+// Parts of messages that get reused
+const NOTES_START = "Pay "
+const NOTES_MID1 = ", gain "  
+const NOTES_MID2 = "(Instant Use). Maximum "
+const NOTES_END = " per day."
+const MSG_LEVEL_LOCK_START = "You must be at least level "
+const MSG_LEVEL_LOCK_END = " to use this potion."
+const MSG_DAILY_USAGE_EXCEEDED_START_SKILL = "You can only use this skill " 
+const MSG_DAILY_USAGE_EXCEEDED_END = " times each day."
+const MSG_INSUFFICIENT_START = "Insufficient "
+const MSG_INSUFFICIENT_END_SKILL = " to use this skill."
 
-const XP_FOR_MP_TEXT = "**Swap Experience for Mana**";
-const XP_FOR_MP_ALIAS = "XPforMP";
-const XP_FOR_MP_NOTES = "Pay 50 XP, gain 10 MP. Maximum XP spent per day: 1/3 of what's needed to level up.";
-const XP_FOR_MP_VALUE = "0";
+// Conversion rate between stats (from the potions and anti-potions)
+const XP_CONVERSION_RATE = 6 // 150 XP = 25 GP
+const MP_CONVERSION_RATE = 1.2 // 30 MP = 25 GP
+const HP_CONVERSION_RATE = 0.6 // 15 HP = 25 GP
+
+// Calculate conversion rates specific to this script
+const HP_FOR_MP_CONVERSION_RATE = MP_CONVERSION_RATE / HP_CONVERSION_RATE // 5 HP = 10 MP
+const XP_FOR_MP_CONVERSION_RATE = MP_CONVERSION_RATE / XP_CONVERSION_RATE // 50 XP = 10 MP
+
+// Stats for each skill
+
+const HP_FOR_MP_LEVEL_LOCK = 11
+const MAX_DAILY_HP_FOR_MP_USAGE = 12
+const HP_COST_HP_FOR_MP = 5
+const MP_GAIN_HP_FOR_MP = HP_COST_HP_FOR_MP * HP_FOR_MP_CONVERSION_RATE
+
 const XP_FOR_MP_LEVEL_LOCK = 11;
 const MAX_DAILY_XP_FOR_MP_USAGE = 12;
-const MSG_XP_FOR_MP_LEVEL_LOCK_FAIL = "You must be at least level 11 to use this skill.";
+const XP_COST_XP_FOR_MP = 50
+const MP_GAIN_XP_FOR_MP = XP_COST_XP_FOR_MP * XP_FOR_MP_CONVERSION_RATE
+
+// Messages for each skill
+
+const MSG_HP_FOR_MP_LEVEL_LOCK_FAIL = MSG_LEVEL_LOCK_START + HP_FOR_MP_LEVEL_LOCK + MSG_LEVEL_LOCK_END
+const MSG_HP_FOR_MP_DAILY_USAGE_EXCEEDED = MSG_DAILY_USAGE_EXCEEDED_START_SKILL + MAX_DAILY_HP_FOR_MP_USAGE + MSG_DAILY_USAGE_EXCEEDED_END
+const MSG_INSUFFICIENT_HP = MSG_INSUFFICIENT_START + "Health" + MSG_INSUFFICIENT_END_SKILL
+
+const MSG_XP_FOR_MP_LEVEL_LOCK_FAIL = MSG_LEVEL_LOCK_START + XP_FOR_MP_LEVEL_LOCK + MSG_LEVEL_LOCK_END
 const MSG_XP_FOR_MP_DAILY_USAGE_EXCEEDED = "You can only use this skill to spend up to 1/3 of the XP needed to level up, and you've reached your limit.";
-const MSG_INSUFFICIENT_XP = "Insufficient Experience to use this skill."
+const MSG_INSUFFICIENT_XP = MSG_INSUFFICIENT_START + "Experience" + MSG_INSUFFICIENT_END_SKILL
 
 const MSG_ALREADY_AT_MAX_MANA = "You are already have maximum mana. This skill had no effect and did not count towards your daily usage limit."
 const MSG_NEAR_MAX_MANA = "This skill filled you to maximum Mana, but not beyond the max.";
+
+// Button constants for each skill
+
+const HP_FOR_MP_TEXT = "**Swap Health for Mana**"
+const HP_FOR_MP_ALIAS = "HPforMP"
+const HP_FOR_MP_NOTES = NOTES_START + HP_COST_HP_FOR_MP + " HP" + NOTES_MID1 + MP_GAIN_HP_FOR_MP + "MP" + NOTES_MID2 + MAX_DAILY_HP_FOR_MP_USAGE + NOTES_END
+const HP_FOR_MP_VALUE = "0"
+
+const XP_FOR_MP_TEXT = "**Swap Experience for Mana**"
+const XP_FOR_MP_ALIAS = "XPforMP"
+const XP_FOR_MP_NOTES = NOTES_START + XP_COST_XP_FOR_MP + " XP" + NOTES_MID1 + MP_GAIN_XP_FOR_MP + "MP" + NOTES_MID2 + " XP spent per day: 1/3 of what's needed to level up."
+const XP_FOR_MP_VALUE = "0"
 
 const HP_FOR_MP_BUTTON = {
     "text": HP_FOR_MP_TEXT,
@@ -74,25 +109,22 @@ const XP_FOR_MP_BUTTON = {
     "value": XP_FOR_MP_VALUE,
 }
 
-const CRON_COUNT_KEY = "CRON_COUNT_KEY";
-const HP_FOR_MP_KEY = "HP_FOR_MP_KEY";
-const XP_FOR_MP_KEY = "XP_FOR_MP_KEY";
-const TIMESTAMP_KEY = "TIMESTAMP_KEY";
+const CRON_COUNT_KEY = "CRON_COUNT_KEY"
+const HP_FOR_MP_KEY = "HP_FOR_MP_KEY"
+const XP_FOR_MP_KEY = "XP_FOR_MP_KEY"
+const TIMESTAMP_KEY = "TIMESTAMP_KEY"
 
-var cronCountKey = "";
-var HpForMpUsageKey = "";
-var XpForMpUsageKey = "";
-var timestampKey = "";
+var cronCountKey = ""
+var HpForMpUsageKey = ""
+var XpForMpUsageKey = ""
+var timestampKey = ""
 
 function doOneTimeSetup() {
-  if ((CREATE_HP_FOR_MP == 1) && (CREATE_XP_FOR_MP == 1)) {
-    api_createNewTaskForUser([XP_FOR_MP_BUTTON, HP_FOR_MP_BUTTON]);
+  if (CREATE_XP_FOR_MP == 1) {
+    api_createNewTaskForUser([XP_FOR_MP_BUTTON])
   }
-  else if ((CREATE_HP_FOR_MP == 1) && (CREATE_XP_FOR_MP == 0)) {
-    api_createNewTaskForUser([HP_FOR_MP_BUTTON]);
-  }
-  else if ((CREATE_HP_FOR_MP == 0) && (CREATE_XP_FOR_MP == 1)) {
-    api_createNewTaskForUser([XP_FOR_MP_BUTTON]);
+  if (CREATE_HP_FOR_MP == 1) {
+    api_createNewTaskForUser([HP_FOR_MP_BUTTON])
   }
   
   // Next, create the webhook
@@ -105,129 +137,129 @@ function doOneTimeSetup() {
     "type" : "taskActivity",
     "options" : options,
   }
-  apiMult_createNewWebhookNoDuplicates(payload);
+  apiMult_createNewWebhookNoDuplicates(payload)
   
   // set script properties so they carry over to next session
-  initScriptProperties();
+  initScriptProperties()
 }
 
 // do things when the webhook runs
 function doPost(e) {
-  const dataContents = JSON.parse(e.postData.contents);
-  const type = dataContents.type;
-  const task = dataContents.task;
+  const dataContents = JSON.parse(e.postData.contents)
+  const type = dataContents.type
+  const task = dataContents.task
   
   // Sanitize task alias
   let sanitizedAlias = "sanitized"; // This will be the value if undefined, null, or blank
   if ( (task.alias != undefined) && (task.alias != null) && (task.alias != "") ) {
-    sanitizedAlias = task.alias;
+    sanitizedAlias = task.alias
   }
   
   if ( (type == "scored") && ( (sanitizedAlias == HP_FOR_MP_ALIAS) || (sanitizedAlias == XP_FOR_MP_ALIAS) ) ) {
-    var timestampKey = TIMESTAMP_KEY;
-    var timeStart = Number(scriptProperties.getProperty(timestampKey));
+    var timestampKey = TIMESTAMP_KEY
+    var timeStart = Number(scriptProperties.getProperty(timestampKey))
     if ( (timeStart == 0) || (timeStart == "") || (timeStart == undefined) || (timeStart == null) ) {
-      timeStart = Date.now();
+      timeStart = Date.now()
     }
-    var timeEnd = Date.now();
+    var timeEnd = Date.now()
     
     // Rate limiting: If it's been less than 30 seconds since they last clicked one of these buttons, do nothing
     if ( (timeEnd - timeStart) >= 30000 ) {
       // Run all the things that run regardless of the skill
-      const responseUser = api_getAuthenticatedUserProfile("stats,items.gear.equipped");
-      user = JSON.parse(responseUser).data;
+      const responseUser = api_getAuthenticatedUserProfile("stats,items.gear.equipped")
+      user = JSON.parse(responseUser).data
     
-      let hp = user.stats.hp;
-      let exp = user.stats.exp;
-      let mp = user.stats.mp;
-      let gp = user.stats.gp;
-      let lvl = user.stats.lvl;
+      let hp = user.stats.hp
+      let exp = user.stats.exp
+      let mp = user.stats.mp
+      let gp = user.stats.gp
+      let lvl = user.stats.lvl
     
       // Get equipment stats info
-      const responseContent = apiFree_getAllAvailableContentObjects();
-      content = JSON.parse(responseContent).data;
+      const responseContent = apiFree_getAllAvailableContentObjects()
+      content = JSON.parse(responseContent).data
     
       // Compute total Intelligence
-      let int = calculateIntelligence();
+      let int = calculateIntelligence()
     
       // Compute maximum mana and how close they are to max
-      let maxMp = (2 * int) + 30;
-      let mpDiff = maxMp - mp;
+      let maxMp = (2 * int) + 30
+      let mpDiff = maxMp - mp
     
       // Counters
-      var cronCountKey = CRON_COUNT_KEY;
-      var HpForMpUsageKey = HP_FOR_MP_KEY;
-      var XpForMpUsageKey = XP_FOR_MP_KEY;
+      var cronCountKey = CRON_COUNT_KEY
+      var HpForMpUsageKey = HP_FOR_MP_KEY
+      var XpForMpUsageKey = XP_FOR_MP_KEY
     
-      var cronCount = Number(scriptProperties.getProperty(cronCountKey));
-      var HpForMpUsage = Number(scriptProperties.getProperty(HpForMpUsageKey));
-      var XpForMpUsage = Number(scriptProperties.getProperty(XpForMpUsageKey));
+      var cronCount = Number(scriptProperties.getProperty(cronCountKey))
+      var HpForMpUsage = Number(scriptProperties.getProperty(HpForMpUsageKey))
+      var XpForMpUsage = Number(scriptProperties.getProperty(XpForMpUsageKey))
     
       // If they've Cronned, reset all counters
       if (cronCount != user.flags.cronCount) {
-        cronCount = user.flags.cronCount;
-        resetCounters();
+        cronCount = user.flags.cronCount
+        resetCounters()
         
         // Save to non-volatile memory
-        scriptProperties.setProperty(cronCountKey, cronCount);
+        scriptProperties.setProperty(cronCountKey, cronCount)
       }
       
       // Switch-case based on which button was pressed. All button-click actions are in a separate function.
       switch (sanitizedAlias){
         case HP_FOR_MP_ALIAS:
-          doButtonHpForMp(lvl, hp, mp, mpDiff, HpForMpUsage, HpForMpUsageKey);
-          break;
+          doButtonHpForMp(lvl, hp, mp, mpDiff, HpForMpUsage, HpForMpUsageKey)
+          break
         case XP_FOR_MP_ALIAS:
-          doButtonXpForMp(lvl, exp, mp, mpDiff, XpForMpUsage, XpForMpUsageKey);
-          break;
+          doButtonXpForMp(lvl, exp, mp, mpDiff, XpForMpUsage, XpForMpUsageKey)
+          break
       }
     
       // Save values to non-volatile memory, but only from within the rate-limited if-block (we don't want to save the timestamp unless the script ran)
-      timeStart = timeEnd;
-      scriptProperties.setProperty(cronCountKey, cronCount);
-      scriptProperties.setProperty(timestampKey, timeStart);
+      timeStart = timeEnd
+      scriptProperties.setProperty(cronCountKey, cronCount)
+      scriptProperties.setProperty(timestampKey, timeStart)
     }
   }
-  return HtmlService.createHtmlOutput();
+  return HtmlService.createHtmlOutput()
 }
 
 // When the HP-for-MP button is clicked
 function doButtonHpForMp(lvl, hp, mp, mpDiff, HpForMpUsage, HpForMpUsageKey){
   // If level lock fails, send failure message
   if (lvl < HP_FOR_MP_LEVEL_LOCK) {
-    api_sendPrivateMessage({"message" : MSG_HP_FOR_MP_LEVEL_LOCK_FAIL, "toUserId" : USER_ID});
+    api_sendPrivateMessage({"message" : MSG_HP_FOR_MP_LEVEL_LOCK_FAIL, "toUserId" : USER_ID})
   }
   else {
     // Check if they've exceeded daily usage. If yes, send failure message.
     if (HpForMpUsage >= MAX_DAILY_HP_FOR_MP_USAGE) {
-      api_sendPrivateMessage({"message" : MSG_HP_FOR_MP_DAILY_USAGE_EXCEEDED, "toUserId" : USER_ID});
+      api_sendPrivateMessage({"message" : MSG_HP_FOR_MP_DAILY_USAGE_EXCEEDED, "toUserId" : USER_ID})
     }
     else {
       // Check if they have sufficient Health. Send failure message if not.
-      if (hp < 5) {
-        api_sendPrivateMessage({"message" : MSG_INSUFFICIENT_HP, "toUserId" : USER_ID});
+      if (hp < HP_COST_HP_FOR_MP) {
+        api_sendPrivateMessage({"message" : MSG_INSUFFICIENT_HP, "toUserId" : USER_ID})
       }
       else {
         // Check if they're already at maximum mana. If yes, send failure message
         if (mpDiff <= 0) {
-          api_sendPrivateMessage({"message" : MSG_ALREADY_AT_MAX_MANA, "toUserId" : USER_ID});
+          api_sendPrivateMessage({"message" : MSG_ALREADY_AT_MAX_MANA, "toUserId" : USER_ID})
         }
         // Check if they're close to maximum mana. If yes, refill them to max but not beyond, and send a message
-        else if (mpDiff <= 10) {
-          api_updateUser({"stats.hp" : hp - 5, "stats.mp" : mp + mpDiff});
-          HpForMpUsage++;
-          api_sendPrivateMessage({"message" : MSG_NEAR_MAX_MANA, "toUserId" : USER_ID});
+        else if (mpDiff <= MP_GAIN_HP_FOR_MP) {
+          api_updateUser({"stats.hp" : hp - HP_COST_HP_FOR_MP, "stats.mp" : mp + mpDiff})
+          HpForMpUsage++
+          api_sendPrivateMessage({"message" : MSG_NEAR_MAX_MANA, "toUserId" : USER_ID})
           
           // Save new counter value since it's updated
-          scriptProperties.setProperty(HpForMpUsageKey, HpForMpUsage);
+          scriptProperties.setProperty(HpForMpUsageKey, HpForMpUsage)
         }
         // Otherwise, run as normal
-        else if (mpDiff > 10){
-          api_updateUser({"stats.hp" : hp - 5, "stats.mp" : mp + 10});
-          HpForMpUsage++;
+        else if (mpDiff > MP_GAIN_HP_FOR_MP){
+          api_updateUser({"stats.hp" : hp - HP_COST_HP_FOR_MP, "stats.mp" : mp + MP_GAIN_HP_FOR_MP})
+          HpForMpUsage++
           
           // Save new counter value since it's updated
-          scriptProperties.setProperty(HpForMpUsageKey, HpForMpUsage);
+          scriptProperties.setProperty(HpForMpUsageKey, HpForMpUsage)
         }
       }
     }
@@ -238,42 +270,42 @@ function doButtonHpForMp(lvl, hp, mp, mpDiff, HpForMpUsage, HpForMpUsageKey){
 function doButtonXpForMp(lvl, exp, mp, mpDiff, XpForMpUsage, XpForMpUsageKey){
   // If level lock fails, send failure message
   if (lvl < XP_FOR_MP_LEVEL_LOCK) {
-    api_sendPrivateMessage({"message" : MSG_XP_FOR_MP_LEVEL_LOCK_FAIL, "toUserId" : USER_ID});
+    api_sendPrivateMessage({"message" : MSG_XP_FOR_MP_LEVEL_LOCK_FAIL, "toUserId" : USER_ID})
   }
   else {
     // Check if another use (50 XP) would cause them to exceed daily usage. If yes, send failure message.
-    var XpToNextLevel = Math.round((Math.pow(lvl, 2) * 0.25 + 10 * lvl + 139.75) / 10) * 10;
-    var MaxDailyXpUsage = Math.floor(XpToNextLevel / 3);
+    var XpToNextLevel = Math.round((Math.pow(lvl, 2) * 0.25 + 10 * lvl + 139.75) / 10) * 10
+    var MaxDailyXpUsage = Math.floor(XpToNextLevel / 3)
 
-    if (XpForMpUsage + 50 > MaxDailyXpUsage) {
-      api_sendPrivateMessage({"message" : MSG_XP_FOR_MP_DAILY_USAGE_EXCEEDED, "toUserId" : USER_ID});
+    if (XpForMpUsage + XP_COST_XP_FOR_MP > MaxDailyXpUsage) {
+      api_sendPrivateMessage({"message" : MSG_XP_FOR_MP_DAILY_USAGE_EXCEEDED, "toUserId" : USER_ID})
     }
     else {
       // Check if they have sufficient Experience. Send failure message if not.
-      if (exp < 50) {
-        api_sendPrivateMessage({"message" : MSG_INSUFFICIENT_XP, "toUserId" : USER_ID});
+      if (exp < XP_COST_XP_FOR_MP) {
+        api_sendPrivateMessage({"message" : MSG_INSUFFICIENT_XP, "toUserId" : USER_ID})
       }
       else {
         // Check if they're already at maximum mana. If yes, send failure message
         if (mpDiff <= 0) {
-          api_sendPrivateMessage({"message" : MSG_ALREADY_AT_MAX_MANA, "toUserId" : USER_ID});
+          api_sendPrivateMessage({"message" : MSG_ALREADY_AT_MAX_MANA, "toUserId" : USER_ID})
         }
         // Check if they're close to maximum mana. If yes, refill them to max but not beyond, and send a message
-        else if (mpDiff <= 10) {
-          api_updateUser({"stats.mp" : mp + mpDiff, "stats.exp" : exp - 50});
-          XpForMpUsage += 50;
-          api_sendPrivateMessage({"message" : MSG_NEAR_MAX_MANA, "toUserId" : USER_ID});
+        else if (mpDiff <= MP_GAIN_XP_FOR_MP) {
+          api_updateUser({"stats.mp" : mp + mpDiff, "stats.exp" : exp - XP_COST_XP_FOR_MP})
+          XpForMpUsage += XP_COST_XP_FOR_MP
+          api_sendPrivateMessage({"message" : MSG_NEAR_MAX_MANA, "toUserId" : USER_ID})
           
           // Save new counter value since it's updated
-          scriptProperties.setProperty(XpForMpUsageKey, XpForMpUsage);
+          scriptProperties.setProperty(XpForMpUsageKey, XpForMpUsage)
         }
         // Otherwise, run as normal
-        else if (mpDiff > 10){
-          api_updateUser({"stats.mp" : mp + 10, "stats.exp" : exp - 50});
-          XpForMpUsage += 50;
+        else if (mpDiff > MP_GAIN_XP_FOR_MP){
+          api_updateUser({"stats.mp" : mp + MP_GAIN_XP_FOR_MP, "stats.exp" : exp - XP_COST_XP_FOR_MP})
+          XpForMpUsage += XP_COST_XP_FOR_MP
           
           // Save new counter value since it's updated
-          scriptProperties.setProperty(XpForMpUsageKey, XpForMpUsage);
+          scriptProperties.setProperty(XpForMpUsageKey, XpForMpUsage)
         }
       }
     }
@@ -290,24 +322,24 @@ function api_createNewTaskForUser(payload) {
     "muteHttpExceptions" : true,
   }
 
-  var url = "https://habitica.com/api/v3/tasks/user";
-  UrlFetchApp.fetch(url, params);
+  var url = "https://habitica.com/api/v3/tasks/user"
+  UrlFetchApp.fetch(url, params)
 }
 
 // Create a webhook if no duplicate exists
 function apiMult_createNewWebhookNoDuplicates(payload) {
-  const response = api_getWebhooks();
-  const webhooks = JSON.parse(response).data;
-  var duplicateExists = 0;
+  const response = api_getWebhooks()
+  const webhooks = JSON.parse(response).data
+  var duplicateExists = 0
     
   for (var i in webhooks) {
     if (webhooks[i].label == payload.label) {
-      duplicateExists = 1;
+      duplicateExists = 1
     }
   }
   // If webhook to be created doesn't exist yet
   if (!duplicateExists) {
-    api_createNewWebhook(payload);
+    api_createNewWebhook(payload)
   }
 }
 
@@ -319,8 +351,8 @@ function api_getWebhooks() {
     "muteHttpExceptions" : true,
   }
   
-  const url = "https://habitica.com/api/v3/user/webhook";
-  return UrlFetchApp.fetch(url, params);
+  const url = "https://habitica.com/api/v3/user/webhook"
+  return UrlFetchApp.fetch(url, params)
 }
 
 // Creates a webhook (as part of the "don't make it if there's a duplicate" function)
@@ -333,17 +365,17 @@ function api_createNewWebhook(payload) {
     "muteHttpExceptions" : true,
   }
    
-  const url = "https://habitica.com/api/v3/user/webhook";
-  return UrlFetchApp.fetch(url, params);
+  const url = "https://habitica.com/api/v3/user/webhook"
+  return UrlFetchApp.fetch(url, params)
 }
 
 // Sets initial properties that will be used/saved later.
 function initScriptProperties() {
-  var timestampInit = Date.now();
-  scriptProperties.setProperty(CRON_COUNT_KEY, 0);
-  scriptProperties.setProperty(HP_FOR_MP_KEY, 0);
-  scriptProperties.setProperty(XP_FOR_MP_KEY, 0);
-  scriptProperties.setProperty(TIMESTAMP_KEY, timestampInit);
+  var timestampInit = Date.now()
+  scriptProperties.setProperty(CRON_COUNT_KEY, 0)
+  scriptProperties.setProperty(HP_FOR_MP_KEY, 0)
+  scriptProperties.setProperty(XP_FOR_MP_KEY, 0)
+  scriptProperties.setProperty(TIMESTAMP_KEY, timestampInit)
 }
 
 // Gets user info so I can use it, especially stats like mana, experience, and level
@@ -354,12 +386,12 @@ function api_getAuthenticatedUserProfile(userFields) {
     "muteHttpExceptions" : true,
   }
   
-  var url = "https://habitica.com/api/v3/user";
+  var url = "https://habitica.com/api/v3/user"
   if (userFields != "") {
-    url += "?userFields=" + userFields;
+    url += "?userFields=" + userFields
   }
 
-  return UrlFetchApp.fetch(url, params);
+  return UrlFetchApp.fetch(url, params)
 }
 
 function apiFree_getAllAvailableContentObjects() {
@@ -368,42 +400,42 @@ function apiFree_getAllAvailableContentObjects() {
     "muteHttpExceptions" : true,
   }
   
-  const url = "https://habitica.com/api/v3/content";
-  return UrlFetchApp.fetch(url, params);
+  const url = "https://habitica.com/api/v3/content"
+  return UrlFetchApp.fetch(url, params)
 }
 
 function calculateIntelligence() {
-  const levelIntRaw = Math.floor(user.stats.lvl / 2);
-  const levelInt = (levelIntRaw > 50) ? 50 : levelIntRaw;
+  const levelIntRaw = Math.floor(user.stats.lvl / 2)
+  const levelInt = (levelIntRaw > 50) ? 50 : levelIntRaw
   
-  var totalEquipmentAndClassInt = 0;
-  const allocatedInt = user.stats.int;
-  const buffsInt = user.stats.buffs.int;
+  var totalEquipmentAndClassInt = 0
+  const allocatedInt = user.stats.int
+  const buffsInt = user.stats.buffs.int
   
   // Get INT from equipped gear
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.weapon]);
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.shield]);
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.head]);
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.armor]);
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.headAccessory]);
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.eyewear]);
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.body]);
-  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.back]);
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.weapon])
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.shield])
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.head])
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.armor])
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.headAccessory])
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.eyewear])
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.body])
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.back])
 
-  return levelInt + totalEquipmentAndClassInt + allocatedInt + buffsInt;
+  return levelInt + totalEquipmentAndClassInt + allocatedInt + buffsInt
 }
 
 function calcEquipmentAndClassInt(equipment) {
-  var equipmentAndClassInt = 0;
+  var equipmentAndClassInt = 0
 
   if (equipment != undefined) {  
-    equipmentAndClassInt += equipment.int;
+    equipmentAndClassInt += equipment.int
     if ( (equipment.klass == user.stats.class) || ( (equipment.klass == "special") && (equipment.specialClass == user.stats.class) ) ) {
-      equipmentAndClassInt += equipment.int / 2;
+      equipmentAndClassInt += equipment.int / 2
     }
   }
   
-  return equipmentAndClassInt;
+  return equipmentAndClassInt
 }
 
 // Changes stats
@@ -416,63 +448,63 @@ function api_updateUser(payload) {
     "muteHttpExceptions" : true,
   }
   
-  const url = "https://habitica.com/api/v3/user";
-  return UrlFetchApp.fetch(url, params);
+  const url = "https://habitica.com/api/v3/user"
+  return UrlFetchApp.fetch(url, params)
 }
 
 // Send a notification as a private message, only if they're enabled
 function api_sendPrivateMessage(payload) {
   switch (NOTIFICATIONS_ON){ // Check if notifications are on, send message if yes
-        case 0:
-          break;        
-        case 1:
-            const params = {
-              "method" : "post",
-              "headers" : HEADERS,
-              "contentType" : "application/json",
-              "payload" : JSON.stringify(payload),
-              "muteHttpExceptions" : true,
-            }
-            const url = "https://habitica.com/api/v3/members/send-private-message";
-            return UrlFetchApp.fetch(url, params);
-          break;
+    case 0:
+      break        
+    case 1:
+      const params = {
+        "method" : "post",
+        "headers" : HEADERS,
+        "contentType" : "application/json",
+        "payload" : JSON.stringify(payload),
+        "muteHttpExceptions" : true,
+      }
+      const url = "https://habitica.com/api/v3/members/send-private-message"
+      return UrlFetchApp.fetch(url, params)
+      break
   }
 }
 
 // Resets usage counters, usually done at Cron
 function resetCounters(){
-  scriptProperties.setProperty(HP_FOR_MP_KEY, 0);
-  scriptProperties.setProperty(XP_FOR_MP_KEY, 0);
+  scriptProperties.setProperty(HP_FOR_MP_KEY, 0)
+  scriptProperties.setProperty(XP_FOR_MP_KEY, 0)
 }
 
 // FUNCTIONS FOR DEBUGGING. SCRIPT DOES NOT USE THEM, THEY MUST BE TRIGGERED MANUALLY
 
 // Manually reset usage counters
 function debugResetCounters() {
-  resetCounters();
+  resetCounters()
 }
 
 // Retrieves saved values and sends them in a private message
 function debugGetSavedValues(){
-  let cronCount = Number(scriptProperties.getProperty(CRON_COUNT_KEY));
-  let HpForMpUsage = Number(scriptProperties.getProperty(HP_FOR_MP_KEY));
-  let XpForMpUsage = Number(scriptProperties.getProperty(XP_FOR_MP_KEY));
+  let cronCount = Number(scriptProperties.getProperty(CRON_COUNT_KEY))
+  let HpForMpUsage = Number(scriptProperties.getProperty(HP_FOR_MP_KEY))
+  let XpForMpUsage = Number(scriptProperties.getProperty(XP_FOR_MP_KEY))
    
   // saving these will make my life easier
-  let MSG_JOINER_BEFORE = " is `";
-  let MSG_JOINER_AFTER = "`, "; 
+  let MSG_JOINER_BEFORE = " is `"
+  let MSG_JOINER_AFTER = "`, "
   
   api_sendPrivateMessageAlways({"message" : "Saved values are as follows: cronCount is `" + cronCount + MSG_JOINER_AFTER
                                 + "HpForMpUsage" + MSG_JOINER_BEFORE + HpForMpUsage + MSG_JOINER_AFTER
-                                + "XpForMpUsage" + MSG_JOINER_BEFORE + XpForMpUsage + "`", "toUserId" : USER_ID});
+                                + "XpForMpUsage" + MSG_JOINER_BEFORE + XpForMpUsage + "`", "toUserId" : USER_ID})
 }
 
 // Mannually edits and saves the selected value (in case it saved incorrectly)
 function debugManuallyEditSavedValue() {
   // Fill them in below. HpForMpUsage is shown as a sample.
-  let newValue = 0; 
-  let key = HP_FOR_MP_KEY;
+  let newValue = 0
+  let key = HP_FOR_MP_KEY
   
   // Save
-  scriptProperties.setProperty(key, newValue);
+  scriptProperties.setProperty(key, newValue)
 }
