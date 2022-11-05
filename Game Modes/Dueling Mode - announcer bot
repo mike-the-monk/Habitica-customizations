@@ -4,9 +4,9 @@
 /* ========================================== */
 /* [Users] Required script data to fill in    */
 /* ========================================== */
-const USER_ID = "PasteYourUserIdHere";
-const API_TOKEN = "PasteYourApiTokenHere"; // Do not share this to anyone
-const WEB_APP_URL = "PasteGeneratedWebAppUrlHere";
+const USER_ID = "PasteYourUserIdHere"
+const API_TOKEN = "PasteYourApiTokenHere" // Do not share this to anyone
+const WEB_APP_URL = "PasteGeneratedWebAppUrlHere"
 
 /* ========================================== */
 /* [Users] Required customizations to fill in */
