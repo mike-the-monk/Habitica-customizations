@@ -553,7 +553,7 @@ function doButtonDoubleBuffStrInt(mp, unbuffedStr, buffsStr, unbuffedInt, buffsI
   let enoughMana = checkMana(mp, DOUBLE_BUFF_STR_INT_MP_COST, false)
   if (enoughMana) {
     valorousPresence(unbuffedStr, buffsStr)
-    buffInt(unbuffedInt, buffsInt)
+    earthquake(unbuffedInt, buffsInt)
   }
 }
 
