@@ -48,7 +48,6 @@ const BAD_DAY_MODE_BUTTON = {
 }
 
 function doOneTimeSetup() {
-  // These are not "else if" statements on purpose
   api_createNewTaskForUser([BAD_DAY_MODE_BUTTON])
   
   // Next, create the webhook
@@ -73,7 +72,7 @@ function doPost(e) {
   // Sanitize task alias
   let sanitizedAlias = "sanitized" // This will be the value if undefined, null, or blank
   if ( (task.alias != undefined) && (task.alias != null) && (task.alias != "") ) {
-    sanitizedAlias = task.alias;
+    sanitizedAlias = task.alias
   }
   
   if (type == "scored") {
