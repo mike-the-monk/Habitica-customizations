@@ -138,7 +138,7 @@ function apiMult_createNewWebhookNoDuplicates(payload) {
   var duplicateExists = 0
     
   for (var i in webhooks) {
-    if (webhooks[i].label == paload.label) {
+    if (webhooks[i].label == payload.label) {
       duplicateExists = 1;
     }
   }
