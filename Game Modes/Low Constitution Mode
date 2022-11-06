@@ -124,7 +124,7 @@ function doPost(e) {
     }
     
     // If they pressed the button, toggle into/out of Low Constitution Mode
-    if (sanitizedAlias == LOW_CON_MODE_ALIAS)) {
+    if (sanitizedAlias == LOW_CON_MODE_ALIAS) {
       toggleLowConstitutionMode()
     }
   } 
