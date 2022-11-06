@@ -164,7 +164,7 @@ function toggleLowConstitutionMode(){
   // If anti-buff usage is odd, then user is in Low Con Mode. Therefore, remove them from it
   else {
     // Reverse the anti-buff, unsave anti-buff value, increment counter
-    api_updateUser({"stats.buffs.con" : 1 - antiBuffCon})
+    api_updateUser({"stats.buffs.con" : 1 - antiBuffAmount})
     antiBuffAmount = 0
     antiBuffUsage++
     
