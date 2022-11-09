@@ -440,6 +440,19 @@ function checkUsageLimit(usageCounter, newUsageIncrement, maxUsage, message){
   }
 }
 
+// Send a notification as a private message regardless of if they're enabled
+function api_sendPrivateMessageAlways(payload) {
+  const params = {
+    "method" : "post",
+    "headers" : HEADERS,
+    "contentType" : "application/json",
+    "payload" : JSON.stringify(payload),
+    "muteHttpExceptions" : true,
+  }
+  const url = "https://habitica.com/api/v3/members/send-private-message";
+  return UrlFetchApp.fetch(url, params);
+}
+
 // FUNCTIONS FOR DEBUGGING. SCRIPT DOES NOT USE THEM, THEY MUST BE TRIGGERED MANUALLY
 
 // Manually reset usage counters
