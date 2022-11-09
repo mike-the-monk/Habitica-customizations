@@ -480,8 +480,8 @@ function api_sendPrivateMessageAlways(payload) {
     "payload" : JSON.stringify(payload),
     "muteHttpExceptions" : true,
   }
-  const url = "https://habitica.com/api/v3/members/send-private-message";
-  return UrlFetchApp.fetch(url, params);
+  const url = "https://habitica.com/api/v3/members/send-private-message"
+  return UrlFetchApp.fetch(url, params)
 }
 
 // Resets usage counters, usually done at Cron
