@@ -449,8 +449,8 @@ function api_sendPrivateMessageAlways(payload) {
     "payload" : JSON.stringify(payload),
     "muteHttpExceptions" : true,
   }
-  const url = "https://habitica.com/api/v3/members/send-private-message";
-  return UrlFetchApp.fetch(url, params);
+  const url = "https://habitica.com/api/v3/members/send-private-message"
+  return UrlFetchApp.fetch(url, params)
 }
 
 // FUNCTIONS FOR DEBUGGING. SCRIPT DOES NOT USE THEM, THEY MUST BE TRIGGERED MANUALLY
