@@ -39,7 +39,7 @@ const scriptProperties = PropertiesService.getScriptProperties(); // Constants c
 // Parts of messages that get reused
 const NOTES_START = "Pay "
 const NOTES_MID1 = ", gain "  
-const NOTES_MID2 = "GP (Instant Use). Maximum "
+const NOTES_MID2 = " GP (Instant Use). Maximum "
 const NOTES_END = " per day."
 const MSG_LEVEL_LOCK_START = "You must be at least level "
 const MSG_LEVEL_LOCK_END = " to use this potion."
@@ -441,6 +441,19 @@ function checkUsageLimit(usageCounter, newUsageIncrement, maxUsage, message){
   } else {
     return true
   }
+}
+
+// Send a notification as a private message regardless of if they're enabled
+function api_sendPrivateMessageAlways(payload) {
+  const params = {
+    "method" : "post",
+    "headers" : HEADERS,
+    "contentType" : "application/json",
+    "payload" : JSON.stringify(payload),
+    "muteHttpExceptions" : true,
+  }
+  const url = "https://habitica.com/api/v3/members/send-private-message";
+  return UrlFetchApp.fetch(url, params);
 }
 
 // FUNCTIONS FOR DEBUGGING. SCRIPT DOES NOT USE THEM, THEY MUST BE TRIGGERED MANUALLY
