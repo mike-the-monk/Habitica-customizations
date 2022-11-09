@@ -94,12 +94,11 @@
       // Find the index of a given search term. Choose whether it's case-sensitive or not.
       function findIndex(searchTerm, stringToSearch, caseSensitive) {
         if (caseSensitive){
-          return stringToSearch.indexOf(searchTerm);
+          return stringToSearch.indexOf(searchTerm)
         } else {
-          let uppercaseStringToSearch = stringToSearch.toUpperCase();
-          let index = findIndex(searchTerm, uppercaseStringToSearch);
-          
-          return index;
+          let uppercaseStringToSearch = stringToSearch.toUpperCase()
+          let uppercaseSearchTerm = searchTerm.toUpperCase()
+          return uppercaseStringToSearch.indexOf(uppercaseSearchTerm)
         }
       }
 
