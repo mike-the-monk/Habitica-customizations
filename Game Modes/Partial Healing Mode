@@ -27,7 +27,7 @@ const HP_PERCENT_PER_LEVEL = 50.0 // Do not put a percent sign after the number 
 
 // Do you want a button that lets you enter/exit Partial Healing Mode? If yes, change the 0 to a 1 below.
 // If you don't have a button, you can still enter/exit the Mode by manually running the function "togglePartialHealingMode"
-const PARTIAL_HEALING_TOGGLE_BUTTON = 1
+const PARTIAL_HEALING_TOGGLE_BUTTON = 0
 
 /* ========================================== */
 /* [Users] Do not edit code below this line   */
