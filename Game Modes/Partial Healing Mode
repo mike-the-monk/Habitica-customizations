@@ -27,7 +27,7 @@ const HP_PERCENT_PER_LEVEL = 50.0 // Do not put a percent sign after the number 
 
 // Do you want a button that lets you enter/exit Partial Healing Mode? If yes, change the 0 to a 1 below.
 // If you don't have a button, you can still enter/exit the Mode by manually running the function "togglePartialHealingMode"
-const PARTIAL_HEALING_TOGGLE_BUTTON = 0
+const PARTIAL_HEALING_TOGGLE_BUTTON = 1
 
 /* ========================================== */
 /* [Users] Do not edit code below this line   */
@@ -46,7 +46,7 @@ const scriptProperties = PropertiesService.getScriptProperties(); // Constants c
 const PARTIAL_HEALING_MODE_TEXT_START = "Click to "
 const PARTIAL_HEALING_MODE_TEXT_END = " Partial Healing Mode"
 const PARTIAL_HEALING_MODE_NOTES_START = "You are "
-const PARTIAL_HEALING_MODE_NOTES_MID = "in Partial Healing Mode. Click this button to "
+const PARTIAL_HEALING_MODE_NOTES_MID = " in Partial Healing Mode. Click this button to "
 const PARTIAL_HEALING_MODE_NOTES_END = " that Mode."
 
 const PARTIAL_HEALING_MODE_TEXT_EXIT = PARTIAL_HEALING_MODE_TEXT_START + "exit" + PARTIAL_HEALING_MODE_TEXT_END
@@ -101,7 +101,8 @@ function doOneTimeSetup() {
 function doPost(e) {
   const dataContents = JSON.parse(e.postData.contents)
   const type = dataContents.type
-  
+  const task = dataContents.task
+
   if (type == "scored") {
     // Sanitize task alias
     let sanitizedAlias = "sanitized" // This will be the value if undefined, null, or blank
@@ -132,43 +133,37 @@ function doPost(e) {
         // See if they've leveled up
         if (currentLvl > prevLvl) {
           if ( VERSION == 2 ) {
-            let valueToHeal = sanitizeInput (HP_SET_VALUE_PER_LEVEL, 0, 50)
-            let newHp = valueToHeal + prevHp
+            let valueToHeal = sanitizeInput(HP_SET_VALUE_PER_LEVEL, 0, 50)
+            let newHp = sanitizeInput(valueToHeal + prevHp,0, 50)
 
-            if (newHp >= 50) { api_updateUser({"stats.hp" : 50}) }
-            else { api_updateUser({"stats.hp" : newHp}) }
-
-            prevHp = newHp   
-            prevLvl = currentLvl
+            api_updateUser({"stats.hp" : newHp})
+            
+            scriptProperties.setProperty(hpKey, newHp)
           }
           else if ( VERSION == 3 ) {
             let percentToHeal = sanitizeInput (HP_PERCENT_PER_LEVEL, 0, 100)
             let healing = ( percentToHeal / 100 ) * ( 50 - prevHp )
-            let newHpPercent = healing + prevHp
+            let newHpPercent = sanitizeInput(healing + prevHp,0, 50)
 
-            if (newHpPercent >= 50) { api_updateUser({"stats.hp" : 50}) }
-            else { api_updateUser({"stats.hp" : newHpPercent}) }
+            api_updateUser({"stats.hp" : newHpPercent})
 
-            prevHp = newHp   
-            prevLvl = currentLvl
-
-            // Since the values recently changed, save them.
-            scriptProperties.setProperty(hpKey, prevHp)
-            scriptProperties.setProperty(lvlKey, prevLvl)
+            scriptProperties.setProperty(hpKey, newHpPercent)
           }
+          
+          // Save new level
+          scriptProperties.setProperty(lvlKey, currentLvl)
         }
         // If they haven't leveled up since the last time the script ran...
         else {
           // If previous and current HP are the same, no need to re-save. Otherwise, do.
           if (prevHp != currentHp) {
-            prevHp = currentHp
-            scriptProperties.setProperty(hpKey, prevHp)
+            scriptProperties.setProperty(hpKey, currentHp)
           }
         }
       }
     }
-    return HtmlService.createHtmlOutput()
   }
+  return HtmlService.createHtmlOutput()
 }
 
 // Enters or exits from Partial Healing Mode
@@ -176,19 +171,25 @@ function togglePartialHealingMode(){
   var partialHealingModeActiveKey = PARTIAL_HEALING_MODE_ACTIVE_KEY
   var partialHealingModeActive = Number(scriptProperties.getProperty(partialHealingModeActiveKey))
   
+  // If not in Partial Healing Mode, enter it.
   if (partialHealingModeActive == 0) {
     scriptProperties.setProperty(partialHealingModeActiveKey, 1)
+
+    // Save HP and level
+    initiatePartialHealingValues()
     
     // Update button if the user created it
     if (PARTIAL_HEALING_TOGGLE_BUTTON == 1) {
-      api_updateTask(PARTIAL_HEALING_MODE_ALIAS, {"text": PARTIAL_HEALING_MODE_TEXT_ENTER, "notes": PARTIAL_HEALING_MODE_NOTES_ENTER,})
+      api_updateTask(PARTIAL_HEALING_MODE_ALIAS, {"text": PARTIAL_HEALING_MODE_TEXT_EXIT, "notes": PARTIAL_HEALING_MODE_NOTES_EXIT,})
     }
-  } else if (partialHealingModeActive == 1) {
+  } 
+  // If in Partial Healing Mode, exit it.
+  else if (partialHealingModeActive == 1) {
     scriptProperties.setProperty(partialHealingModeActiveKey, 0)
     
     // Update button if the user created it
     if (PARTIAL_HEALING_TOGGLE_BUTTON == 1) {
-      api_updateTask(taskIdOrAlias, {"text": PARTIAL_HEALING_MODE_TEXT_EXIT, "notes": PARTIAL_HEALING_MODE_NOTES_EXIT,})
+      api_updateTask(PARTIAL_HEALING_MODE_ALIAS, {"text": PARTIAL_HEALING_MODE_TEXT_ENTER, "notes": PARTIAL_HEALING_MODE_NOTES_ENTER,})
     }
   } 
 }
@@ -268,6 +269,14 @@ function api_getAuthenticatedUserProfile(userFields) {
 
 // Sets initial properties that will be used/saved later.
 function initScriptProperties() {
+  scriptProperties.setProperty(PARTIAL_HEALING_MODE_ACTIVE_KEY, 1)
+
+  // Also save HP and level; it's in a separate function on purpose.
+  initiatePartialHealingValues()
+}
+
+// Saves initial HP and Level values
+function initiatePartialHealingValues(){
   const responseInit = api_getAuthenticatedUserProfile("stats")
   user = JSON.parse(responseInit).data
     
@@ -276,7 +285,6 @@ function initScriptProperties() {
   
   scriptProperties.setProperty(HP_KEY, currentHp)
   scriptProperties.setProperty(LVL_KEY, currentLvl)
-  scriptProperties.setProperty(PARTIAL_HEALING_MODE_ACTIVE_KEY, 1)
 }
 
 // Ensures that the input is between the minimum and maximum. Can use "none" in either argument to indicate if there is either no minimum or no maximum.
