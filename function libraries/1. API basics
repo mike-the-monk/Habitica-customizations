@@ -23,9 +23,9 @@
         "muteHttpExceptions" : true,
       }
 
-      const url = "https://habitica.com/api/v3/groups/" + groupId + "/chat";
+      const url = "https://habitica.com/api/v3/groups/" + groupId + "/chat"
 
-      return UrlFetchApp.fetch(url, params);
+      return UrlFetchApp.fetch(url, params)
     }
 
     // Posts a chat message to a group
@@ -37,8 +37,8 @@
         "payload" : JSON.stringify(payload),
         "muteHttpExceptions" : true,
       }
-      const url = "https://habitica.com/api/v3/groups/" + groupId + "/chat";
-      return UrlFetchApp.fetch(url, params);
+      const url = "https://habitica.com/api/v3/groups/" + groupId + "/chat"
+      return UrlFetchApp.fetch(url, params)
     }
 
     // Deletes a chat message
@@ -49,12 +49,12 @@
         "muteHttpExceptions" : true,
       }
 
-      var url = "https://habitica.com/api/v3/groups/";
+      var url = "https://habitica.com/api/v3/groups/"
       if (groupId != "") {
-        url += groupId;
-        url += "/chat/";
+        url += groupId
+        url += "/chat/"
         if (chatId != "") {
-          url += chatId;
+          url += chatId
         }
       }
       return UrlFetchApp.fetch(url, params);
@@ -69,8 +69,8 @@
         "muteHttpExceptions" : true,
       }
 
-      const url = "https://habitica.com/api/v3/content";
-      return UrlFetchApp.fetch(url, params);
+      const url = "https://habitica.com/api/v3/content"
+      return UrlFetchApp.fetch(url, params)
     }
 
   // DATA EXPORT
@@ -84,19 +84,18 @@
     // Send a notification as a private message, only if they're enabled
     function api_sendPrivateMessage(payload) {
       switch (NOTIFICATIONS_ON){ // Check if notifications are on, send message if yes
-            case 0:
-              break;        
-            case 1:
-                const params = {
-                  "method" : "post",
-                  "headers" : HEADERS,
-                  "contentType" : "application/json",
-                  "payload" : JSON.stringify(payload),
-                  "muteHttpExceptions" : true,
-                }
-                const url = "https://habitica.com/api/v3/members/send-private-message";
-                return UrlFetchApp.fetch(url, params);
-              break;
+        case 0:
+          break        
+        case 1:
+          const params = {
+            "method" : "post",
+            "headers" : HEADERS,
+            "contentType" : "application/json",
+            "payload" : JSON.stringify(payload),
+            "muteHttpExceptions" : true,
+          }
+          const url = "https://habitica.com/api/v3/members/send-private-message"
+          return UrlFetchApp.fetch(url, params)
       }
     }
 
@@ -109,8 +108,8 @@
         "payload" : JSON.stringify(payload),
         "muteHttpExceptions" : true,
       }
-      const url = "https://habitica.com/api/v3/members/send-private-message";
-      return UrlFetchApp.fetch(url, params);
+      const url = "https://habitica.com/api/v3/members/send-private-message"
+      return UrlFetchApp.fetch(url, params)
     }
 
   // NOTIFICATION
@@ -118,58 +117,6 @@
   // QUEST
 
   // TAG
-
-    // Create a new tag if it hasn't been done yet, get its ID if it has
-    function apiMult_createNewTagNoDuplicates(tagName){
-      const response = api_getTags();
-      const tags = JSON.parse(response).data;
-
-      // Initialize these
-      let duplicateExists = 0;
-      let tagId = "newlyCreated";
-
-      for (var i in tags) {
-        if (tags[i].name == tagName) {
-          duplicateExists++;
-
-          // If there is a match, grab the tag ID
-          tagId = tags[i].id;
-        }
-      }
-
-      // If no duplicate, create new tag
-      if (duplicateExists == 0) {
-        api_createNewTag({"name": tagName});
-      } 
-
-      return tagId;
-    }
-
-    // Gets all of a user's tags
-    function api_getTags() {
-      const params = {
-        "method" : "get",
-        "headers" : HEADERS,
-        "muteHttpExceptions" : true,
-      }
-
-      const url = "https://habitica.com/api/v3/tags";
-      return UrlFetchApp.fetch(url, params);
-    }
-
-    // Create new tag
-    function api_createNewTag(payload) {
-      const params = {
-        "method" : "post",
-        "headers" : HEADERS,
-        "contentType" : "application/json",
-        "payload" : JSON.stringify(payload),
-        "muteHttpExceptions" : true,
-      }
-
-      const url = "https://habitica.com/api/v3/tags";
-      return UrlFetchApp.fetch(url, params);
-    }
 
   // TASK
 
@@ -183,8 +130,8 @@
         "muteHttpExceptions" : true,
       }
 
-      var url = "https://habitica.com/api/v3/tasks/user";
-      UrlFetchApp.fetch(url, params);
+      var url = "https://habitica.com/api/v3/tasks/user"
+      UrlFetchApp.fetch(url, params)
     }
 
       // Gets user tasks
@@ -195,12 +142,12 @@
         "muteHttpExceptions" : true,
       }
 
-      var url = "https://habitica.com/api/v3/tasks/user";
+      var url = "https://habitica.com/api/v3/tasks/user"
       if (type != "") {
-        url += "?type=" + type;
+        url += "?type=" + type
       }
 
-      return UrlFetchApp.fetch(url, params);
+      return UrlFetchApp.fetch(url, params)
     }
 
     // Score a task
@@ -211,14 +158,14 @@
         "muteHttpExceptions" : true,
       }
 
-      var url = "https://habitica.com/api/v3/tasks/";
+      var url = "https://habitica.com/api/v3/tasks/"
       if ( (aliasOrId != "") && (direction != "") ) {
-        url += aliasOrId + "/score/" + direction;
+        url += aliasOrId + "/score/" + direction
       }
-      return UrlFetchApp.fetch(url, params);
+      return UrlFetchApp.fetch(url, params)
     }
 
-    // Update a task
+    // Updates a task
     function api_updateTask(taskIdOrAlias, payload) {
       const params = {
         "method" : "put",
@@ -228,11 +175,11 @@
         "muteHttpExceptions" : true,
       }
 
-      const url = "https://habitica.com/api/v3/tasks/" + taskIdOrAlias;
-      return UrlFetchApp.fetch(url, params);
+      const url = "https://habitica.com/api/v3/tasks/" + taskIdOrAlias
+      return UrlFetchApp.fetch(url, params)
     }
 
-    // Delete a task
+    // Deletes a task
     function api_deleteTask(taskIdOrAlias) {
       const params = {
         "method" : "delete",
@@ -247,26 +194,6 @@
       return UrlFetchApp.fetch(url, params);
     }
 
-    // Add a tag to a task
-    function api_addTagToTask(taskIdOrAlias, tagId){
-      const params = {
-        "method" : "post",
-        "headers" : HEADERS,
-        "muteHttpExceptions" : true,
-      }
-
-      var url = "https://habitica.com/api/v3/tasks/";
-      if ( (taskIdOrAlias != "") && (taskIdOrAlias != undefined) && (taskIdOrAlias != null) ) {
-        url += taskIdOrAlias + "/tags/";
-
-        if ( (tagId != "") && (tagId != undefined) && (tagId != null) ) {
-          url += tagId;
-          api_sendPrivateMessageAlways({"message" : "URL is" + url, "toUserId" : USER_ID});
-        }
-      }
-      return UrlFetchApp.fetch(url, params);
-    }
-
   // USER
 
     // Gets user info so I can use it, especially stats like mana, experience, and level
@@ -277,12 +204,12 @@
         "muteHttpExceptions" : true,
       }
 
-      var url = "https://habitica.com/api/v3/user";
+      var url = "https://habitica.com/api/v3/user"
       if (userFields != "") {
-        url += "?userFields=" + userFields;
+        url += "?userFields=" + userFields
       }
 
-      return UrlFetchApp.fetch(url, params);
+      return UrlFetchApp.fetch(url, params)
     }
 
     // Changes stats
@@ -295,26 +222,26 @@
         "muteHttpExceptions" : true,
       }
 
-      const url = "https://habitica.com/api/v3/user";
-      return UrlFetchApp.fetch(url, params);
+      const url = "https://habitica.com/api/v3/user"
+      return UrlFetchApp.fetch(url, params)
     }
 
   // WEBHOOK
 
     // Create a webhook if no duplicate exists
     function apiMult_createNewWebhookNoDuplicates(payload) {
-      const response = api_getWebhooks();
-      const webhooks = JSON.parse(response).data;
-      var duplicateExists = 0;
+      const response = api_getWebhooks()
+      const webhooks = JSON.parse(response).data
+      var duplicateExists = 0
 
       for (var i in webhooks) {
         if (webhooks[i].label == payload.label) {
-          duplicateExists = 1;
+          duplicateExists = 1
         }
       }
       // If webhook to be created doesn't exist yet
       if (!duplicateExists) {
-        api_createNewWebhook(payload);
+        api_createNewWebhook(payload)
       }
     }
 
@@ -326,8 +253,8 @@
         "muteHttpExceptions" : true,
       }
 
-      const url = "https://habitica.com/api/v3/user/webhook";
-      return UrlFetchApp.fetch(url, params);
+      const url = "https://habitica.com/api/v3/user/webhook"
+      return UrlFetchApp.fetch(url, params)
     }
 
     // Creates a webhook (as part of the "don't make it if there's a duplicate" function)
@@ -340,20 +267,7 @@
         "muteHttpExceptions" : true,
       }
 
-      const url = "https://habitica.com/api/v3/user/webhook";
-      return UrlFetchApp.fetch(url, params);
+      const url = "https://habitica.com/api/v3/user/webhook"
+      return UrlFetchApp.fetch(url, params)
     }
-
-    // Updates webhook
-    function api_updateWebhook(webhookUrl, payload){
-      const params = {
-        "method" : "put",
-        "headers" : HEADERS,
-        "contentType" : "application/json",
-        "payload" : JSON.stringify(payload),
-        "muteHttpExceptions" : true,
-      }
-
-      const url = "https://habitica.com/api/v3/user/webhook/" + webhookUrl;
-      return UrlFetchApp.fetch(url, params);
-    }
+    
