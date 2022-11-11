@@ -13,72 +13,59 @@
 // 2. NON-API FUNCTIONS
 
   // 2B. SKILLS
-
-    // Checks if sufficient mana, sends message if not. Choose whether to deduct costs now or later.
-    function checkMana(mp, mpCost, deductLater){
-      if (mp < mpCost) {
-        api_sendPrivateMessage({"message" : "Insufficient mana to use this skill.", "toUserId" : USER_ID});
-        return false;
-      } else {
-        if (deductLater) {
-          return true;
-        } else {
-          api_updateUser({"stats.mp" : mp - mpCost});
-          return true;
-        }
-      }
-    }
-
+  
     // Some skills do critical hits
     function criticalHit (stat, chance) {
-      var targetToBeat = chance * ( (1 + stat ) / 100 );
+      var targetToBeat = chance * ( (1 + stat ) / 100 )
       if (Math.random() <= targetToBeat) {
-        return (1.5 +  ( 4 * stat ) / ( stat + 200 ) );
+        return (1.5 +  ( 4 * stat ) / ( stat + 200 ) )
       }
       else {
-        return 1;
+        return 1
       }
     }
 
     // Some skills require getting task value
     function getTaskValue(version, presetTaskValue, taskId) {
+      const MSG_TASK_ID_NOT_FOUND = "Task ID not found, so this script defaulted to the preset task value (version 2 in the Required Customization section). To find task value, see the [wiki page](https://habitica.fandom.com/wiki/Google_Apps_Script#Cross-Class_Skills) section on Required Customizations and then update the script using the instructions at the bottom of the wiki page."
+      
       switch (version){
         case 2:
-          var value = sanitizeInput(presetTaskValue, 0, 21.27);
-          return value;
+          let value = sanitizeInput(presetTaskValue, 0, 21.27)
+          return value 
         case 3:
-          const responseV3 = api_getUserTasks("dailys");
-          const tasksV3 = JSON.parse(responseV3).data;
+          const responseV3 = api_getUserTasks("dailys")
+          const tasksV3 = JSON.parse(responseV3).data
           
           // loop over all Dailies, then average the task value
-          var taskCount = 0;
-          var taskValueTotal = 0;
+          let taskCount = 0
+          let taskValueTotal = 0
           for (var i in tasksV3) {
-            taskValueTotal += tasksV3[i].value;
-            taskCount++;
+            taskValueTotal += tasksV3[i].value
+            taskCount++
           }
-          var average = sanitizeInput(taskValueTotal/taskCount,0,21.27);
-          return average;
+          let average = sanitizeInput((taskValueTotal/taskCount), 0, 21.27)
+          return average
         case 4:
-          const responseV4 = api_getUserTasks("dailys");
-          const tasksV4 = JSON.parse(responseV4).data;
-          var valueV4 = -100;
+          const responseV4 = api_getUserTasks("dailys")
+          const tasksV4 = JSON.parse(responseV4).data
+          let valueV4 = -100
               
           for (var j in tasksV4) {
             if (tasksV4[j]._id == taskId) {
-              valueV4 = tasksV4[j].value;
+              valueV4 = tasksV4[j].value
             }
           }
           
           if (valueV4 == -100) {
-            api_sendPrivateMessageAlways({"message" : "Task ID not found, so this script defaulted to the preset task value (version 2 in the Required Customization section). To find task value, see the [wiki page](https://habitica.fandom.com/wiki/Google_Apps_Script#Cross-Class_Skills) section on Required Customizations and then update the script using the instructions at the bottom of the wiki page.", "toUserId" : USER_ID});
-            var valueIfError = sanitizeInput(presetTaskValue, 0, 21.27);
-            return valueIfError;
+            api_sendPrivateMessageAlways({"message" : MSG_TASK_ID_NOT_FOUND, "toUserId" : USER_ID})
+            let valueIfError = sanitizeInput(presetTaskValue, 0, 21.27)
+            return valueIfError
           }
           else {
             // grab value of task ID
-            var valueById = sanitizeInput(valueV4, 0, 21.27);
-            return valueById;
+            let valueById = sanitizeInput(valueV4, 0, 21.27)
+            return valueById
           }
       }
     }
@@ -86,27 +73,27 @@
     // BUFF SKILLS 
 
       // Warrior skill Valorous Presence
-      function valorousPresence(unbuffedStr, buffsStr) {
-        var buffAmount = Math.ceil( ( (unbuffedStr * 20) / (unbuffedStr + 200) ) );
-        api_updateUser({"stats.buffs.str" : buffsStr + buffAmount});
+      function buffStr(unbuffedStr, buffsStr) {
+        var buffAmount = Math.ceil( ( (unbuffedStr * 20) / (unbuffedStr + 200) ) )
+        api_updateUser({"stats.buffs.str" : buffsStr + buffAmount})
       }
 
       // Mage skill Earthquake
-      function earthquake(unbuffedInt, buffsInt) {
-        var buffAmount = Math.ceil( ( (unbuffedInt * 30) / (unbuffedInt + 200) ) );
-        api_updateUser({"stats.buffs.int" : buffsInt + buffAmount});
+      function buffInt(unbuffedInt, buffsInt) {
+        var buffAmount = Math.ceil( ( (unbuffedInt * 30) / (unbuffedInt + 200) ) )
+        api_updateUser({"stats.buffs.int" : buffsInt + buffAmount})
       }
 
       // Healer skill Protective Aura
-      function protectiveAura(unbuffedCon, buffsCon) {
-        var buffAmount = Math.ceil( ( (unbuffedCon * 200) / (unbuffedCon + 200) ) );
-        api_updateUser({"stats.buffs.con" : buffsCon + buffAmount});
+      function buffCon(unbuffedCon, buffsCon) {
+        var buffAmount = Math.ceil( ( (unbuffedCon * 200) / (unbuffedCon + 200) ) )
+        api_updateUser({"stats.buffs.con" : buffsCon + buffAmount})
       }
 
       // Rogue skill Tools of the Trade
-      function toolsOfTheTrade(unbuffedPer, buffsPer) {
-        var buffAmount = Math.ceil( ( (unbuffedPer * 100) / (unbuffedPer + 50) ) );
-        api_updateUser({"stats.buffs.per" : buffsPer + buffAmount});
+      function buffPer(unbuffedPer, buffsPer) {
+        var buffAmount = Math.ceil( ( (unbuffedPer * 100) / (unbuffedPer + 50) ) )
+        api_updateUser({"stats.buffs.per" : buffsPer + buffAmount})
       }
 
     // WARRIOR SKILLS (EXCEPT BUFFS AND BOSS DAMAGE)
@@ -116,37 +103,37 @@
 
       // Mage skill Chilling Frost
       function chillingFrost(mp, mpCost) {
-        api_updateUser({"stats.buffs.streaks" : true, "stats.mp" : mp - mpCost});
+        api_updateUser({"stats.buffs.streaks" : true, "stats.mp" : mp - mpCost})
       }
 
       // Mage skill Burst of Flames (XP portion only, not boss damage)
       function burstOfFlamesXp(int, per, nTimes) {
-        var taskValue = getTaskValue(BURST_OF_FLAMES_VERSION, BURST_OF_FLAMES_TASK_VALUE, BURST_OF_FLAMES_TASK_ID);
-        var multiplier = 1;
-        var modifiedInt = int;
-        var bonus = 1;
-        var newXpRunningTotal = 0;
+        var taskValue = getTaskValue(BURST_OF_FLAMES_VERSION, BURST_OF_FLAMES_TASK_VALUE, BURST_OF_FLAMES_TASK_ID)
+        var multiplier = 1
+        var modifiedInt = int
+        var bonus = 1
+        var newXpRunningTotal = 0
         
         for ( var i = 1; i <= nTimes; i++) {
-          multiplier = criticalHit(per, 0.03);
-          modifiedInt = int * multiplier;
-          var bonus = Math.ceil( (taskValue + 1) * (modifiedInt * 0.075 ) ) ;
-          newXpRunningTotal += ( ( 75 * bonus ) / ( bonus + 37.5) );
+          multiplier = criticalHit(per, 0.03)
+          modifiedInt = int * multiplier
+          var bonus = Math.ceil( (taskValue + 1) * (modifiedInt * 0.075 ) )
+          newXpRunningTotal += ( ( 75 * bonus ) / ( bonus + 37.5) )
         }
         
-        return newXpRunningTotal;
+        return newXpRunningTotal
       }
 
     // HEALER SKILLS (EXCEPT BUFFS AND BOSS DAMAGE)
 
       // Healer skill Healing Light
       function healingLight (hp, con, int) {
-        var healing = ( ( con + int + 5 ) * 0.075 );
+        var healing = ( ( con + int + 5 ) * 0.075 )
         if (hp + healing >= 50) {
-          api_updateUser({"stats.hp" : 50});
+          api_updateUser({"stats.hp" : 50})
         }
         else {
-          api_updateUser({"stats.hp" : hp + healing});
+          api_updateUser({"stats.hp" : hp + healing})
         }
       }
 
@@ -154,35 +141,35 @@
     
       // Rogue skill Pickpocket
       function pickpocket (gp, per) {
-        var taskValue = getTaskValue(PICKPOCKET_VERSION, PICKPOCKET_TASK_VALUE, PICKPOCKET_TASK_ID);
-        var bonus = ( (taskValue + 1) + (per * 0.5 ) );
-        var newGp = gp + ( ( 25 * bonus ) / ( bonus + 75) );
+        var taskValue = getTaskValue(PICKPOCKET_VERSION, PICKPOCKET_TASK_VALUE, PICKPOCKET_TASK_ID)
+        var bonus = ( (taskValue + 1) + (per * 0.5 ) )
+        var newGp = gp + ( ( 25 * bonus ) / ( bonus + 75) )
         
-        api_updateUser({"stats.gp" : newGp});
+        api_updateUser({"stats.gp" : newGp})
       }
 
       // Rogue skill Backstab
       function backstab (gp, xp, str) {
-        var multiplier = criticalHit(str, 0.3);
-        var modifiedStr = str * multiplier;
-        var taskValue = getTaskValue(BACKSTAB_VERSION, BACKSTAB_TASK_VALUE, BACKSTAB_TASK_ID);
+        var multiplier = criticalHit(str, 0.3)
+        var modifiedStr = str * multiplier
+        var taskValue = getTaskValue(BACKSTAB_VERSION, BACKSTAB_TASK_VALUE, BACKSTAB_TASK_ID)
         var bonus = ( (taskValue + 1) + (modifiedStr * 0.5 ) )
-        var newXp = xp + ( ( 75 * bonus ) / ( bonus + 50) );
-        var newGp = gp + ( ( 18 * bonus ) / ( bonus + 75) );
+        var newXp = xp + ( ( 75 * bonus ) / ( bonus + 50) )
+        var newGp = gp + ( ( 18 * bonus ) / ( bonus + 75) )
 
-        api_updateUser({"stats.gp" : newGp, "stats.exp" : newXp});
+        api_updateUser({"stats.gp" : newGp, "stats.exp" : newXp})
       }
 
       // Rogue skill Stealth
       function stealth (totalDailies, prevStealthedDailies, per) {
-        var newDailiesDodged = Math.ceil( ( 0.64 * totalDailies * ( per / (per + 55) ) ) );
+        var newDailiesDodged = Math.ceil( ( 0.64 * totalDailies * ( per / (per + 55) ) ) )
         
         // If they'd Stealth more than total Dailies, instead only Stealth the total
         if ( ( prevStealthedDailies + newDailiesDodged ) >= totalDailies ) {
-          api_updateUser({"stats.buffs.stealth" : totalDailies});
+          api_updateUser({"stats.buffs.stealth" : totalDailies})
         }
         else {
-          api_updateUser({"stats.buffs.stealth" : prevStealthedDailies + newDailiesDodged});
+          api_updateUser({"stats.buffs.stealth" : prevStealthedDailies + newDailiesDodged})
         }
       }
 
@@ -190,131 +177,185 @@
 
       // Expected and actual damage for Burst of Flames
       function flamesDamage (int) {
-        return Math.ceil(int/10);
+        return Math.ceil(int/10)
       }
 
       // Expected damage for Brutal Smash. Since this is expected damage only (not actual), don't crit.
       function smashDamageNoCrit (str) {
-        return (55*str)/(str+70);
+        return (55*str)/(str+70)
       }
 
       // Actual damage for Brutal Smash, including crit. Since there's a chance of crit at each iteration, loop through for each use of the skill rather than doing it once and multiplying by number of times
       function smashDamageActual (str, con, nTimes) { 
-        var smashRunningTotal = 0;
-        var multiplier = 1;
-        var modifiedStr = str;
+        var smashRunningTotal = 0
+        var multiplier = 1
+        var modifiedStr = str
         
         for ( var i = 1; i <= nTimes; i++) {
-          multiplier = criticalHit(con, 0.03);
-          modifiedStr = str * multiplier;
-          smashRunningTotal += (55*modifiedStr)/(modifiedStr+70);
+          multiplier = criticalHit(con, 0.03)
+          modifiedStr = str * multiplier
+          smashRunningTotal += (55*modifiedStr)/(modifiedStr+70)
         }
         
-        return smashRunningTotal;
+        return smashRunningTotal
       }
 
       // Any multi-use of a boss damage skill requires checking if you have enough MP for the multiple uses
       // How many uses of the skill are required to exceed 90.71 damage? At that damage or higher, crit is guaranteed and thus the script can accurately dial in damage
       function checkManaMultiUse(mp, mpCost, damageOnce, isFlamesXp, int, per) {
-        var numberTimes = Math.ceil(90.71/damageOnce);
-        var damageMulti = damageOnce * numberTimes;
-        var multiMpCost = mpCost * numberTimes;
+        const MSG_MULTI_USE_MANA_CHECK_1 = "Insufficient Mana. You will need "
+        const MSG_MULTI_USE_MANA_CHECK_2 = " MP to use this skill, and it will do "
+        const MSG_MULTI_USE_MANA_CHECK_3 = "damage"
+        const MSG_MULTI_USE_MANA_CHECK_4A_1 = " and you will gain "
+        const MSG_MULTI_USE_MANA_CHECK_4A_2 = " XP."
+        const MSG_MULTI_USE_MANA_CHECK_4B = "."
+        
+        var numberTimes = Math.ceil(90.71/damageOnce)
+        var damageMulti = damageOnce * numberTimes
+        var multiMpCost = mpCost * numberTimes
         
         // If insufficient MP for multi use, send an error message including expected damage (and if Flames with XP, expected XP)
         if ( multiMpCost > mp ) {
           // round the damage to one decimal point (for the sake of the message)
-          var damageMultiForMessage = Math.round(damageMulti*10) / 10;
+          var damageMultiForMessage = Math.round(damageMulti*10) / 10
           
           if (isFlamesXp) {
-            var xpGain = burstOfFlamesXp(int, per, numberTimes); 
-            api_sendPrivateMessage({"message" : "Insufficient Mana. You will need " + multiMpCost + " MP to use this skill, and it will do " + damageMultiForMessage + " damage and you will gain " + xpGain + " XP.", "toUserId" : USER_ID});
-            return 0;
+            let xpGain = burstOfFlamesXp(int, per, numberTimes)
+            api_sendPrivateMessage({"message" : MSG_MULTI_USE_MANA_CHECK_1 + multiMpCost + MSG_MULTI_USE_MANA_CHECK_2 + damageMultiForMessage + MSG_MULTI_USE_MANA_CHECK_3 + MSG_MULTI_USE_MANA_CHECK_4A_1 + xpGain + MSG_MULTI_USE_MANA_CHECK_4A_2, "toUserId" : USER_ID})
+            return 0
           }
           else {
-            api_sendPrivateMessage({"message" : "Insufficient Mana. You will need " + multiMpCost + " MP to use this skill, and it will do " + damageMultiForMessage + " damage.", "toUserId" : USER_ID});
-            return 0;
+            api_sendPrivateMessage({"message" : MSG_MULTI_USE_MANA_CHECK_1 + multiMpCost + MSG_MULTI_USE_MANA_CHECK_2 + damageMultiForMessage + MSG_MULTI_USE_MANA_CHECK_3 + MSG_MULTI_USE_MANA_CHECK_4B, "toUserId" : USER_ID})
+            return 0
           }
         }
         else {
-          return numberTimes;
+          return numberTimes
+        }
+      }
+
+      // Expected damage for Radiant Shield. Since this is expected damage only (not actual), don't crit.
+      function radiantDamageNoCrit(con) {
+        // CON above 225 has no additional in-game benefits elsewhere in Habitica (reducing damage from your own tasks), so I will cap damage here as well
+        if (con > 225) {
+          return 25
+        }
+        else { // base damage of 10 ensure this skill isn't too weak at low levels
+          return 10 + (con/15)
         }
       }
 
       // Actual damage for Radiant Shield, including crit. Since there's a chance of crit at each iteration, loop through for each use of the skill rather than doing it once and multiplying by number of times
       function radiantDamageActual (con, int, nTimes) {
-        var radiantRunningTotal = 0;
-        var multiplier = 1;
-        var modifiedCon = con;
+        var radiantRunningTotal = 0
+        var multiplier = 1
+        var modifiedCon = con
         
         for ( var i = 1; i <= nTimes; i++) {
-          multiplier = criticalHit(int, 0.03);
-          modifiedCon = con * multiplier;
+          multiplier = criticalHit(int, 0.03)
+          modifiedCon = con * multiplier
           if ( modifiedCon > 225) { // Max damage of 25 occurs at 225 CON. Since this is weaker than the other damage skills, the skill has a lower MP cost
-            radiantRunningTotal += 25;
+            radiantRunningTotal += 25
           }
           else { // based damage of 10 insurers it's not too weak at low levels
-            radiantRunningTotal += ( 10 + (modifiedCon/15) );
+            radiantRunningTotal += ( 10 + (modifiedCon/15) )
           }
         }
         
-        return radiantRunningTotal;
+        return radiantRunningTotal
+      }
+
+      // Expected damage for Sneak Attack. Since this is expected damage only (not actual), don't crit.
+      function sneakDamageNoCrit(per) {
+        // Goal: keep this skill as similar to Brutal Smash as possible.
+        // Problem: Tools of the Trade buffs PER more than Valorous Presence buffs STR. So, it can't be swap of PER = STR.
+        // Solution: scale damage based on how many buffs it takes. Keep it the same formula up to 35 damage (112.5 STR/PER).
+          // Based on Brutal Smash / Valorous Presence, 16 buffs goes from 35 to 45 damage, 32 further buffs to go from 45 to 50 damage.
+        
+        const MSG_ERROR_DAMAGE_SNEAK_ATTACK = "Error calculating Sneak Attack damage, please contact the author of this script so he can debug."
+
+        // Up to 35 damage (PER = 122.5), Sneak Attack is identical to Brutal Smash
+        if (per <= 122.5) {
+          return (55 * per) / (per + 70)
+        }
+        // 35 damage from the previous "tier" formula rolls over, then aim to be at 45 total damage at 1486 PER
+        else if ( (per > 122.5) && (per <= 1486) ) {
+          return 35 + (20 * per) / (per + 1486)
+        }
+        // 45 damage from the previous "tier" formula rolls over, then aim to be at 50 total damage at 4213 PER
+        else if (per > 1486) {
+          return 45 + (10 * per) / (per + 4213)
+        }
+        else { // this scenario shouldn't be possible, but just in case…
+          api_sendPrivateMessage({"message" : MSG_ERROR_DAMAGE_SNEAK_ATTACK, "toUserId" : USER_ID})
+        }
       }
 
       // Actual damage for Sneak Attack, including crit. Since there's a chance of crit at each iteration, loop through for each use of the skill rather than doing it once and multiplying by number of times
       function sneakDamageActual (per, str, nTimes) { 
-        var sneakRunningTotal = 0;
-        var multiplier = 1;
-        var modifiedPer = per;
+        var sneakRunningTotal = 0
+        var multiplier = 1
+        var modifiedPer = per
         
         for ( var i = 1; i <= nTimes; i++) {
-          multiplier = criticalHit(str, 0.03);
-          modifiedPer = per * multiplier;
+          multiplier = criticalHit(str, 0.03)
+          modifiedPer = per * multiplier
           
           // Instead of using PER for the cutoff points, use modifiedPer because it's PER times crit multiplier
           if (modifiedPer <= 122.5) {
-            sneakRunningTotal += (55*modifiedPer)/(modifiedPer+70);
+            sneakRunningTotal += (55*modifiedPer)/(modifiedPer+70)
           }
           else if ( (modifiedPer > 122.5) && (modifiedPer <= 1486) ) {
-            sneakRunningTotal += 35 + ( (20*modifiedPer)/(modifiedPer+1486) );
+            sneakRunningTotal += 35 + ( (20*modifiedPer)/(modifiedPer+1486) )
           }
           else if (modifiedPer > 1486) {
-            sneakRunningTotal += 45 + ( (10*modifiedPer)/(modifiedPer+4213) );
+            sneakRunningTotal += 45 + ( (10*modifiedPer)/(modifiedPer+4213) )
           }
         }
         
-        return sneakRunningTotal;
+        return sneakRunningTotal
       }
 
       // Deals boss damage
       function doDamage(damage, mpCost, nTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, isFlamesXp, valueToChange) {
-        var totalMpCost = mpCost * nTimes;
+        var totalMpCost = mpCost * nTimes
         
         // calculate STR setpoint needed to achieve expected damage. Damage = (1+(STR*0.005)) * (1.5 + ((4*STR)/(200+STR)) ) * 1, since crit is 100% guaranteed and task value delta resolves to 1
         // lowest STR setpoint is 3244, which guarantees a crit, for 90.71 damage. Highest setpoint is 6500, for 180.25 damage, since that's the most this script will do in one use.
-        var setpoint = setpointIteration(3244, 6500, damage);
+        const DAMAGE_TEXT = "Boss damage"
+        const DAMAGE_NOTES = "used to create boss damage as part of a custom script"
+
+        const DAMAGE_BUTTON = {
+            "text": DAMAGE_TEXT,
+            "type": "todo",
+            "notes": DAMAGE_NOTES,
+            "priority": 0.1,
+        }
+        
+        var setpoint = setpointIteration(3244, 6500, damage)
         
         // Create one To-Do so I can check it off in order to do damage
-        api_createNewTaskForUser(DAMAGE_BUTTON);
+        api_createNewTaskForUser(DAMAGE_BUTTON)
               
         // pause for 1 second
-        Utilities.sleep(1000);
+        Utilities.sleep(1000)
               
         // buff STR up to setpoint, INT and PER down to 1
-        api_updateUser({"stats.buffs.str" : setpoint - unbuffedStr, "stats.buffs.int" : 1 - unbuffedInt, "stats.buffs.per" : 1 - unbuffedPer});
+        api_updateUser({"stats.buffs.str" : setpoint - unbuffedStr, "stats.buffs.int" : 1 - unbuffedInt, "stats.buffs.per" : 1 - unbuffedPer})
               
         // pause for 1 second
-        Utilities.sleep(1000);
+        Utilities.sleep(1000)
               
         // check off the To-Do created
-        const responseTask = api_getUserTasks("todos");
-        const tasksForDamage = JSON.parse(responseTask).data;
-        var taskIdForDamage = "";
+        const responseTask = api_getUserTasks("todos")
+        const tasksForDamage = JSON.parse(responseTask).data
+        var taskIdForDamage = ""
         
         // loop through all To-Do's, see which one matches Text and Notes for the previously-created Damage Button
         for (var j in tasksForDamage) { 
           if ( (tasksForDamage[j].text == DAMAGE_TEXT) && (tasksForDamage[j].notes == DAMAGE_NOTES) ) {
-            taskIdForDamage = tasksForDamage[j]._id; // if it's a match, save ID of the task since that's the easiest way for me to grab it
-            api_scoreTask(taskIdForDamage, "up"); // this is the task for me to score
+            taskIdForDamage = tasksForDamage[j]._id // if it's a match, save ID of the task since that's the easiest way for me to grab it
+            api_scoreTask(taskIdForDamage, "up") // this is the task for me to score
           }
         }
               
@@ -322,42 +363,45 @@
         // if XP needs to increase (Burst of Flames), do this in this step also
         if (isFlamesXp) {
           api_updateUser({"stats.buffs.str" : buffsStr, "stats.buffs.int" : buffsInt, "stats.buffs.per" : buffsPer,
-                          "stats.hp" : hp, "stats.exp" : xp + valueToChange, "stats.mp" : mp - totalMpCost, "stats.gp" : gp, "stats.lvl" : lvl});
+                          "stats.hp" : hp, "stats.exp" : xp + valueToChange, "stats.mp" : mp - totalMpCost, "stats.gp" : gp, "stats.lvl" : lvl})
         }
         else {
           api_updateUser({"stats.buffs.str" : buffsStr, "stats.buffs.int" : buffsInt, "stats.buffs.per" : buffsPer,
-                          "stats.hp" : hp, "stats.exp" : xp, "stats.mp" : mp - totalMpCost, "stats.gp" : gp, "stats.lvl" : lvl});
+                          "stats.hp" : hp, "stats.exp" : xp, "stats.mp" : mp - totalMpCost, "stats.gp" : gp, "stats.lvl" : lvl})
         }
       }
 
       // calculate setpoint, inputting a low guess and a high guess
       function setpointIteration (low, high, targetDamage) {
-        var midpoint = Math.floor(((low+high)/2));
+        const MSG_ERROR_DAMAGE_FINAL_ITERATION = "Error computing damage. Please contact the author of the script to debug (note to author: final iteration triggered this message)."
+        const MSG_ERROR_DAMAGE_SETPOINT = "Error computing damage. Please contact the author of the script to debug (note to author: target damage not between low and high setpoints)."
+        
+        var midpoint = Math.floor(((low+high)/2))
         
         // damage at each setpoint
-        var damageLow = damageAtSetpoint(low);
-        var damageMidpoint = damageAtSetpoint(midpoint);
-        var damageHigh = damageAtSetpoint(high);
+        var damageLow = damageAtSetpoint(low)
+        var damageMidpoint = damageAtSetpoint(midpoint)
+        var damageHigh = damageAtSetpoint(high)
         
         // truth conditions regarding damage and where it falls (compared to the setpoints)
-        var targetAboveLow = (damageLow < targetDamage) ? true : false;
-        var targetAboveMidpoint = (damageMidpoint < targetDamage) ? true : false;
-        var targetBelowHigh = (damageHigh > targetDamage) ? true : false;
+        var targetAboveLow = (damageLow < targetDamage) ? true : false
+        var targetAboveMidpoint = (damageMidpoint < targetDamage) ? true : false
+        var targetBelowHigh = (damageHigh > targetDamage) ? true : false
         
         // if these values are within 2 of each other, iteration is done
         if ( ( high - low ) <= 2) {
           // whichever setpoint exceeds target damage is our setpoint
           if (!targetAboveLow) {
-            return low;
+            return low
           }
           else if (!targetAboveMidpoint) {
-            return midpoint;
+            return midpoint
           }
           else if (targetBelowHigh) {
-            return high;
+            return high
           }
           else { // This condition shouldn't be possible, but just in case…
-            api_sendPrivateMessage({"message" : "Error computing damage. Please contact the creator of the script to debug (note to creator: final iteration triggered this message).", "toUserId" : USER_ID});
+            api_sendPrivateMessage({"message" : MSG_ERROR_DAMAGE_FINAL_ITERATION, "toUserId" : USER_ID})
           }
         }
         else { // keep iterating
@@ -365,19 +409,19 @@
           if (targetAboveLow && targetBelowHigh) {
             // is it above or below midpoint? If above it, run it again but with midpoint and high being the new low/high, else run it with mid/low being new low/high
             if (targetAboveMidpoint) {
-              return setpointIteration (midpoint, high, targetDamage);
+              return setpointIteration (midpoint, high, targetDamage)
             }
             else {
-              return setpointIteration (low, midpoint, targetDamage);
+              return setpointIteration (low, midpoint, targetDamage)
             }
           }
           else { // if it's not between low and high, something messed up. This condition shouldn't be possible, but just in case…
-            api_sendPrivateMessage({"message" : "Error computing damage. Please contact the creator of the script to debug (note to creator: target damage not between low and high setpoints).", "toUserId" : USER_ID});
+            api_sendPrivateMessage({"message" : MSG_ERROR_DAMAGE_SETPOINT, "toUserId" : USER_ID})
           }
         }
       }
 
       // calculate damage for checking off one task at a given value of STR
-      function damageAtSetpoint (str) {
-        return (1+(str*0.005)) * (1.5 + ((4*str)/(200+str)) );
+      function damageAtSetpoint(str) {
+        return (1+(str*0.005)) * (1.5 + ((4*str)/(200+str)) )
       }
