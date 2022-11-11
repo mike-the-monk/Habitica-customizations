@@ -14,444 +14,438 @@
 
   // 2A. BASICS
     
-    // Check if sufficient level, send message if not.
-    function checkLevelLock(level, levelLock, message){
-      if (level < levelLock){
-        api_sendPrivateMessage({"message" : message, "toUserId" : USER_ID});
-        return false;
-      } else {
-        return true;
-      }
-    }
+      // MANA COST RELATED FUNCTIONS
 
-    // Check if (daily) usage exceeded, send message if yes.
-    function checkUsageLimit(usageCounter, newUsageIncrement, maxUsage, message){
-      if ( (usageCounter + newUsageIncrement) > maxUsage ) {
-        api_sendPrivateMessage({"message" : message, "toUserId" : USER_ID});
-        return false;
-      } else {
-        return true;
-      }
-    }
-
-    // Resets usage counters, usually done at Cron
-    function resetCounters(){
-      scriptProperties.setProperty(XP_USAGE_KEY, 0);
-      scriptProperties.setProperty(MP_USAGE_KEY, 0);
-      scriptProperties.setProperty(ANTI_MP_USAGE_KEY, 0);
-      scriptProperties.setProperty(ANTI_HP_USAGE_KEY, 0);
-      scriptProperties.setProperty(ANTI_XP_USAGE_KEY, 0);
-      scriptProperties.setProperty(HP_FOR_MP_KEY, 0);
-      scriptProperties.setProperty(XP_FOR_MP_KEY, 0);
-      scriptProperties.setProperty(ANTI_BUFF_AMOUNT_KEY, 0);
-      scriptProperties.setProperty(ANTI_BUFF_USAGE_KEY, 0);
-    }
-
-    // NUMERIC-RELATED FUNCTIONS
-
-      // Ensures that the input is between the minimum and maximum. Can use "none" in either argument to indicate if there is either no minimum or no maximum.
-      function sanitizeInput(input, minimum, maximum) {
-        if (minimum == "none"){ // Condition for if there is no minimum
-          if ( input > maximum ) {
-            return maximum;
-          } else { 
-            return input;
-          }
-        } else if (maximum == "none"){ // Condition for if there is no maximum
-          if ( input < minimum ) {
-            return minimum;
-          } else { 
-            return input;
-          }
-        } else { // Condition where there is both minimum and maximum
-          if ( input < minimum ) {
-            return minimum;
-          } else if ( input > maximum ) {
-            return maximum;
-          } else { 
-            return input;
-          }
-        }
-      }
-
-      // Checks if input is a number, returns -2 if not (to indicate error), and ensures the result is positive (greater than 0)
-      function checkIfNumber(input){
-        // Turn it into a number
-        let inputAsNumber = parseFloat(input);
-        
-        // If it's not a number, return -2
-        let isNan = Number.isNaN(inputAsNumber);
-        if (isNan) {
-          return -2;
-        } else {
-          let parameter = sanitizePositive(inputAsNumber);
-          return parameter;
-        } 
-      }
-
-    // STRING-RELATED FUNCTIONS
-
-      // Find the index of a given search term. Choose whether it's case-sensitive or not.
-      function findIndex(searchTerm, stringToSearch, caseSensitive) {
-        if (caseSensitive){
-          return stringToSearch.indexOf(searchTerm)
-        } else {
-          let uppercaseStringToSearch = stringToSearch.toUpperCase()
-          let uppercaseSearchTerm = searchTerm.toUpperCase()
-          return uppercaseStringToSearch.indexOf(uppercaseSearchTerm)
-        }
-      }
-
-      // Finds the semicolon after the search term previously searched. Builds in an offset to account for the number of characters in the search term.
-      function findIndexOfSemicolon(stringToSearch, startingAt, offset) {
-        return stringToSearch.indexOf(";", startingAt + offset);
-      }
-
-      // Finds the period after the search term previously searched. Builds in an offset to account for the number of characters in the search term.
-      function findIndexOfPeriod(stringToSearch, startingAt, offset) {
-        return stringToSearch.indexOf(".", startingAt + offset);
-      }
-
-      // Creates and trims a substring between the given indices
-      function createSubstring(string, startingIndex, endingIndex) {
-        var untrimmed = string.substring(startingIndex,endingIndex);
-        var trimmed = untrimmed.trim();
-        return trimmed;
-      }
-
-      // Alphabetizes characters from two input strings.
-      function alphabetizeString(inputString1, inputString2) {
-        let str1 = inputString1;
-        let str2 = inputString2;
-        
-        // Combine/concatenate
-        let combinedString = str1.concat(str2);
-        
-        // Split by character, sort alphabetically, join back together.
-        return combinedString.split('').sort().join('').trim();
-      }
-
-      // If the first character is a colon, remove it if yes
-      function removeFirstColon(input) {
-        if (input.charAt(0) == ":") {
-          let resultRemoved = input.substring(1);
-          return resultRemoved;
-        } else {
-          let result = input;
-          return result;
-        }
-      }
-
-    // USERNAME-RELATED FUNCTIONS
-
-      // Check it first character is @ or [, remove if yes. Useful for parsing out usernames from the link to their profile.
-      function checkFirstCharacter(stringToCheck){
-        // initialize
-        let result = stringToCheck;
-        
-        // When grabbing a username string, it might instead grab [@username](URL). I want username only.
-        let indexUrlOpen = findIndex("[@", stringToCheck, true);
-        let indexUrlMid = findIndex("](", stringToCheck, true);
-        let indexUrlClose = findIndex(")", stringToCheck, true);
-      
-        // Check if all of them are found. Initiate Boolean it false, flip it if all indices are not -1
-        // Also check if they are in the right order.
-        let allFound = false;
-        let rightOrder = false;
-        if ( (indexUrlOpen != -1) && (indexUrlMid != -1) && (indexUrlClose != -1) ) {
-          allFound = true;
-          if ( (indexUrlOpen < indexUrlMid) && (indexUrlMid < indexUrlClose) ) {
-            rightOrder = true;
-          }
-        }
-      
-        // If all are found and it's in the right order, trim string so it's just username.
-        if (allFound && rightOrder) {
-          result = createSubstring(stringToCheck, indexUrlOpen + 2, indexUrlMid);
-          return result;
-        } else { // Check if the first character is @
-          if (stringToCheck.charAt(0) == "@") {
-            result = stringToCheck.substring(1);
-            return result;
+        // Checks if sufficient mana, sends message if not. Choose whether to deduct costs now or later.
+        function checkMana(mp, mpCost, deductLater){
+          if (mp < mpCost) {
+            api_sendPrivateMessage({"message" : MSG_INSUFFICIENT_MANA_SKILL, "toUserId" : USER_ID})
+            return false
           } else {
-            return result;
+            if (deductLater) {
+              return true
+            } else {
+              api_updateUser({"stats.mp" : mp - mpCost})
+              return true
+            }
           }
         }
-      }
-      
-      // Adds "@" to beginning of a username so you can tag them.
-      function appendAtSymbol(username){
-        // First, check if @ is already first character, remove if yes.
-        let baseUsername = checkFirstCharacter(username);
-        
-        let taggedUsername = "@" + baseUsername;
-        return taggedUsername;
-      }
 
-    // UUID RELATED FUNCTIONS – Applies to user IDs, Guild IDs, party IDs, etc.
+      // NUMERIC-RELATED FUNCTIONS
 
-      // Checks if a UUID is in the correct formatting: 00000000-0000-4000-A000-000000000000
-      function checkUuidFormat(uuidToCheck){
-        // Trim, just in case there was extra whitespace
-        let stringTemp = uuidToCheck.trim();
-        
-        // Total length of string should be 36 (Four total dashes and 32 other hexadecimal characters)
-        let length = stringTemp.length;
-        if (length != 36) {
-          return false;
-        } else {
-          // I'm going to slightly cheat here: if I alphabetize the characters, I can sort out the dashes. 
-          let stringTemp2 = stringTemp.split('').sort().join('').trim();
-          
-          // Checks that total number of dashes is only 4, and ensures that the first 4 characters are dashes
-          let dashCount = checkDashes(stringTemp2);
-          if (dashCount != 4) {
-            return false;
-          } else {     
-            // Remove the first four characters from the string, we already know they are dashes
-            let stringShorter = createSubstring(stringTemp2, 4, length);
-            
-            // Check if the other characters are valid for hexadecimal
-            let isHex = isHexadecimal(stringShorter);
-            if (!isHex){
-              return false;
+        // Ensures that the input is between the minimum and maximum. Can use "none" in either argument to indicate if there is either no minimum or no maximum.
+        function sanitizeInput(input, minimum, maximum) {
+          if (minimum == "none"){ // Condition for if there is no minimum
+            if ( input > maximum ) {
+              return maximum
+            } else { 
+              return input
+            }
+          } else if (maximum == "none"){ // Condition for if there is no maximum
+            if ( input < minimum ) {
+              return minimum
+            } else { 
+              return input
+            }
+          } else { // Condition where there is both minimum and maximum
+            if ( input < minimum ) {
+              return minimum
+            } else if ( input > maximum ) {
+              return maximum
+            } else { 
+              return input
+            }
+          }
+        }
+
+        // Checks if input is a number, returns -2 if not (to indicate error), and ensures the result is positive (greater than 0)
+        function checkIfNumber(input){
+          // Turn it into a number
+          let inputAsNumber = parseFloat(input)
+
+          // If it's not a number, return -2
+          let isNan = Number.isNaN(inputAsNumber)
+          if (isNan) {
+            return -2
+          } else {
+            let parameter = sanitizePositive(inputAsNumber)
+            return parameter
+          } 
+        }
+
+      // STRING-RELATED FUNCTIONS
+
+        // Find the index of a given search term. Choose whether it's case-sensitive or not.
+        function findIndex(searchTerm, stringToSearch, caseSensitive) {
+          if (caseSensitive){
+            return stringToSearch.indexOf(searchTerm)
+          } else {
+            let uppercaseSearchTerm = searchTerm.toUpperCase()
+            return uppercaseStringToSearch.indexOf(uppercaseSearchTerm)
+          }
+        }
+
+        // Finds the semicolon after the search term previously searched. Builds in an offset to account for the number of characters in the search term.
+        function findIndexOfSemicolon(stringToSearch, startingAt, offset) {
+          return stringToSearch.indexOf(";", startingAt + offset)
+        }
+
+        // Finds the period after the search term previously searched. Builds in an offset to account for the number of characters in the search term.
+        function findIndexOfPeriod(stringToSearch, startingAt, offset) {
+          return stringToSearch.indexOf(".", startingAt + offset)
+        }
+
+        // Creates and trims a substring between the given indices
+        function createSubstring(string, startingIndex, endingIndex) {
+          var untrimmed = string.substring(startingIndex,endingIndex)
+          var trimmed = untrimmed.trim()
+          return trimmed
+        }
+
+        // Alphabetizes characters from two input strings.
+        function alphabetizeString(inputString1, inputString2) {
+          let str1 = inputString1
+          let str2 = inputString2
+
+          // Combine/concatenate
+          let combinedString = str1.concat(str2)
+
+          // Split by character, sort alphabetically, join back together.
+          return combinedString.split('').sort().join('').trim()
+        }
+
+        // If the first character is a colon, remove it if yes
+        function removeFirstColon(input) {
+          if (input.charAt(0) == ":") {
+            let resultRemoved = input.substring(1)
+            return resultRemoved
+          } else {
+            let result = input
+            return result
+          }
+        }
+
+      // USERNAME-RELATED FUNCTIONS
+
+        // Check it first character is @ or [, remove if yes. Useful for parsing out usernames from the link to their profile.
+        function checkFirstCharacter(stringToCheck){
+          // initialize
+          let result = stringToCheck
+
+          // When grabbing a username string, it might instead grab [@username](URL). I want username only.
+          let indexUrlOpen = findIndex("[@", stringToCheck)
+          let indexUrlMid = findIndex("](", stringToCheck)
+          let indexUrlClose = findIndex(")", stringToCheck)
+
+          // Check if all of them are found. Initiate Boolean it false, flip it if all indices are not -1
+          // Also check if they are in the right order.
+          let allFound = false
+          let rightOrder = false
+          if ( (indexUrlOpen != -1) && (indexUrlMid != -1) && (indexUrlClose != -1) ) {
+            allFound = true
+            if ( (indexUrlOpen < indexUrlMid) && (indexUrlMid < indexUrlClose) ) {
+              rightOrder = true
+            }
+          }
+
+          // If all are found and it's in the right order, trim string so it's just username.
+          if (allFound && rightOrder) {
+            result = createSubstring(stringToCheck, indexUrlOpen + 2, indexUrlMid)
+            return result
+          } else { // Check if the first character is @
+            if (stringToCheck.charAt(0) == "@") {
+              result = stringToCheck.substring(1)
+              return result
             } else {
-              // The character counts are valid, exactly 4 dashes and the rest are hexadecimal (and total lenggth is valid)
-              // The final thing to do is ensure that the string follows the right pattern of hexadecimal and dashes
-              // Parsing the string at the dashes would be the hard way to do it. The easy way is to ensure that the dashes appear at the correct character index
-              
-              let dashLocationsConfirmed = checkDashLocations(stringTemp); // I no longer need the alphabetized string, I need to use the original one
-              if (dashLocationsConfirmed) {
-                return true;
+              return result
+            }
+          }
+        }
+
+        // Adds "@" to beginning of a username so you can tag them.
+        function appendAtSymbol(username){
+          // First, check if @ is already first character, remove if yes.
+          let baseUsername = checkFirstCharacter(username)
+
+          let taggedUsername = "@" + baseUsername
+          return taggedUsername
+        }
+
+        // Checks if the first character in a username is @, adds if not.
+        function checkNameFormatting(inputString) {
+          var newString = inputString
+          if ( inputString.charAt(0) == "@") {
+            return newString
+          } else {
+            newString = "@" + inputString
+            return newString
+          }
+        }
+
+      // GROUP-ID RELATED FUNCTIONS
+
+        // Checks if a Guild ID is in the correct formatting: 00000000-0000-4000-A000-000000000000
+        function checkGuildIdFormat(guildIdToCheck){
+          // Trim, just in case there was extra whitespace
+          let stringTemp = guildIdToCheck.trim()
+
+          // Total length of string should be 36 (Four total dashes and 32 other hexadecimal characters)
+          let length = stringTemp.length;
+          if (length != 36) {
+            return false
+          } else {
+            // I'm going to slightly cheat here: if I alphabetize the characters, I can sort out the dashes. 
+            let stringTemp2 = stringTemp.split('').sort().join('').trim()
+
+            // Checks that total number of dashes is only 4, and ensures that the first 4 characters are dashes
+            let dashCount = checkDashes(stringTemp2)
+            if (dashCount != 4) {
+              return false
+            } else {     
+              // Remove the first four characters from the string, we already know they are dashes
+              let stringShorter = createSubstring(stringTemp2, 4, length)
+
+              // Check if the other characters are valid for hexadecimal
+              let isHex = isHexadecimal(stringShorter)
+              if (!isHex){
+                return false
               } else {
-                return false;
+                // The character counts are valid, exactly 4 dashes and the rest are hexadecimal (and total lenggth is valid)
+                // The final thing to do is ensure that the string follows the right pattern of hexadecimal and dashes
+                // Parsing the string at the dashes would be the hard way to do it. The easy way is to ensure that the dashes appear at the correct character index
+
+                let dashLocationsConfirmed = checkDashLocations(stringTemp) // I no longer need the alphabetized string, I need to use the original one
+                if (dashLocationsConfirmed) {
+                  return true
+                } else {
+                  return false
+                }
               }
             }
           }
         }
-      }
 
-      // Checks that total number of dashes is only 4, and ensures that the first 4 characters are dashes
-      function checkDashes(stringToCheck){
-        // First, count them
-        let count = 0;
-        for (let i = 0; i < 36; i++) {
-          if (stringToCheck.charAt(i) == "-" ) {
-            count++;
-          }
-        }
-        
-        // Since the string is alphabetized, I probably don't have to do this, but I will anyway: confirm each of the first four are dashes
-        if (count != 4) { // If more than 4 are dashes, I catch it here
-          return count;
-        } else if (count == 4) {
-          for (let j = 0; j < 4; j++) {
-            if (stringToCheck.charAt(j) != "-" ) { // If any of the first 4 characters are not a dash, it fails. End the loop.
-              count = -1;
-              break;
+        // Checks that total number of dashes is only 4, and ensures that the first 4 characters are dashes
+        function checkDashes(stringToCheck){
+          // First, count them
+          let count = 0
+          for (let i = 0; i < 36; i++) {
+            if (stringToCheck.charAt(i) == "-" ) {
+              count++
             }
           }
-          return count;
-        }
-      }
 
-      // Checks if each of the characters are valid for hexadecimal
-      function isHexadecimal(stringToCheck) {
-        regexp = /^[0-9a-fA-F]+$/;
-        
-        if (regexp.test(stringToCheck)) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-
-      // Checks that dashes occur at the correct character index locations. Format is 00000000-0000-4000-A000-000000000000
-      function checkDashLocations(stringToCheck) {
-        let count = 0;
-        
-        // Dashes should be at character index 8, 13, 18, and 23. Jump over the loop at other iterations.
-        for (let i = 0; i < 36; i++) {
-          if ( (i == 8) || (i == 13) || (i == 18) || (i == 23) ) {
-            if (stringToCheck.charAt(i) == "-") {
-              count++;
+          // Since the string is alphabetized, I probably don't have to do this, but I will anyway: confirm each of the first four are dashes
+          if (count != 4) { // If more than 4 are dashes, I catch it here
+            return count
+          } else if (count == 4) {
+            for (let j = 0; j < 4; j++) {
+              if (stringToCheck.charAt(j) != "-" ) { // If any of the first 4 characters are not a dash, it fails. End the loop.
+                count = -1
+                break
+              }
             }
+            return count
+          }
+        }
+
+        // Checks if each of the characters are valid for hexadecimal
+        function isHexadecimal(stringToCheck) {
+          regexp = /^[0-9a-fA-F]+$/
+
+          if (regexp.test(stringToCheck)) {
+            return true
           } else {
-            continue;
+            return false
           }
         }
-        
-        if (count == 4) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-    
-    // VALIDATION/VERIFICATION FUNCTIONS: HASH, CHECKSUM
 
-      // A good hash function is deterministic, fast, uniformally distributed, and non-invertible. See for more info: https://www.educba.com/javascript-hash/
-      // I don't need a powerful cryptographic hash like SHA1 or SHA256, that would be overkill for me (not to mention, too slow)
-      function createHash(string) {
-        // Initialize at 0
-        var hash = 0;
-        
-        // If the length of the string is 0, return 0
-        if (string.length == 0) {
-          return hash;
-        }
-        else {
-          for (var i = 0 ; i<string.length ; i++) {
-            let ch = string.charCodeAt(i);
-            hash = ((hash << 5) - hash) + ch;
-            hash = hash & hash; // Convert to 32bit integer
+        // Checks that dashes occur at the correct character index locations. Format is 00000000-0000-4000-A000-000000000000
+        function checkDashLocations(stringToCheck) {
+          let count = 0
+
+          // Dashes should be at character index 8, 13, 18, and 23. Jump over the loop at other iterations.
+          for (let i = 0; i < 36; i++) {
+            if ( (i == 8) || (i == 13) || (i == 18) || (i == 23) ) {
+              if (stringToCheck.charAt(i) == "-") {
+                count++
+              }
+            } else {
+              continue
+            }
           }
-          return hash;
-        }
-      }
 
-    // CALCULATING TOTAL STATS
-      
-      // Calculates total STR
-      function calculateStrength() {
-        const levelStrRaw = Math.floor(user.stats.lvl / 2);
-        const levelStr = (levelStrRaw > 50) ? 50 : levelStrRaw;
-        
-        var totalEquipmentAndClassStr = 0;
-        const allocatedStr = user.stats.str;
-        const buffsStr = user.stats.buffs.str;
-        
-        // Get STR from equipped gear
-        totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.weapon]);
-        totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.shield]);
-        totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.head]);
-        totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.armor]);
-        totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.headAccessory]);
-        totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.eyewear]);
-        totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.body]);
-        totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.back]);
-
-        return levelStr + totalEquipmentAndClassStr + allocatedStr + buffsStr;
-      }
-
-      // Calculates how much STR comes from the equipment
-      function calcEquipmentAndClassStr(equipment) {
-        var equipmentAndClassStr = 0;
-
-        if (equipment != undefined) {  
-          equipmentAndClassStr += equipment.str;
-          if ( (equipment.klass == user.stats.class) || ( (equipment.klass == "special") && (equipment.specialClass == user.stats.class) ) ) {
-            equipmentAndClassStr += equipment.str / 2;
+          if (count == 4) {
+            return true
+          } else {
+            return false
           }
         }
-        
-        return equipmentAndClassStr;
-      }
 
-      // Calculates total INT
-      function calculateIntelligence() {
-        const levelIntRaw = Math.floor(user.stats.lvl / 2);
-        const levelInt = (levelIntRaw > 50) ? 50 : levelIntRaw;
-        
-        var totalEquipmentAndClassInt = 0;
-        const allocatedInt = user.stats.int;
-        const buffsInt = user.stats.buffs.int;
-        
-        // Get INT from equipped gear
-        totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.weapon]);
-        totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.shield]);
-        totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.head]);
-        totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.armor]);
-        totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.headAccessory]);
-        totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.eyewear]);
-        totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.body]);
-        totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.back]);
+      // VALIDATION/VERIFICATION FUNCTIONS: HASH, CHECKSUM
 
-        return levelInt + totalEquipmentAndClassInt + allocatedInt + buffsInt;
-      }
+        // A good hash function is deterministic, fast, uniformally distributed, and non-invertible. See for more info: https://www.educba.com/javascript-hash/
+        // I don't need a powerful cryptographic hash like SHA1 or SHA256, that would be overkill for me (not to mention, too slow)
+        function createHash(string) {
+          // Initialize at 0
+          var hash = 0
 
-      // Calculates how much INT comes from the equipment
-      function calcEquipmentAndClassInt(equipment) {
-        var equipmentAndClassInt = 0;
-
-        if (equipment != undefined) {  
-          equipmentAndClassInt += equipment.int;
-          if ( (equipment.klass == user.stats.class) || ( (equipment.klass == "special") && (equipment.specialClass == user.stats.class) ) ) {
-            equipmentAndClassInt += equipment.int / 2;
+          // If the length of the string is 0, return 0
+          if (string.length == 0) {
+            return hash
+          }
+          else {
+            for (var i = 0 ; i<string.length ; i++) {
+              let ch = string.charCodeAt(i)
+              hash = ((hash << 5) - hash) + ch
+              hash = hash & hash; // Convert to 32bit integer
+            }
+            return hash
           }
         }
-        
-        return equipmentAndClassInt;
-      }
 
-      // Calculates total CON
-      function calculateConstitution() {
-        const levelConRaw = Math.floor(user.stats.lvl / 2);
-        const levelCon = (levelConRaw > 50) ? 50 : levelConRaw;
-        
-        var totalEquipmentAndClassCon = 0;
-        const allocatedCon = user.stats.con;
-        const buffsCon = user.stats.buffs.con;
-        
-        // Get CON from equipped gear
-        totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.weapon]);
-        totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.shield]);
-        totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.head]);
-        totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.armor]);
-        totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.headAccessory]);
-        totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.eyewear]);
-        totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.body]);
-        totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.back]);
+      // CALCULATING TOTAL STATS
 
-        return levelCon + totalEquipmentAndClassCon + allocatedCon + buffsCon;
-      }
+        // Calculates total STR
+        function calculateStrength() {
+          const levelStrRaw = Math.floor(user.stats.lvl / 2)
+          const levelStr = (levelStrRaw > 50) ? 50 : levelStrRaw
 
-      // Calculates how much CON comes from the equipment
-      function calcEquipmentAndClassCon(equipment) {
-        var equipmentAndClassCon = 0;
+          var totalEquipmentAndClassStr = 0
+          const allocatedStr = user.stats.str
+          const buffsStr = user.stats.buffs.str
 
-        if (equipment != undefined) {  
-          equipmentAndClassCon += equipment.con;
-          if ( (equipment.klass == user.stats.class) || ( (equipment.klass == "special") && (equipment.specialClass == user.stats.class) ) ) {
-            equipmentAndClassCon += equipment.con / 2;
-          }
+          // Get STR from equipped gear
+          totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.weapon])
+          totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.shield])
+          totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.head])
+          totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.armor])
+          totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.headAccessory])
+          totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.eyewear])
+          totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.body])
+          totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.back])
+
+          return levelStr + totalEquipmentAndClassStr + allocatedStr + buffsStr
         }
-        
-        return equipmentAndClassCon;
-      }
 
-      // Calculates total PER
-      function calculatePerception() {
-        const levelPerRaw = Math.floor(user.stats.lvl / 2);
-        const levelPer = (levelPerRaw > 50) ? 50 : levelPerRaw;
-        
-        var totalEquipmentAndClassPer = 0;
-        const allocatedPer = user.stats.per;
-        const buffsPer = user.stats.buffs.per;
-        
-        // Get PER from equipped gear
-        totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.weapon]);
-        totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.shield]);
-        totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.head]);
-        totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.armor]);
-        totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.headAccessory]);
-        totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.eyewear]);
-        totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.body]);
-        totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.back]);
+        // Calculates how much STR comes from the equipment
+        function calcEquipmentAndClassStr(equipment) {
+          var equipmentAndClassStr = 0
 
-        return levelPer + totalEquipmentAndClassPer + allocatedPer + buffsPer;
-      }
-
-      // Calculates how much PER comes from the equipment
-      function calcEquipmentAndClassPer(equipment) {
-        var equipmentAndClassPer = 0;
-
-        if (equipment != undefined) {  
-          equipmentAndClassPer += equipment.per;
-          if ( (equipment.klass == user.stats.class) || ( (equipment.klass == "special") && (equipment.specialClass == user.stats.class) ) ) {
-            equipmentAndClassPer += equipment.per / 2;
+          if (equipment != undefined) {  
+            equipmentAndClassStr += equipment.str
+            if ( (equipment.klass == user.stats.class) || ( (equipment.klass == "special") && (equipment.specialClass == user.stats.class) ) ) {
+              equipmentAndClassStr += equipment.str / 2
+            }
           }
+
+          return equipmentAndClassStr
         }
-        
-        return equipmentAndClassPer;
-      }
+
+        // Calculates total INT
+        function calculateIntelligence() {
+          const levelIntRaw = Math.floor(user.stats.lvl / 2)
+          const levelInt = (levelIntRaw > 50) ? 50 : levelIntRaw
+
+          var totalEquipmentAndClassInt = 0
+          const allocatedInt = user.stats.int
+          const buffsInt = user.stats.buffs.int
+
+          // Get INT from equipped gear
+          totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.weapon])
+          totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.shield])
+          totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.head])
+          totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.armor])
+          totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.headAccessory])
+          totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.eyewear])
+          totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.body])
+          totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.back])
+
+          return levelInt + totalEquipmentAndClassInt + allocatedInt + buffsInt
+        }
+
+        // Calculates how much INT comes from the equipment
+        function calcEquipmentAndClassInt(equipment) {
+          var equipmentAndClassInt = 0
+
+          if (equipment != undefined) {  
+            equipmentAndClassInt += equipment.int
+            if ( (equipment.klass == user.stats.class) || ( (equipment.klass == "special") && (equipment.specialClass == user.stats.class) ) ) {
+              equipmentAndClassInt += equipment.int / 2
+            }
+          }
+
+          return equipmentAndClassInt
+        }
+
+        // Calculates total CON
+        function calculateConstitution() {
+          const levelConRaw = Math.floor(user.stats.lvl / 2)
+          const levelCon = (levelConRaw > 50) ? 50 : levelConRaw
+
+          var totalEquipmentAndClassCon = 0
+          const allocatedCon = user.stats.con
+          const buffsCon = user.stats.buffs.con
+
+          // Get CON from equipped gear
+          totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.weapon])
+          totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.shield])
+          totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.head])
+          totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.armor])
+          totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.headAccessory])
+          totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.eyewear])
+          totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.body])
+          totalEquipmentAndClassCon += calcEquipmentAndClassCon(content.gear.flat[user.items.gear.equipped.back])
+
+          return levelCon + totalEquipmentAndClassCon + allocatedCon + buffsCon
+        }
+
+        // Calculates how much CON comes from the equipment
+        function calcEquipmentAndClassCon(equipment) {
+          var equipmentAndClassCon = 0
+
+          if (equipment != undefined) {  
+            equipmentAndClassCon += equipment.con
+            if ( (equipment.klass == user.stats.class) || ( (equipment.klass == "special") && (equipment.specialClass == user.stats.class) ) ) {
+              equipmentAndClassCon += equipment.con / 2
+            }
+          }
+
+          return equipmentAndClassCon
+        }
+
+        // Calculates total PER
+        function calculatePerception() {
+          const levelPerRaw = Math.floor(user.stats.lvl / 2)
+          const levelPer = (levelPerRaw > 50) ? 50 : levelPerRaw
+
+          var totalEquipmentAndClassPer = 0
+          const allocatedPer = user.stats.per
+          const buffsPer = user.stats.buffs.per
+
+          // Get PER from equipped gear
+          totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.weapon])
+          totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.shield])
+          totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.head])
+          totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.armor])
+          totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.headAccessory])
+          totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.eyewear])
+          totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.body])
+          totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.back])
+
+          return levelPer + totalEquipmentAndClassPer + allocatedPer + buffsPer
+        }
+
+        // Calculates how much PER comes from the equipment
+        function calcEquipmentAndClassPer(equipment) {
+          var equipmentAndClassPer = 0
+
+          if (equipment != undefined) {  
+            equipmentAndClassPer += equipment.per
+            if ( (equipment.klass == user.stats.class) || ( (equipment.klass == "special") && (equipment.specialClass == user.stats.class) ) ) {
+              equipmentAndClassPer += equipment.per / 2
+            }
+          }
+
+          return equipmentAndClassPer
+        }
