@@ -35,7 +35,7 @@ const HEADERS = {
 
 const scriptProperties = PropertiesService.getScriptProperties() // Constants can have properties changed
 
-// Parts of messages that get reused// Parts of messages that get reused
+// Parts of messages that get reused
 const MSG_LEVEL_LOCK_START = "You must be at least level "
 const MSG_LEVEL_LOCK_END = " to use this "
 const MSG_LEVEL_LOCK_END_POTION = MSG_LEVEL_LOCK_MID + "potion."
