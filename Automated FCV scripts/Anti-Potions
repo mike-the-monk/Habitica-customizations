@@ -42,11 +42,14 @@ const NOTES_MID1 = ", gain "
 const NOTES_MID2 = " GP (Instant Use). Maximum "
 const NOTES_END = " per day."
 const MSG_LEVEL_LOCK_START = "You must be at least level "
-const MSG_LEVEL_LOCK_END = " to use this potion."
-const MSG_DAILY_USAGE_EXCEEDED_START_POTION = "You can only use this potion " 
+const MSG_LEVEL_LOCK_END = " to use this "
+const MSG_LEVEL_LOCK_END_POTION = MSG_LEVEL_LOCK_MID + "potion."
+const MSG_DAILY_USAGE_EXCEEDED_START = "You can only use this "
+const MSG_DAILY_USAGE_EXCEEDED_START_POTION = MSG_DAILY_USAGE_EXCEEDED_START + "potion "
 const MSG_DAILY_USAGE_EXCEEDED_END = " times each day."
 const MSG_INSUFFICIENT_START = "Insufficient "
-const MSG_INSUFFICIENT_END_POTION = " to use this potion."
+const MSG_INSUFFICIENT_END = " to use this "
+const MSG_INSUFFICIENT_END_POTION = MSG_INSUFFICIENT_END + "potion."
 
 // Conversion rate between stats
 const XP_CONVERSION_RATE = 6 // 150 XP = 25 GP
