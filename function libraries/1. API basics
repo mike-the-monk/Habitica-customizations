@@ -239,11 +239,30 @@
         "muteHttpExceptions" : true,
       }
 
-      var url = "https://habitica.com/api/v3/tasks/";
+      var url = "https://habitica.com/api/v3/tasks/"
       if (taskIdOrAlias != "") {
-        url += taskIdOrAlias;
+        url += taskIdOrAlias
       }
-      return UrlFetchApp.fetch(url, params);
+      return UrlFetchApp.fetch(url, params)
+    }
+    
+    // Add a tag to a task
+    function api_addTagToTask(taskIdOrAlias, tagId){
+      const params = {
+        "method" : "post",
+        "headers" : HEADERS,
+        "muteHttpExceptions" : true,
+      }
+
+      var url = "https://habitica.com/api/v3/tasks/"
+      if ( (taskIdOrAlias != "") && (taskIdOrAlias != undefined) && (taskIdOrAlias != null) ) {
+        url += taskIdOrAlias + "/tags/"
+
+        if ( (tagId != "") && (tagId != undefined) && (tagId != null) ) {
+          url += tagId
+        }
+      }
+      return UrlFetchApp.fetch(url, params)
     }
 
   // USER
