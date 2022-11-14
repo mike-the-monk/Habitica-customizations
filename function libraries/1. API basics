@@ -342,3 +342,16 @@
       return UrlFetchApp.fetch(url, params)
     }
     
+    // Updates webhook
+    function api_updateWebhook(webhookUrl, payload){
+      const params = {
+        "method" : "put",
+        "headers" : HEADERS,
+        "contentType" : "application/json",
+        "payload" : JSON.stringify(payload),
+        "muteHttpExceptions" : true,
+      }
+
+      const url = "https://habitica.com/api/v3/user/webhook/" + webhookUrl
+      return UrlFetchApp.fetch(url, params)
+    }
