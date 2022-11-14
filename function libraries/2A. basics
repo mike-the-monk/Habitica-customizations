@@ -110,7 +110,7 @@
           if (isNan) {
             return -2
           } else {
-            let parameter = sanitizePositive(inputAsNumber)
+            let parameter = sanitizeInput(inputAsNumber, 0, "none")
             return parameter
           } 
         }
@@ -224,15 +224,15 @@
           }
         }
 
-      // GROUP-ID RELATED FUNCTIONS
+      // UUID RELATED FUNCTIONS – Applies to user IDs, Guild IDs, party IDs, etc.
 
-        // Checks if a Guild ID is in the correct formatting: 00000000-0000-4000-A000-000000000000
-        function checkGuildIdFormat(guildIdToCheck){
+        // Checks if a UUID is in the correct formatting: 00000000-0000-4000-A000-000000000000
+        function checkUuidFormat(uuidToCheck){
           // Trim, just in case there was extra whitespace
-          let stringTemp = guildIdToCheck.trim()
+          let stringTemp = uuidToCheck.trim()
 
           // Total length of string should be 36 (Four total dashes and 32 other hexadecimal characters)
-          let length = stringTemp.length;
+          let length = stringTemp.length
           if (length != 36) {
             return false
           } else {
