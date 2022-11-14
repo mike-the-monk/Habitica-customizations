@@ -54,24 +54,6 @@
       scriptProperties.setProperty(ANTI_BUFF_AMOUNT_KEY, 0)
       scriptProperties.setProperty(ANTI_BUFF_USAGE_KEY, 0)
     }
-    
-    
-      // MANA COST RELATED FUNCTIONS
-
-        // Checks if sufficient mana, sends message if not. Choose whether to deduct costs now or later.
-        function checkMana(mp, mpCost, deductLater){
-          if (mp < mpCost) {
-            api_sendPrivateMessage({"message" : MSG_INSUFFICIENT_MANA_SKILL, "toUserId" : USER_ID})
-            return false
-          } else {
-            if (deductLater) {
-              return true
-            } else {
-              api_updateUser({"stats.mp" : mp - mpCost})
-              return true
-            }
-          }
-        }
 
       // NUMERIC-RELATED FUNCTIONS
 
