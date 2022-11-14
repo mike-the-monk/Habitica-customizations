@@ -14,6 +14,27 @@
 
   // 2B. SKILLS
   
+    // Checks if sufficient mana, sends message if not. Choose whether to deduct costs now or later.
+    function checkMana(mp, mpCost, deductLater){
+      if (mp < mpCost) {
+        const MSG_INSUFFICIENT_START = "Insufficient "
+        const MSG_INSUFFICIENT_START_MANA = MSG_INSUFFICIENT_START + "Mana"
+        const MSG_INSUFFICIENT_END = " to use this "
+        const MSG_INSUFFICIENT_END_SKILL = MSG_INSUFFICIENT_END + "skill."
+        const MSG_INSUFFICIENT_MANA_SKILL = MSG_INSUFFICIENT_START + MSG_INSUFFICIENT_START_MANA + MSG_INSUFFICIENT_END + MSG_INSUFFICIENT_END_SKILL
+        
+        api_sendPrivateMessage({"message" : MSG_INSUFFICIENT_MANA_SKILL, "toUserId" : USER_ID});
+        return false
+      } else {
+        if (deductLater) {
+          return true
+        } else {
+          api_updateUser({"stats.mp" : mp - mpCost})
+          return true
+        }
+      }
+    }
+  
     // Some skills do critical hits
     function criticalHit (stat, chance) {
       var targetToBeat = chance * ( (1 + stat ) / 100 )
