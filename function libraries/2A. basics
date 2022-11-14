@@ -42,6 +42,19 @@
       }
     }
     
+    // Resets usage counters, usually done at Cron
+    function resetCounters(){
+      scriptProperties.setProperty(XP_USAGE_KEY, 0)
+      scriptProperties.setProperty(MP_USAGE_KEY, 0)
+      scriptProperties.setProperty(ANTI_MP_USAGE_KEY, 0)
+      scriptProperties.setProperty(ANTI_HP_USAGE_KEY, 0)
+      scriptProperties.setProperty(ANTI_XP_USAGE_KEY, 0)
+      scriptProperties.setProperty(HP_FOR_MP_KEY, 0)
+      scriptProperties.setProperty(XP_FOR_MP_KEY, 0)
+      scriptProperties.setProperty(ANTI_BUFF_AMOUNT_KEY, 0)
+      scriptProperties.setProperty(ANTI_BUFF_USAGE_KEY, 0)
+    }
+    
     
       // MANA COST RELATED FUNCTIONS
 
