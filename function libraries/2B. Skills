@@ -94,25 +94,25 @@
     // BUFF SKILLS 
 
       // Warrior skill Valorous Presence
-      function buffStr(unbuffedStr, buffsStr) {
+      function valorousPresence(unbuffedStr, buffsStr) {
         var buffAmount = Math.ceil( ( (unbuffedStr * 20) / (unbuffedStr + 200) ) )
         api_updateUser({"stats.buffs.str" : buffsStr + buffAmount})
       }
 
       // Mage skill Earthquake
-      function buffInt(unbuffedInt, buffsInt) {
+      function earthquake(unbuffedInt, buffsInt) {
         var buffAmount = Math.ceil( ( (unbuffedInt * 30) / (unbuffedInt + 200) ) )
         api_updateUser({"stats.buffs.int" : buffsInt + buffAmount})
       }
 
       // Healer skill Protective Aura
-      function buffCon(unbuffedCon, buffsCon) {
+      function protectiveAura(unbuffedCon, buffsCon) {
         var buffAmount = Math.ceil( ( (unbuffedCon * 200) / (unbuffedCon + 200) ) )
         api_updateUser({"stats.buffs.con" : buffsCon + buffAmount})
       }
 
       // Rogue skill Tools of the Trade
-      function buffPer(unbuffedPer, buffsPer) {
+      function toolsOfTheTrade(unbuffedPer, buffsPer) {
         var buffAmount = Math.ceil( ( (unbuffedPer * 100) / (unbuffedPer + 50) ) )
         api_updateUser({"stats.buffs.per" : buffsPer + buffAmount})
       }
