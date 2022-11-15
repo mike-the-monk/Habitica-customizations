@@ -445,7 +445,7 @@ function parseAndEvaluate(inputString, searchTerm, statValue){
   }
   else {
     // Find where the semicolon is in the string (following the search term)
-    let indexSemicolon = findIndexOfSemicolon(inputString, index, 3); // Offset is 3 to account for the search term
+    let indexSemicolon = findIndexOfSemicolon(inputString, index, 3) // Offset is 3 to account for the search term
     if ( indexSemicolon == -1 ) {
       api_sendPrivateMessageAlways({"message" : SEMICOLON_ERROR_MSG_START + searchTerm + SEMICOLON_ERROR_MSG_END, "toUserId" : USER_ID})
       return 0.184937265 // this signals to the script that there was an error
