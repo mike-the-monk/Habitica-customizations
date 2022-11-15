@@ -84,7 +84,7 @@ const HEADERS = {
   "x-api-key" : API_TOKEN,
 }
 
-const scriptProperties = PropertiesService.getScriptProperties(); // Constants can have properties changed
+const scriptProperties = PropertiesService.getScriptProperties() // Constants can have properties changed
 
 const LEVEL_LOCK_PICKPOCKET = 11
 const LEVEL_LOCK_BACKSTAB = 12
