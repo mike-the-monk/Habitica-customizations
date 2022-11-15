@@ -66,7 +66,7 @@ const SNOWBALL_BUTTON = {
 
 const SHINY_SEED_TEXT = "**Shiny Seed (self only)**"
 const SHINY_SEED_ALIAS = "shiny_seed"
-const SHINY_SEED_NOTES = "Turn yourself into a joyous flower! "  + TRANSFORMATION_NOTES_END
+const SHINY_SEED_NOTES = "Turn yourself into a joyous flower! " + TRANSFORMATION_NOTES_END
 const SHINY_SEED_VALUE = "0"
 
 const SHINY_SEED_BUTTON = {
@@ -79,7 +79,7 @@ const SHINY_SEED_BUTTON = {
 
 const SEAFOAM_TEXT = "**Seafoam (self only)**"
 const SEAFOAM_ALIAS = "seafoam"
-const SEAFOAM_NOTES = "Turn yourself into a sea creature! "  + TRANSFORMATION_NOTES_END
+const SEAFOAM_NOTES = "Turn yourself into a sea creature! " + TRANSFORMATION_NOTES_END
 const SEAFOAM_VALUE = "0"
 
 const SEAFOAM_BUTTON = {
@@ -92,7 +92,7 @@ const SEAFOAM_BUTTON = {
 
 const SPOOKY_SPARKLES_TEXT = "**Spooky Sparkles (self only)**"
 const SPOOKY_SPARKLES_ALIAS = "spooky_sparkles"
-const SPOOKY_SPARKLES_NOTES = "Turn yourself into a transparent pal! Costs 15 GP, lasts until tomorrow. Click again to pay 5 GP and return to normal."
+const SPOOKY_SPARKLES_NOTES = "Turn yourself into a transparent pal! Costs 15 GP, lasts until tomorrow. " + TRANSFORMATION_NOTES_END
 const SPOOKY_SPARKLES_VALUE = "0"
 
 const SPOOKY_SPARKLES_BUTTON = {
@@ -105,7 +105,7 @@ const SPOOKY_SPARKLES_BUTTON = {
 
 const RANDOM_TEXT = "**Random Transformation (self only)**"
 const RANDOM_ALIAS = "random"
-const RANDOM_NOTES = "Turn yourself into a snowman, flower, starfish, or ghost! "  + TRANSFORMATION_NOTES_END
+const RANDOM_NOTES = "Turn yourself into a snowman, flower, starfish, or ghost! " + TRANSFORMATION_NOTES_END
 const RANDOM_VALUE = "0"
 
 const RANDOM_BUTTON = {
