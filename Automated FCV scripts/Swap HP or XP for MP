@@ -439,6 +439,35 @@ function calcEquipmentAndClassInt(equipment) {
   return equipmentAndClassInt
 }
 
+// Check if sufficient level, send message if not.
+function checkLevelLock(level, levelLock, messageEndVariable){
+  if (level < levelLock){
+    let errorMsg = MSG_LEVEL_LOCK_START + levelLock + MSG_LEVEL_LOCK_END + messageEndVariable
+    api_sendPrivateMessage({"message" : errorMsg, "toUserId" : USER_ID})
+    return false
+  } else {
+    return true
+  }
+}
+
+
+// Check if (daily) usage exceeded, send message if yes.
+function checkUsageLimit(usageCounter, newUsageIncrement, maxUsage, messageMidVariable, isForXp){
+  if ( (usageCounter + newUsageIncrement) > maxUsage ) {
+    let errorMsg = MSG_DAILY_USAGE_EXCEEDED_START + messageMidVariable + maxUsage + MSG_DAILY_USAGE_EXCEEDED_END
+
+    // Since the max usage for XP potion/skill is different, the message will be different.
+    if (isForXp) {
+      errorMsg = MSG_DAILY_USAGE_EXCEEDED_XP_START + messageMidVariable + MSG_DAILY_USAGE_EXCEEDED_XP_MID_1 + maxUsage + MSG_DAILY_USAGE_EXCEEDED_XP_MID_2 + MAX_DAILY_XP_POTION_USAGE + MSG_DAILY_USAGE_EXCEEDED_XP_END
+    }
+
+    api_sendPrivateMessage({"message" : errorMsg, "toUserId" : USER_ID})
+    return false
+  } else {
+    return true
+  }
+}
+
 // Changes stats
 function api_updateUser(payload) { 
   const params = {
