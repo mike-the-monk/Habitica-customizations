@@ -229,15 +229,11 @@ function doPost(e) {
 // When the HP-for-MP button is clicked
 function doButtonHpForMp(lvl, hp, mp, mpDiff, HpForMpUsage, HpForMpUsageKey){
   // If level lock fails, send failure message
-  if (lvl < HP_FOR_MP_LEVEL_LOCK) {
-    api_sendPrivateMessage({"message" : MSG_HP_FOR_MP_LEVEL_LOCK_FAIL, "toUserId" : USER_ID})
-  }
-  else {
+  let sufficientLevel = checkLevelLock(lvl, HP_FOR_MP_LEVEL_LOCK, "skill.")
+  if (sufficientLevel) {
     // Check if they've exceeded daily usage. If yes, send failure message.
-    if (HpForMpUsage >= MAX_DAILY_HP_FOR_MP_USAGE) {
-      api_sendPrivateMessage({"message" : MSG_HP_FOR_MP_DAILY_USAGE_EXCEEDED, "toUserId" : USER_ID})
-    }
-    else {
+    let usageLimitOkay = checkUsageLimit(HpForMpUsage, MAX_DAILY_HP_FOR_MP_USAGE, MaxDailyAntiXpUsage, "skill ", false)
+    if (usageLimitOkay) {
       // Check if they have sufficient Health. Send failure message if not.
       if (hp < HP_COST_HP_FOR_MP) {
         api_sendPrivateMessage({"message" : MSG_INSUFFICIENT_HP, "toUserId" : USER_ID})
@@ -272,18 +268,14 @@ function doButtonHpForMp(lvl, hp, mp, mpDiff, HpForMpUsage, HpForMpUsageKey){
 // When the XP-for-MP button is clicked
 function doButtonXpForMp(lvl, exp, mp, mpDiff, XpForMpUsage, XpForMpUsageKey){
   // If level lock fails, send failure message
-  if (lvl < XP_FOR_MP_LEVEL_LOCK) {
-    api_sendPrivateMessage({"message" : MSG_XP_FOR_MP_LEVEL_LOCK_FAIL, "toUserId" : USER_ID})
-  }
-  else {
+  let sufficientLevel = checkLevelLock(lvl, XP_FOR_MP_LEVEL_LOCK, "skill.")
+  if (sufficientLevel) {
     // Check if another use (50 XP) would cause them to exceed daily usage. If yes, send failure message.
-    var XpToNextLevel = Math.round((Math.pow(lvl, 2) * 0.25 + 10 * lvl + 139.75) / 10) * 10
-    var MaxDailyXpUsage = Math.floor(XpToNextLevel / 3)
-
-    if (XpForMpUsage + XP_COST_XP_FOR_MP > MaxDailyXpUsage) {
-      api_sendPrivateMessage({"message" : MSG_XP_FOR_MP_DAILY_USAGE_EXCEEDED, "toUserId" : USER_ID})
-    }
-    else {
+    let XpToNextLevel = Math.round((Math.pow(lvl, 2) * 0.25 + 10 * lvl + 139.75) / 10) * 10
+    let MaxDailyXpUsage = Math.floor(XpToNextLevel * eval(MAX_DAILY_XP_FOR_MP_USAGE))
+    
+    let usageLimitOkay = checkUsageLimit(XpForMpUsage, XP_COST_XP_FOR_MP, MaxDailyXpUsage, "skill ", true)
+    if (usageLimitOkay) {
       // Check if they have sufficient Experience. Send failure message if not.
       if (exp < XP_COST_XP_FOR_MP) {
         api_sendPrivateMessage({"message" : MSG_INSUFFICIENT_XP, "toUserId" : USER_ID})
