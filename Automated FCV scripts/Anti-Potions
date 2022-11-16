@@ -282,14 +282,11 @@ function doButtonAntiHpPotion(hp, gp, AntiHpUsageKey, AntiHpUsage){
 
 // When the Anti-XP Potion button is clicked
 function doButtonAntiXpPotion(lvl, exp, gp, AntiXpUsageKey, AntiXpUsage){
-  let XpToNextLevel = Math.round((Math.pow(lvl, 2) * 0.25 + 10 * lvl + 139.75) / 10) * 10
-  let MaxDailyAntiXpUsage = Math.floor(XpToNextLevel * eval(MAX_DAILY_ANTI_XP_POTION_USAGE))
-  
   // If level lock fails, send failure message
   let sufficientLevel = checkLevelLock(lvl, ANTI_XP_POTION_LEVEL_LOCK, "potion.")
   if (sufficientLevel) {
     // Check if they've exceeded daily usage. If yes, send failure message.
-    let usageLimitOkay = checkUsageLimit(AntiXpUsage, ANTI_XP_POTION_XP_COST, MaxDailyAntiXpUsage, "potion ", true)
+    let usageLimitOkay = checkUsageLimit(AntiXpUsage, ANTI_XP_POTION_XP_COST, MAX_DAILY_ANTI_XP_POTION_USAGE, "potion ", true)
     if (usageLimitOkay) {
       // Check if they have sufficient Experience. Send failure message if not.
       if (exp < ANTI_XP_POTION_XP_COST) {
@@ -365,12 +362,17 @@ function api_createNewWebhook(payload) {
 
 // Sets initial properties that will be used/saved later.
 function initScriptProperties() {
+  const responseUser = api_getAuthenticatedUserProfile("stats")
+  user = JSON.parse(responseUser).data
+  let cronCount = user.flags.cronCount
+  scriptProperties.setProperty(CRON_COUNT_KEY, cronCount)
+
   var timestampInit = Date.now()
-  scriptProperties.setProperty(CRON_COUNT_KEY, 0)
+  scriptProperties.setProperty(TIMESTAMP_KEY, timestampInit)
+
   scriptProperties.setProperty(ANTI_MP_USAGE_KEY, 0)
   scriptProperties.setProperty(ANTI_HP_USAGE_KEY, 0)
   scriptProperties.setProperty(ANTI_XP_USAGE_KEY, 0)
-  scriptProperties.setProperty(TIMESTAMP_KEY, timestampInit)
 }
 
 // Gets user info so I can use it, especially stats like mana, experience, and level
