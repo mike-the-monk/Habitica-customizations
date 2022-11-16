@@ -1314,7 +1314,7 @@ function duelEndButton(taskNotes, selfUsernameKey, opponentUsernameKey, wagerKey
   
   // Check if search terms are found
   let duelEndIndex = findIndex(DUEL_END, taskNotes); // Since the user will be copy/pasting, I want this to be case-sensitive
-  let duelEndDebugIndex = findIndexCaseInsensitive(DUEL_END_DEBUG, taskNotes); // Since the user will type this one, I don't want to be case-sensitive
+  let duelEndDebugIndex = findIndex(DUEL_END_DEBUG, taskNotes,false); // Since the user will type this one, I don't want to be case-sensitive
   
   // Set "validity" to the correct value
   if (duelEndIndex == -1) {
