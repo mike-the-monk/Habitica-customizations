@@ -235,7 +235,11 @@ function api_createNewWebhook(payload) {
 
 // Sets initial properties that will be used/saved later.
 function initScriptProperties() {
-  scriptProperties.setProperty(CRON_COUNT_KEY, 0)
+  const responseUser = api_getAuthenticatedUserProfile("stats")
+  user = JSON.parse(responseUser).data
+  let cronCount = user.flags.cronCount
+  scriptProperties.setProperty(CRON_COUNT_KEY, cronCount)
+  
   scriptProperties.setProperty(ANTI_BUFF_AMOUNT_KEY, 0)
   scriptProperties.setProperty(ANTI_BUFF_USAGE_KEY, 0)
 }
