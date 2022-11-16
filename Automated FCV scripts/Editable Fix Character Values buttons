@@ -542,7 +542,8 @@ function findIndex(searchTerm, stringToSearch, caseSensitive) {
     return stringToSearch.indexOf(searchTerm)
   } else {
     let uppercaseStringToSearch = stringToSearch.toUpperCase()
-    let index = findIndex(searchTerm, uppercaseStringToSearch)
+    let uppercaseSearchTerm = searchTerm.toUpperCase()
+    let index = findIndex(uppercaseSearchTerm, uppercaseStringToSearch)
 
     return index
   }
