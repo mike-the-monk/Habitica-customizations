@@ -531,9 +531,15 @@ function api_getChatMessagesFromGroup() {
   return UrlFetchApp.fetch(url, params)
 }
 
-// Returns the first character of the search term within the string you are searching
-function findIndex(searchTerm, stringToSearch) {
-  return stringToSearch.indexOf(searchTerm)
+// Find the index of a given search term. Choose whether it's case-sensitive or not.
+function findIndex(searchTerm, stringToSearch, caseSensitive) {
+  if (caseSensitive){
+    return stringToSearch.indexOf(searchTerm)
+  } else {
+    let uppercaseSearchTerm = searchTerm.toUpperCase()
+    let uppercaseStringToSearch = stringToSearch.toUpperCase()
+    return uppercaseStringToSearch.indexOf(uppercaseSearchTerm)
+  }
 }
 
 // Adds "@" to beginning of a username so you can tag them.
