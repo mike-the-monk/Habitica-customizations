@@ -107,9 +107,7 @@
           } else {
             let uppercaseStringToSearch = stringToSearch.toUpperCase()
             let uppercaseSearchTerm = searchTerm.toUpperCase()
-            let index = findIndex(uppercaseSearchTerm, uppercaseStringToSearch)
-
-            return index
+            return uppercaseStringToSearch.indexOf(uppercaseSearchTerm)
           }
         }
 
