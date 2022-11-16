@@ -191,12 +191,12 @@ function doButtonXpPotion(lvl, gp, exp, xpUsage, xpUsageKey){
   let MaxDailyXpUsage = Math.floor(XpToNextLevel * eval(MAX_DAILY_XP_POTION_USAGE))
 
   // If level lock fails, refund the money and send failure message
-  let sufficientLevel = checkLevelLock(lvl, XP_POTION_LEVEL_LOCK, MSG_XP_POTION_LEVEL_LOCK_FAIL)
+  let sufficientLevel = checkLevelLock(lvl, XP_POTION_LEVEL_LOCK, "potion.")
   if (!sufficientLevel) {
     api_updateUser({"stats.gp" : gp + XP_POTION_COST}) 
   } else {
     // If another potion (+XP_GAIN XP) would put them above the max, refund the money and send failure message
-    let usageLimitOkay = checkUsageLimit(xpUsage, XP_GAIN, MaxDailyXpUsage, MSG_XP_POTION_DAILY_USAGE_EXCEEDED)
+    let usageLimitOkay = checkUsageLimit(xpUsage, XP_GAIN, MaxDailyXpUsage, "potion ", true)
     if (!usageLimitOkay) {
       api_updateUser({"stats.gp" : gp + XP_POTION_COST}) 
     } else { // If another potion wouldn't make them exceed the max, run as normal and increment counter
@@ -222,12 +222,12 @@ function doButtonMpPotion(lvl, gp, mp, mpUsage, mpUsageKey){
   let mpDiff = maxMp - mp
 
   // If level lock fails, refund the money and send failure message
-  let sufficientLevel = checkLevelLock(lvl, MP_POTION_LEVEL_LOCK, MSG_MP_POTION_LEVEL_LOCK_FAIL)
+  let sufficientLevel = checkLevelLock(lvl, MP_POTION_LEVEL_LOCK, "potion.")
   if (!sufficientLevel) {
     api_updateUser({"stats.gp" : gp + MP_POTION_COST}) 
   } else {
     // Check if they've exceeded daily usage. If yes, refund the money and send failure message
-    let usageLimitOkay = checkUsageLimit(mpUsage, 1, MAX_DAILY_MP_POTION_USAGE, MSG_MP_POTION_DAILY_USAGE_EXCEEDED)
+    let usageLimitOkay = checkUsageLimit(mpUsage, 1, MAX_DAILY_MP_POTION_USAGE, "potion ", false)
     if (!usageLimitOkay) {
       api_updateUser({"stats.gp" : gp + MP_POTION_COST}) 
     } else {
