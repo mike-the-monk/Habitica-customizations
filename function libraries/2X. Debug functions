@@ -22,7 +22,10 @@
 
       // Manually reset all usage counters.
       function debugResetCountersAll() {
-        resetCounters()
+        debugResetCountersXpAndMpPotion()
+        debugResetCountersAntiPotions()
+        debugResetCountersHpOrXpForMp()
+        debugResetCountersLowConstitutionMode()
       }
 
       function debugResetCountersXpAndMpPotion() {
