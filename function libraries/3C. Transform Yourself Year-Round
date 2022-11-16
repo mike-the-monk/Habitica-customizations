@@ -1,0 +1,54 @@
+// TABLE OF CONTENTS
+  // 1. API basics – functions made directly from Habitica's API. Each individual script probably won't use all of these, but that's okay.
+  // 2. Non-API functions 
+    // 2A. Basics – functions that can be used in a wide variety of scripts
+    // 2B. Skills – functions used to make custom skills
+    // 2X. Debug functions – while the specific kind of debug function depends greatly on the script, they do share some commonalities
+  // 3. Idiosyncratic functions – functions that are used only in a single script.
+    // If a script has no idiosyncratic functions (i.e. all its functions are accounted for in the above categories), it will not be listed in this section.
+    // Not listed here: Dueling Script – Announcer Bot, since you run that script from a secondary/bot account, not your main account, and thus won't run it alongside any other scripts.
+    // 3A. Editable Fix Character Values Buttons
+    // 3B. Dueling Script – Scoring
+    // 3C. Transform Yourself Year-Round
+
+// 3. IDIOSYNCRATIC FUNCTIONS
+  // If a script has no idiosyncratic functions (i.e. all its functions are accounted for in the above categories), that script will not be listed in this section.
+  
+  // 3C. TRANSFORM YOURSELF YEAR-ROUND
+  
+    // Checks to run before transforming
+    function checkWhetherToTransform(isSnowball, isSpookySparkles, isShinySeed, isSeafoam, gp){
+      const COST_TO_TRANSFORM = 15
+      const COST_TO_TRANSFORM_BACK = 5
+      
+      const MSG_INSUFFICIENT_GP_START = "Insufficient gold: you need at least "
+      const MSG_INSUFFICIENT_GP_END = " GP to transform"
+
+      // Messages
+      const MSG_INSUFFICIENT_GP_TRANSFORM_BACK = MSG_INSUFFICIENT_GP_START + COST_TO_TRANSFORM_BACK + MSG_INSUFFICIENT_GP_END + " back."
+      const MSG_INSUFFICIENT_GP_TRANSFORM = MSG_INSUFFICIENT_GP_START + COST_TO_TRANSFORM + MSG_INSUFFICIENT_GP_END + "."
+    
+      // See if they've already transformed. If yes, subtract 5 GP (send error message if they don't have enough) and reset them to normal.
+      if ( (isSnowball) || (isSpookySparkles) || (isShinySeed) || (isSeafoam) ) {
+        if ( gp >= COST_TO_TRANSFORM_BACK ) {
+          api_updateUser({"stats.buffs.snowball" : false, "stats.buffs.spookySparkles" : false, "stats.buffs.shinySeed" : false,
+            "stats.buffs.seafoam" : false, "stats.gp" : gp - COST_TO_TRANSFORM_BACK})
+          return false
+        } else {
+          api_sendPrivateMessage({"message" : MSG_INSUFFICIENT_GP_TRANSFORM_BACK, "toUserId" : USER_ID})
+          return false
+        }
+      } 
+      // If they don't have the 15 GP, send error message
+      else {
+        if (gp < COST_TO_TRANSFORM) {
+          api_sendPrivateMessage({"message" : MSG_INSUFFICIENT_GP_TRANSFORM, "toUserId" : USER_ID})
+          return false
+        } 
+        // Otherwise, all checks passes
+        else {
+          return true
+        }
+      }
+    }
+  
