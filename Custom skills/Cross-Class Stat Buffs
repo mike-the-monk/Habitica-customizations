@@ -847,9 +847,10 @@ function calcEquipmentAndClassPer(equipment) {
 }
 
 // Check if sufficient level, send message if not.
-function checkLevelLock(level, levelLock, message){
+function checkLevelLock(level, levelLock, messageEndVariable){
   if (level < levelLock){
-    api_sendPrivateMessage({"message" : message, "toUserId" : USER_ID})
+    let errorMsg = MSG_LEVEL_LOCK_START + levelLock + MSG_LEVEL_LOCK_END + messageEndVariable
+    api_sendPrivateMessage({"message" : errorMsg, "toUserId" : USER_ID})
     return false
   } else {
     return true
