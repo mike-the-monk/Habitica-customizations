@@ -6,8 +6,10 @@
     // 2X. Debug functions – while the specific kind of debug function depends greatly on the script, they do share some commonalities
   // 3. Idiosyncratic functions – functions that are used only in a single script.
     // If a script has no idiosyncratic functions (i.e. all its functions are accounted for in the above categories), it will not be listed in this section.
+    // Not listed here: Dueling Script – Announcer Bot, since you run that script from a secondary/bot account, not your main account, and thus won't run it alongside any other scripts.
     // 3A. Editable Fix Character Values Buttons
     // 3B. Dueling Script – Scoring
+    // 3C. Transform Yourself Year-Round
 
 // 1. API BASICS
 
