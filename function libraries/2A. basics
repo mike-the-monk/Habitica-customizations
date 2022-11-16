@@ -105,8 +105,11 @@
           if (caseSensitive){
             return stringToSearch.indexOf(searchTerm)
           } else {
+            let uppercaseStringToSearch = stringToSearch.toUpperCase()
             let uppercaseSearchTerm = searchTerm.toUpperCase()
-            return uppercaseStringToSearch.indexOf(uppercaseSearchTerm)
+            let index = findIndex(uppercaseSearchTerm, uppercaseStringToSearch)
+
+            return index
           }
         }
 
