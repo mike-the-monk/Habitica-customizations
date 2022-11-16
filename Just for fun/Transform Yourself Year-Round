@@ -50,6 +50,12 @@ const TRANSFORMATION_NOTES_END_1 = "Costs "
 const TRANSFORMATION_NOTES_END_2 = " GP, lasts until tomorrow. Click again to pay "
 const TRANSFORMATION_NOTES_END_3 = " GP to return to normal."
 const TRANSFORMATION_NOTES_END = TRANSFORMATION_NOTES_END_1 + COST_TO_TRANSFORM + TRANSFORMATION_NOTES_END_2 + COST_TO_TRANSFORM_BACK + TRANSFORMATION_NOTES_END_3
+const MSG_INSUFFICIENT_GP_START = "Insufficient gold: you need at least "
+const MSG_INSUFFICIENT_GP_END = " GP to transform"
+
+// Messages
+const MSG_INSUFFICIENT_GP_TRANSFORM_BACK = MSG_INSUFFICIENT_GP_START + COST_TO_TRANSFORM_BACK + MSG_INSUFFICIENT_GP_END + " back."
+const MSG_INSUFFICIENT_GP_TRANSFORM = MSG_INSUFFICIENT_GP_START + COST_TO_TRANSFORM + MSG_INSUFFICIENT_GP_END + "."
 
 const SNOWBALL_TEXT = "**Snowball (self only)**"
 const SNOWBALL_ALIAS = "snowball"
@@ -239,19 +245,19 @@ function doPost(e) {
 function checkWhetherToTransform(isSnowball, isSpookySparkles, isShinySeed, isSeafoam, gp){
   // See if they've already transformed. If yes, subtract 5 GP (send error message if they don't have enough) and reset them to normal.
   if ( (isSnowball) || (isSpookySparkles) || (isShinySeed) || (isSeafoam) ) {
-    if ( gp >= 5 ) {
+    if ( gp >= COST_TO_TRANSFORM_BACK ) {
       api_updateUser({"stats.buffs.snowball" : false, "stats.buffs.spookySparkles" : false, "stats.buffs.shinySeed" : false,
-        "stats.buffs.seafoam" : false, "stats.gp" : gp - 5})
+        "stats.buffs.seafoam" : false, "stats.gp" : gp - COST_TO_TRANSFORM_BACK})
       return false
     } else {
-      api_sendPrivateMessage({"message" : "Insufficient gold: you need at least 5 GP to transform back.", "toUserId" : USER_ID})
+      api_sendPrivateMessage({"message" : MSG_INSUFFICIENT_GP_TRANSFORM_BACK, "toUserId" : USER_ID})
       return false
     }
   } 
   // If they don't have the 15 GP, send error message
   else {
-    if (gp < 15) {
-      api_sendPrivateMessage({"message" : "Insufficient gold: you need at least 15 GP.", "toUserId" : USER_ID})
+    if (gp < COST_TO_TRANSFORM) {
+      api_sendPrivateMessage({"message" : MSG_INSUFFICIENT_GP_TRANSFORM, "toUserId" : USER_ID})
       return false
     } 
     // Otherwise, all checks passes
