@@ -366,11 +366,17 @@ function api_createNewWebhook(payload) {
 
 // Sets initial properties that will be used/saved later.
 function initScriptProperties() {
+  const responseUser = api_getAuthenticatedUserProfile("stats")
+  user = JSON.parse(responseUser).data
+  let cronCount = user.flags.cronCount
+  scriptProperties.setProperty(CRON_COUNT_KEY, cronCount)
+
   var timestampInit = Date.now()
-  scriptProperties.setProperty(CRON_COUNT_KEY, 0)
+  scriptProperties.setProperty(TIMESTAMP_KEY, timestampInit)
+  
   scriptProperties.setProperty(HP_FOR_MP_KEY, 0)
   scriptProperties.setProperty(XP_FOR_MP_KEY, 0)
-  scriptProperties.setProperty(TIMESTAMP_KEY, timestampInit)
+  
 }
 
 // Gets user info so I can use it, especially stats like mana, experience, and level
