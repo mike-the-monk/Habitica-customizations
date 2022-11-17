@@ -58,7 +58,7 @@ const MSG_NOTES_DOUBLE_BUFF = "Buff both of these stats for you according to eac
 const MSG_INSUFFICIENT_MANA_SKILL = "Insufficient mana to use this skill."
 
 // Stats for each skill
-const LEVEL_LOCK = 13
+const LEVEL_LOCK_BUFFS = 13
 
 const OMNI_BUFF_MP_COST = 55
 const VALOROUS_PRESENCE_SELF_MP_COST = 10
@@ -375,7 +375,7 @@ function doPost(e) {
         let lvl = user.stats.lvl
         
         // Check against level lock
-        let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK, "skill.")
+        let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_BUFFS, "skill.")
         if (sufficientLevel){
           // Get equipment stats info
           const responseContent = apiFree_getAllAvailableContentObjects()
