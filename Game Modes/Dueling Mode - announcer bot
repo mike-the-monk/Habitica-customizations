@@ -923,11 +923,11 @@ function checkCompleteDuelStartStringNumeric(input, participant2Key, wagerKey, s
       
       let wager = parseFloat(wagerTemp)
       wagerTemp = wager
-      wager = sanitizePositive(wagerTemp) // Ensure that it is greater than 1
+      wager = sanitizeInput(wagerTemp, 1, "none") // Ensure that it is greater than 1
       
       let scoreNeeded = parseFloat(scoreNeededTemp)
       scoreNeededTemp = scoreNeeded
-      scoreNeeded = sanitizePositive(scoreNeededTemp) // Ensure that it is greater than 1
+      scoreNeeded = sanitizeInput(scoreNeededTemp, 1, "none") // Ensure that it is greater than 1
       
       scriptProperties.setProperty(participant2Key, name)
       scriptProperties.setProperty(wagerKey, wager)
@@ -968,13 +968,28 @@ function countHowManyAreNumbers(wagerIsNumber, scoreNeededIsNumber) {
     }
   }
 }
-
-// Ensure that the input is greater than the minimum (normally 0, but for this script, minimum is 1).
-function sanitizePositive(value) {
-  if (value < 1) {
-    return 1
-  } else {
-    return value
+// Ensures that the input is between the minimum and maximum. Can use "none" in either argument to indicate if there is either no minimum or no maximum.
+function sanitizeInput(input, minimum, maximum) {
+  if (minimum == "none"){ // Condition for if there is no minimum
+    if ( input > maximum ) {
+      return maximum
+    } else { 
+      return input
+    }
+  } else if (maximum == "none"){ // Condition for if there is no maximum
+    if ( input < minimum ) {
+      return minimum
+    } else { 
+      return input
+    }
+  } else { // Condition where there is both minimum and maximum
+    if ( input < minimum ) {
+      return minimum
+    } else if ( input > maximum ) {
+      return maximum
+    } else { 
+      return input
+    }
   }
 }
 
@@ -1514,7 +1529,7 @@ function parseAndSave(text, indexStart, offset, isName, isNumeric, parameterToSa
     // If it's a numeric parameter, turn it into a number
     if (isNumeric) {
       let substringAsNumber = parseFloat(substring)
-      let positiveNumber = sanitizePositive(substringAsNumber) // Ensure that it is greater than 1
+      let positiveNumber = sanitizeInput(substringAsNumber, 1, "none") // Ensure that it is greater than 1
       scriptProperties.setProperty(parameterToSave_Key, positiveNumber)
     } else { // It shouldn't be possible to get this condition
       api_postChatMessageToGroup({"message": MSG_ERROR_BEGINNING + MSG_ERROR_PARSESAVE + MSG_ERROR_ENDING})
