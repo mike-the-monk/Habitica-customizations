@@ -1485,7 +1485,7 @@ function endDuel(taskIdEnd, taskIdScore, troubleshootingKey, guildId, timestampI
   
   // Delete the Duel Score and Duel End buttons
   api_deleteTask(taskIdEnd)
-  api_deleteTask(taskIdScore); 
+  api_deleteTask(taskIdScore)
 }
 
 // FUNCTIONS FOR DEBUGGING. SCRIPT DOES NOT USE THEM, THEY MUST BE TRIGGERED MANUALLY
