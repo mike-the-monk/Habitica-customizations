@@ -277,14 +277,17 @@ function initScriptProperties() {
 
 // Saves initial HP and Level values
 function initiatePartialHealingValues(){
+  var hpKey = HP_KEY
+  var lvlKey = LVL_KEY
+  
   const responseInit = api_getAuthenticatedUserProfile("stats")
   user = JSON.parse(responseInit).data
     
   var currentHp = user.stats.hp
   var currentLvl = user.stats.lvl
   
-  scriptProperties.setProperty(HP_KEY, currentHp)
-  scriptProperties.setProperty(LVL_KEY, currentLvl)
+  scriptProperties.setProperty(hpKey, currentHp)
+  scriptProperties.setProperty(lvlKey, currentLvl)
 }
 
 // Ensures that the input is between the minimum and maximum. Can use "none" in either argument to indicate if there is either no minimum or no maximum.
