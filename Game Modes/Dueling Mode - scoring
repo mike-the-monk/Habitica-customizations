@@ -964,17 +964,33 @@ function checkIfNumber(input){
   if (isNan) {
     return -2
   } else {
-    let parameter = sanitizePositive(inputAsNumber) // Ensure that it is greater than 1
+    let parameter = sanitizeInput(inputAsNumber, 1, "none") // Ensure that it is greater than 1
     return parameter
   } 
 }
 
-// Ensure that the input is greater than the minimum (normally 0, but for this script, minimum is 1).
-function sanitizePositive(value) {
-  if (value < 1) {
-    return 1
-  } else {
-    return value
+// Ensures that the input is between the minimum and maximum. Can use "none" in either argument to indicate if there is either no minimum or no maximum.
+function sanitizeInput(input, minimum, maximum) {
+  if (minimum == "none"){ // Condition for if there is no minimum
+    if ( input > maximum ) {
+      return maximum
+    } else { 
+      return input
+    }
+  } else if (maximum == "none"){ // Condition for if there is no maximum
+    if ( input < minimum ) {
+      return minimum
+    } else { 
+      return input
+    }
+  } else { // Condition where there is both minimum and maximum
+    if ( input < minimum ) {
+      return minimum
+    } else if ( input > maximum ) {
+      return maximum
+    } else { 
+      return input
+    }
   }
 }
 
