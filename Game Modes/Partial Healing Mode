@@ -132,25 +132,36 @@ function doPost(e) {
         
         // See if they've leveled up
         if (currentLvl > prevLvl) {
+          // If yes, run correct version of Partial Healing
           if ( VERSION == 2 ) {
+            // Value to heal must be between 0 and 50
             let valueToHeal = sanitizeInput(HP_SET_VALUE_PER_LEVEL, 0, 50)
+            
+            // New HP must be between 0 and 50
             let newHp = sanitizeInput(valueToHeal + prevHp,0, 50)
-
+            
+            // Heal the correct amount.
             api_updateUser({"stats.hp" : newHp})
             
+            // Save new HP
             scriptProperties.setProperty(hpKey, newHp)
           }
           else if ( VERSION == 3 ) {
+            // Percent to heal must be between 0 and 100
             let percentToHeal = sanitizeInput (HP_PERCENT_PER_LEVEL, 0, 100)
             let healing = ( percentToHeal / 100 ) * ( 50 - prevHp )
+            
+            // New HP must be between 0 and 50
             let newHpPercent = sanitizeInput(healing + prevHp,0, 50)
 
+            // Heal the correct amount.
             api_updateUser({"stats.hp" : newHpPercent})
-
+            
+            // Save new HP
             scriptProperties.setProperty(hpKey, newHpPercent)
           }
           
-          // Save new level
+          // Irrespective of version, save new level
           scriptProperties.setProperty(lvlKey, currentLvl)
         }
         // If they haven't leveled up since the last time the script ran...
