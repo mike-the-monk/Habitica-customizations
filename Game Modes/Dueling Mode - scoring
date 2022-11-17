@@ -914,7 +914,7 @@ function parseDuelStartString(inputString, buttonToDeleteTaskId, duelCurrentlyAc
     let guildId = createSubstring(inputString, 0, semicolonIndex)
     
     // Check to make sure it's a valid format for a Guild ID
-    let guildIdFormatCheck = checkGuildIdFormat(guildId)
+    let guildIdFormatCheck = checkUuidFormat(guildId)
     
     // Remove that section from the input string, save as a smaller substring
     inputStringTemp = createSubstring(inputString, semicolonIndex + 1, length)
@@ -995,7 +995,7 @@ function sanitizeInput(input, minimum, maximum) {
 }
 
 // Checks if a Guild ID is in the correct formatting: 00000000-0000-4000-A000-000000000000
-function checkGuildIdFormat(guildIdToCheck){
+function checkUuidFormat(guildIdToCheck){
   // Trim, just in case there was extra whitespace
   let stringTemp = guildIdToCheck.trim()
   
