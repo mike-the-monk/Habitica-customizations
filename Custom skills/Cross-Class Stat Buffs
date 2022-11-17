@@ -375,7 +375,7 @@ function doPost(e) {
         let lvl = user.stats.lvl
         
         // Check against level lock
-        let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK, "Insufficient level: you must be at least level 13 to use this skill.")
+        let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK, "skill.")
         if (sufficientLevel){
           // Get equipment stats info
           const responseContent = apiFree_getAllAvailableContentObjects()
