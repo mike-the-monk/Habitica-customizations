@@ -12,8 +12,24 @@ const WEB_APP_URL = "PasteGeneratedWebAppUrlHere"
 /* [Users] Required customizations to fill in */
 /* ========================================== */
 
-// Do you want a separate button for each stat, or one button that does multiple stats?
-// If multiple stats, change the 0 to a 1 below.
+// When entering Low [Stat] Mode, what SETPOINT value do you want to set that stat to?
+// For example, the original Low Constitution Mode set Constitution to 1.
+// The values below would set Strength to 30, Intelligence to 20, Constitution to 1, and Perception to 10. Change them to whatever values you want.
+// If you aren't using one of the stats, you can ignore it here.
+const LOW_STRENGTH_MODE_SETPOINT = 30 // Strength
+const LOW_INTELLIGENCE_MODE_SETPOINT = 20 // Intelligence
+const LOW_CONSTITUTION_MODE_SETPOINT = 1 // Constitution
+const LOW_PERCEPTION_MODE_SETPOINT = 10 // Perception
+
+// Next, what buttons do you want? You could do one button per Low [Stat] Mode, or you could combine multiple stats onto a single button – for example, a Low Intelligence and Perception Mode.
+
+// If you want a SEPARATE button for certain stats, change the 0 to a 1 below for each that you want. By default, you'll get Low Constitution Mode.
+const CREATE_LOW_STRENGTH_MODE_BUTTON = 0 // Strength
+const CREATE_LOW_INTELLIGENCE_MODE_BUTTON = 0 // Intelligence
+const CREATE_LOW_CONSTITUTION_MODE_BUTTON = 1 // Constitution
+const CREATE_LOW_PERCEPTION_MODE_BUTTON = 0 // Perception
+
+// If MULTIPLE stats, change the 0 to a 1 below.
 const CREATE_MULTIPLE_LOW_STAT_MODE_BUTTON = 0
 
 // If MULTIPLE stats on one button, which stats you want on that button?
@@ -23,21 +39,6 @@ const MULTIPLE_LOW_STAT_MODE_STRENGTH = 0 // Strength
 const MULTIPLE_LOW_STAT_MODE_INTELLIGENCE = 0 // Intelligence
 const MULTIPLE_LOW_STAT_MODE_CONSTITUTION = 0 // Constitution
 const MULTIPLE_LOW_STAT_MODE_PERCEPTION = 0 // Perception
-
-// If you want a SEPARATE button for certain stats, change the 0 to a 1 below for each that you want.
-const CREATE_LOW_STRENGTH_MODE_BUTTON = 0 // Strength
-const CREATE_LOW_INTELLIGENCE_MODE_BUTTON = 0 // Intelligence
-const CREATE_LOW_CONSTITUTION_MODE_BUTTON = 0 // Constitution
-const CREATE_LOW_PERCEPTION_MODE_BUTTON = 0 // Perception
-
-// When entering Low [Stat] Mode, what SETPOINT value do you want to set that stat to?
-// For example, the original Low Constitution Mode set Constitution to 1.
-// The values below would set Strength to 30, Intelligence to 20, Constitution to 1, and Perception to 10.
-// Change them to whatever values you want. If you aren't using one of the stats, you can ignore it.
-const LOW_STRENGTH_MODE_SETPOINT = 30 // Strength
-const LOW_INTELLIGENCE_MODE_SETPOINT = 20 // Intelligence
-const LOW_CONSTITUTION_MODE_SETPOINT = 1 // Constitution
-const LOW_PERCEPTION_MODE_SETPOINT = 10 // Perception
 
 /* ========================================== */
 /* [Users] Optional customizations to fill in */
@@ -49,11 +50,11 @@ const NOTIFICATIONS_ON = 0
 
 // Do you want to automatically enter Low Constitution Mode (or other stat) each day at Cron?
 // If yes, change the 0 to a 1 in the lines below for each stat you want.
-const AUTOMATIC_LOW_MULTI_STAT = 0 // For all the stats you chose in the Required Customizations section for Multi-Stat
 const AUTOMATIC_LOW_STRENGTH = 0
 const AUTOMATIC_LOW_INTELLIGENCE = 0
 const AUTOMATIC_LOW_CONSTITUTION = 0
 const AUTOMATIC_LOW_PERCEPTION = 0
+const AUTOMATIC_LOW_MULTI_STAT = 0 // For all the stats you chose in the Required Customizations section for Multi-Stat
 
 /* ========================================== */
 /* [Users] Do not edit code below this line   */
