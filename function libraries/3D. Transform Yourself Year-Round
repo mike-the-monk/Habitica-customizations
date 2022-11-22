@@ -15,7 +15,7 @@
 // 3. IDIOSYNCRATIC FUNCTIONS
   // If a script has no idiosyncratic functions (i.e. all its functions are accounted for in the above categories), that script will not be listed in this section.
   
-  // 3C. TRANSFORM YOURSELF YEAR-ROUND
+  // 3D. TRANSFORM YOURSELF YEAR-ROUND
   
     // Checks to run before transforming
     function checkWhetherToTransform(isSnowball, isSpookySparkles, isShinySeed, isSeafoam, gp){
