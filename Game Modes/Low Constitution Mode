@@ -12,6 +12,33 @@ const WEB_APP_URL = "PasteGeneratedWebAppUrlHere"
 /* [Users] Required customizations to fill in */
 /* ========================================== */
 
+// Do you want a separate button for each stat, or one button that does multiple stats?
+// If multiple stats, change the 0 to a 1 below.
+const CREATE_MULTIPLE_LOW_STAT_MODE_BUTTON = 0
+
+// If MULTIPLE stats on one button, which stats you want on that button?
+// For each stat you want on that button, change the 0 to a 1.
+// (If you aren't doing multiple stats, ignore this section)
+const MULTIPLE_LOW_STAT_MODE_STRENGTH = 0 // Strength
+const MULTIPLE_LOW_STAT_MODE_INTELLIGENCE = 0 // Intelligence
+const MULTIPLE_LOW_STAT_MODE_CONSTITUTION = 0 // Constitution
+const MULTIPLE_LOW_STAT_MODE_PERCEPTION = 0 // Perception
+
+// If you want a SEPARATE button for certain stats, change the 0 to a 1 below for each that you want.
+const CREATE_LOW_STRENGTH_MODE_BUTTON = 0 // Strength
+const CREATE_LOW_INTELLIGENCE_MODE_BUTTON = 0 // Intelligence
+const CREATE_LOW_CONSTITUTION_MODE_BUTTON = 0 // Constitution
+const CREATE_LOW_PERCEPTION_MODE_BUTTON = 0 // Perception
+
+// When entering Low [Stat] Mode, what SETPOINT value do you want to set that stat to?
+// For example, the original Low Constitution Mode set Constitution to 1.
+// The values below would set Strength to 30, Intelligence to 20, Constitution to 1, and Perception to 10.
+// Change them to whatever values you want. If you aren't using one of the stats, you can ignore it.
+const LOW_STRENGTH_MODE_SETPOINT = 30 // Strength
+const LOW_INTELLIGENCE_MODE_SETPOINT = 20 // Intelligence
+const LOW_CONSTITUTION_MODE_SETPOINT = 1 // Constitution
+const LOW_PERCEPTION_MODE_SETPOINT = 10 // Perception
+
 /* ========================================== */
 /* [Users] Optional customizations to fill in */
 /* ========================================== */
@@ -20,12 +47,13 @@ const WEB_APP_URL = "PasteGeneratedWebAppUrlHere"
 // Default is no notification. If you want them, change the 0 to a 1 in the line below.
 const NOTIFICATIONS_ON = 0
 
-// Do you want a button that lets you enter/exit Low Constitution Mode? If not, change the 1 to a 0 below.
-// If you don't have a button, you can still enter/exit the Mode by manually running the function "toggleLowConstitutionMode"
-const LOW_CONSTITUTION_TOGGLE_BUTTON = 1
-
-// Do you want to automatically enter Low Constitution Mode each day at Cron? If yes, change the 0 to a 1 in the line below.
+// Do you want to automatically enter Low Constitution Mode (or other stat) each day at Cron?
+// If yes, change the 0 to a 1 in the lines below for each stat you want.
+const AUTOMATIC_LOW_MULTI_STAT = 0 // For all the stats you chose in the Required Customizations section for Multi-Stat
+const AUTOMATIC_LOW_STRENGTH = 0
+const AUTOMATIC_LOW_INTELLIGENCE = 0
 const AUTOMATIC_LOW_CONSTITUTION = 0
+const AUTOMATIC_LOW_PERCEPTION = 0
 
 /* ========================================== */
 /* [Users] Do not edit code below this line   */
@@ -41,13 +69,56 @@ const HEADERS = {
 const scriptProperties = PropertiesService.getScriptProperties() // Constants can have properties changed
 
 // Messages
+const MSG_IN_LOW_STAT_MODE_START = "Currently in Low "
+const MSG_NOT_IN_LOW_STAT_MODE_START = "Not currently in Low "
+const MSG_LOW_STAT_MODE_END = " Mode."
+const MSG_LOW_STAT_MODE_ERROR = "Error with Low Stat Mode. No stat selected."
+
+const MULTI_LOW_STAT_MODE_TEXT = LOW_STAT_MODE_TEXT_START + "Multi-Stat" + LOW_STAT_MODE_TEXT_END
+const MULTI_LOW_STAT_MODE_ALIAS = "LOW_MULTI"
+// I will need to initialize the Notes section later
+const MULTI_LOW_STAT_MODE_VALUE = "0"
+
+const LOW_STR_MODE_TEXT = LOW_STAT_MODE_TEXT_START + "Strength" + LOW_STAT_MODE_TEXT_END
+const LOW_STR_MODE_ALIAS = "LOW_STR"
+const LOW_STR_MODE_NOTES = LOW_STAT_MODE_NOTES_START + "Strength" + LOW_STAT_MODE_NOTES_MID_1 + "STR" + LOW_STAT_MODE_NOTES_MID_2 + LOW_STRENGTH_MODE_SETPOINT + LOW_STAT_MODE_NOTES_MID_3 + "Strength" + LOW_STAT_MODE_NOTES_END
+const LOW_STR_MODE_VALUE = "0"
+
+const LOW_INT_MODE_TEXT = LOW_STAT_MODE_TEXT_START + "Intelligence" + LOW_STAT_MODE_TEXT_END
+const LOW_INT_MODE_ALIAS = "LOW_INT"
+const LOW_INT_MODE_NOTES = LOW_STAT_MODE_NOTES_START + "Intelligence" + LOW_STAT_MODE_NOTES_MID_1 + "INT" + LOW_STAT_MODE_NOTES_MID_2 + LOW_INTELLIGENCE_MODE_SETPOINT + LOW_STAT_MODE_NOTES_MID_3 + "Intelligence" + LOW_STAT_MODE_NOTES_END
+const LOW_INT_MODE_VALUE = "0"
+
+const LOW_CON_MODE_TEXT = LOW_STAT_MODE_TEXT_START + "Constitution" + LOW_STAT_MODE_TEXT_END
+const LOW_CON_MODE_ALIAS = "LOW_CON"
+const LOW_CON_MODE_NOTES = LOW_STAT_MODE_NOTES_START + "Constitution" + LOW_STAT_MODE_NOTES_MID_1 + "CON" + LOW_STAT_MODE_NOTES_MID_2 + LOW_CONSTITUTION_MODE_SETPOINT + LOW_STAT_MODE_NOTES_MID_3 + "Constitution" + LOW_STAT_MODE_NOTES_END
+const LOW_CON_MODE_VALUE = "0"
+
+const LOW_PER_MODE_TEXT = LOW_STAT_MODE_TEXT_START + "Perception" + LOW_STAT_MODE_TEXT_END
+const LOW_PER_MODE_ALIAS = "LOW_PER"
+const LOW_PER_MODE_NOTES = LOW_STAT_MODE_NOTES_START + "Perception" + LOW_STAT_MODE_NOTES_MID_1 + "PER" + LOW_STAT_MODE_NOTES_MID_2 + LOW_PERCEPTION_MODE_SETPOINT + LOW_STAT_MODE_NOTES_MID_3 + "Perception" + LOW_STAT_MODE_NOTES_END
+const LOW_PER_MODE_VALUE = "0"
+
 const MSG_IN_LOW_CONSTITUTION_MODE = "Currently in Low Constitution Mode."
 const MSG_NOT_IN_LOW_CONSTITUTION_MODE = "Not currently in Low Constitution Mode." 
 
-const LOW_CON_MODE_TEXT = "**Low Constitution Mode**"
-const LOW_CON_MODE_ALIAS = "LOW_CON"
-const LOW_CON_MODE_NOTES = "Press once to enter Low Constitution Mode, creating an anti-buff that sets your CON to 1 until you Cron tomorrow. Press again to exit Low Constitution Mode."
-const LOW_CON_MODE_VALUE = "0"
+// On purpose, Multi Low Stat Mode button is not here (because the Notes section changes based on which stats are selected)
+
+const LOW_STR_MODE_BUTTON = {
+    "text": LOW_STR_MODE_TEXT,
+    "type": "reward",
+    "alias": LOW_STR_MODE_ALIAS,
+    "notes": LOW_STR_MODE_NOTES,
+    "value": LOW_STR_MODE_VALUE,
+}
+
+const LOW_INT_MODE_BUTTON = {
+    "text": LOW_INT_MODE_TEXT,
+    "type": "reward",
+    "alias": LOW_INT_MODE_ALIAS,
+    "notes": LOW_INT_MODE_NOTES,
+    "value": LOW_INT_MODE_VALUE,
+}
 
 const LOW_CON_MODE_BUTTON = {
     "text": LOW_CON_MODE_TEXT,
@@ -57,18 +128,50 @@ const LOW_CON_MODE_BUTTON = {
     "value": LOW_CON_MODE_VALUE,
 }
 
+const LOW_PER_MODE_BUTTON = {
+    "text": LOW_PER_MODE_TEXT,
+    "type": "reward",
+    "alias": LOW_PER_MODE_ALIAS,
+    "notes": LOW_PER_MODE_NOTES,
+    "value": LOW_PER_MODE_VALUE,
+}
+
 const CRON_COUNT_KEY = "CRON_COUNT_KEY"
-const ANTI_BUFF_AMOUNT_KEY = "ANTI_BUFF_AMOUNT_KEY"
-const ANTI_BUFF_USAGE_KEY = "ANTI_BUFF_USAGE_KEY"
+const ANTI_BUFF_AMOUNT_STR_KEY = "ANTI_BUFF_AMOUNT_STR_KEY"
+const ANTI_BUFF_USAGE_STR_KEY = "ANTI_BUFF_USAGE_STR_KEY"
+const ANTI_BUFF_AMOUNT_INT_KEY = "ANTI_BUFF_AMOUNT_INT_KEY"
+const ANTI_BUFF_USAGE_INT_KEY = "ANTI_BUFF_USAGE_INT_KEY"
+const ANTI_BUFF_AMOUNT_CON_KEY = "ANTI_BUFF_AMOUNT_CON_KEY"
+const ANTI_BUFF_USAGE_CON_KEY = "ANTI_BUFF_USAGE_CON_KEY"
+const ANTI_BUFF_AMOUNT_PER_KEY = "ANTI_BUFF_AMOUNT_PER_KEY"
+const ANTI_BUFF_USAGE_PER_KEY = "ANTI_BUFF_USAGE_PER_KEY"
 
 var cronCountKey = ""
-var antiBuffAmountKey = ""
-var antiBuffUsageKey = ""
+var antiBuffAmountStrKey = ""
+var antiBuffUsageStrKey = ""
+var antiBuffAmountIntKey = ""
+var antiBuffUsageIntKey = ""
+var antiBuffAmountConKey = ""
+var antiBuffUsageConKey = ""
+var antiBuffAmountPerKey = ""
+var antiBuffUsagePerKey = ""
 
 function doOneTimeSetup() {
   // Create button if user indicated they want it
+  if (CREATE_LOW_PERCEPTION_MODE_BUTTON == 1) {
+    api_createNewTaskForUser([LOW_PER_MODE_BUTTON])
+  } 
   if (LOW_CONSTITUTION_TOGGLE_BUTTON == 1) {
     api_createNewTaskForUser([LOW_CON_MODE_BUTTON])
+  } 
+  if (CREATE_LOW_INTELLIGENCE_MODE_BUTTON == 1) {
+    api_createNewTaskForUser([LOW_INT_MODE_BUTTON])
+  } 
+  if (CREATE_LOW_STRENGTH_MODE_BUTTON == 1) {
+    api_createNewTaskForUser([LOW_STR_MODE_BUTTON])
+  } 
+  if (CREATE_MULTIPLE_LOW_STAT_MODE_BUTTON == 1) {
+    createMultiLowStatButton() // It needs to be its own function because the notes section changes based on which stats were selected
   } 
   
   // Next, create the webhook
@@ -100,80 +203,273 @@ function doPost(e) {
   }
   
   if (type == "scored"){
-    const responseUser = api_getAuthenticatedUserProfile("stats,items.gear.equipped")
+    const responseUser = api_getAuthenticatedUserProfile("stats")
     user = JSON.parse(responseUser).data
     
-    var cronCountKey = CRON_COUNT_KEY;    
+    var cronCountKey = CRON_COUNT_KEY
     var cronCount = Number(scriptProperties.getProperty(cronCountKey))
     
-    // If they've Cronned, reset all counters
+    // Check if they've Cronned
     if (cronCount != user.flags.cronCount) {
       cronCount = user.flags.cronCount
-      resetCounters()
-      
-      // Save values to non-volatile memory
+      resetCounters() // Reset counters
+
+      // Save value to non-volatile memory
       scriptProperties.setProperty(cronCountKey, cronCount)
       
-      // If they want to automatically enter Low Constitution Mode each day, do so
-      if (AUTOMATIC_LOW_CONSTITUTION == 1) {
-        // Wait 2 seconds  
+      // If Automatic Modes are supposed to happen right after Cron, do them
+      if ( (AUTOMATIC_LOW_MULTI_STAT == 1) || (AUTOMATIC_LOW_STRENGTH == 1) || (AUTOMATIC_LOW_INTELLIGENCE == 1) || (AUTOMATIC_LOW_CONSTITUTION == 1) || (AUTOMATIC_LOW_PERCEPTION == 1) ) 
+      {
         Utilities.sleep(2000)
-        
-        toggleLowConstitutionMode()
+
+        automaticLowStatMode()
       }
     }
-    
-    // If they pressed the button, toggle into/out of Low Constitution Mode
-    if (sanitizedAlias == LOW_CON_MODE_ALIAS) {
-      toggleLowConstitutionMode()
+    // If they pressed [Stat] button, toggle into/out of Low [Stat] Mode
+    switch (sanitizedAlias){
+      case MULTI_LOW_STAT_MODE_ALIAS:
+        toggleLowMultiStatMode() // Its own function determines which stats to run, then does so
+        break
+      case LOW_STR_MODE_ALIAS:
+        toggleLowStatMode(false, true, false, false, false, false)
+        break
+      case LOW_INT_MODE_ALIAS:
+        toggleLowStatMode(false, false, true, false, false, false)
+        break
+      case LOW_CON_MODE_ALIAS:
+        toggleLowStatMode(false, false, false, true, false, false)
+        break
+      case LOW_PER_MODE_ALIAS:
+        toggleLowStatMode(false, false, false, false, true, false)
+        break
     }
   } 
     
   return HtmlService.createHtmlOutput()
 }
 
-// If user is in Low Constitution Mode, remove them from it, and vice versa.
-function toggleLowConstitutionMode(){
-  var antiBuffAmountKey = ANTI_BUFF_AMOUNT_KEY
-  var antiBuffUsageKey = ANTI_BUFF_USAGE_KEY
-  
-  var antiBuffAmount = Number(scriptProperties.getProperty(antiBuffAmountKey))
-  var antiBuffUsage = Number(scriptProperties.getProperty(antiBuffUsageKey))
-  
-  // If anti-buff usage is even, then user is currently not in Low Con Mode. Therefore, put them in it
-  if (antiBuffUsage % 2 == 0) {
-    const responseUser = api_getAuthenticatedUserProfile("stats,items.gear.equipped")
-    user = JSON.parse(responseUser).data
-    const responseContent = apiFree_getAllAvailableContentObjects()
-    content = JSON.parse(responseContent).data
+// Determines which stats to toggle Low Stat Mode on, and runs them
+function toggleLowMultiStatMode(){
+  // Initialize Booleans at false
+  let doStrength = false
+  let doIntelligence = false
+  let doConstitution = false
+  let doPerception = false
 
-    // Using these, calculate total constitution and how much the anti-buff should be to set CON to 1
-    let buffsCon = user.stats.buffs.con
-    if (!user.stats.buffs.con) { buffsCon = 0 }
-    let con = calculateConstitution()
-    let unbuffedConstitution = con - buffsCon
-    let antiBuffCon = 1 - unbuffedConstitution
-
-    // Anti-buff user, save value, increment counter
-    api_updateUser({"stats.buffs.con" : antiBuffCon})
-    antiBuffAmount = antiBuffCon
-    antiBuffUsage++
-
-    api_sendPrivateMessage({"message" : MSG_IN_LOW_CONSTITUTION_MODE, "toUserId" : USER_ID})
+  // Ensure Booleans are correct for each stat
+  if (MULTIPLE_LOW_STAT_MODE_STRENGTH == 1) {
+    doStrength = true
   }
-  // If anti-buff usage is odd, then user is in Low Con Mode. Therefore, remove them from it
-  else {
-    // Reverse the anti-buff, unsave anti-buff value, increment counter
-    api_updateUser({"stats.buffs.con" : 1 - antiBuffAmount})
-    antiBuffAmount = 0
-    antiBuffUsage++
+  if (MULTIPLE_LOW_STAT_MODE_INTELLIGENCE == 1) {
+    doIntelligence = true
+  }
+  if (MULTIPLE_LOW_STAT_MODE_CONSTITUTION == 1){
+    doConstitution = true
+  }
+  if (MULTIPLE_LOW_STAT_MODE_PERCEPTION == 1){
+    doPerception = true
+  }
+
+  // Finally, toggle all relevant Low Stat Modes
+  toggleLowStatMode(true, doStrength, doIntelligence, doConstitution, doPerception, true)
+}
+
+// If user is in Low Stat Mode, remove them from it, and vice versa.
+function toggleLowStatMode(doMulti, doStrength, doIntelligence, doConstitution, doPerception, ignoreMessage){
+  // If you're doing Multi Stat, this function will call itself for each relevant stat, one at a time
+  if(doMulti){
+    if (doStrength){ // Run for Strength only
+      toggleLowStatMode(false, true, false, false, false, true)
+    }
+    if (doIntelligence){ // Run for Intelligence only
+      toggleLowStatMode(false, false, true, false, false, true)
+    }
+    if (doConstitution){ // Run for Constitution only
+      toggleLowStatMode(false, false, false, true, false, true)
+    }
+    if (doPerception){ // Run for Perception only
+      toggleLowStatMode(false, false, false, false, true, true)
+    }
+  } else { // If not Multi, run the relevant stat
+    // Initialize the relevant variables.
+    // The same variables (such as "antiBuffAmount") will be used irrespective of which Low Stat Mode it is
+    if (doStrength){
+      var antiBuffAmountKey = ANTI_BUFF_AMOUNT_STR_KEY 
+      var antiBuffUsageKey = ANTI_BUFF_USAGE_STR_KEY
+    } 
+    else if (doIntelligence){
+      var antiBuffAmountKey = ANTI_BUFF_AMOUNT_INT_KEY
+      var antiBuffUsageKey = ANTI_BUFF_USAGE_INT_KEY
+    } 
+    else if (doConstitution) {
+      var antiBuffAmountKey = ANTI_BUFF_AMOUNT_CON_KEY
+      var antiBuffUsageKey = ANTI_BUFF_USAGE_CON_KEY
+    } 
+    else if (doPerception) {
+      var antiBuffAmountKey = ANTI_BUFF_AMOUNT_PER_KEY
+      var antiBuffUsageKey = ANTI_BUFF_USAGE_PER_KEY
+    } else { // Send error message of all of the Booleans are false
+      api_sendPrivateMessage({"message" : MSG_LOW_STAT_MODE_ERROR, "toUserId" : USER_ID})
+    }
     
-    api_sendPrivateMessage({"message" : MSG_NOT_IN_LOW_CONSTITUTION_MODE, "toUserId" : USER_ID})
+    // Now that the keys are correct, retrieve the saved values
+    var antiBuffAmount = Number(scriptProperties.getProperty(antiBuffAmountKey))
+    var antiBuffUsage = Number(scriptProperties.getProperty(antiBuffUsageKey))
+    
+    // Initialize message as a blank string
+    var MSG_MODE = ""
+    
+    // If anti-buff usage is even, then user is currently not in Low Stat Mode. Therefore, put them in it
+    if (antiBuffUsage % 2 == 0) {
+      const responseUser = api_getAuthenticatedUserProfile("stats,items.gear.equipped")
+      user = JSON.parse(responseUser).data
+      const responseContent = apiFree_getAllAvailableContentObjects()
+      content = JSON.parse(responseContent).data
+
+      // Using these, calculate total [Stat] and how much the anti-buff should be to set [Stat] to the setpoint
+
+      // Initialize these
+      var buffs = 0
+      var stat = 0
+      var unbuffedStat = 0
+      var antiBuff = 0
+
+      // Build on existing string
+      MSG_MODE += MSG_IN_LOW_STAT_MODE_START
+      
+      if (doStrength){ 
+        buffs = user.stats.buffs.str
+        if (!user.stats.buffs.str) { buffs = 0 }
+        stat = calculateStrength()
+        unbuffedStat = stat - buffs
+        antiBuff = LOW_STRENGTH_MODE_SETPOINT - unbuffedStat
+
+        // Anti-buff user
+        api_updateUser({"stats.buffs.str" : antiBuff})
+
+        // Build on existing message
+        MSG_MODE += "Strength"
+      }
+      else if (doIntelligence){
+        buffs = user.stats.buffs.int
+        if (!user.stats.buffs.int) { buffs = 0 }
+        stat = calculateIntelligence()
+        unbuffedStat = stat - buffs
+        antiBuff = LOW_INTELLIGENCE_MODE_SETPOINT - unbuffedStat
+
+        // Anti-buff user
+        api_updateUser({"stats.buffs.int" : antiBuff})
+
+        // Build on existing message
+        MSG_MODE += "Intelligence"
+      } 
+      else if (doConstitution) {
+        buffs = user.stats.buffs.con
+        if (!user.stats.buffs.con) { buffs = 0 }
+        stat = calculateConstitution()
+        unbuffedStat = stat - buffs
+        antiBuff = LOW_CONSTITUTION_MODE_SETPOINT - unbuffedStat
+
+        // Anti-buff user
+        api_updateUser({"stats.buffs.con" : antiBuff})
+
+        // Build on existing message
+        MSG_MODE += "Constitution"
+      } 
+      else if (doPerception) {
+        buffs = user.stats.buffs.per
+        if (!user.stats.buffs.per) { buffs = 0 }
+        stat = calculatePerception()
+        unbuffedStat = stat - buffs
+        antiBuff = LOW_PERCEPTION_MODE_SETPOINT - unbuffedStat
+
+        // Anti-buff user
+        api_updateUser({"stats.buffs.per" : antiBuff})
+
+        // Build on existing message
+        MSG_MODE += "Perception"
+      } 
+      else { // Send error message of all of the Booleans are false
+        api_sendPrivateMessage({"message" : MSG_LOW_STAT_MODE_ERROR, "toUserId" : USER_ID})
+      }
+      // Finish building message
+      MSG_MODE += MSG_LOW_STAT_MODE_END
+
+      // Update these values
+      antiBuffAmount = antiBuff
+      antiBuffUsage++  
+    }
+    // If anti-buff usage is odd, then user is in Low [Stat] Mode. Therefore, remove them from it
+    else {
+      // Build on existing string
+      MSG_MODE += MSG_NOT_IN_LOW_STAT_MODE_START
+
+      // Reverse the anti-buff. Build on existing message
+      if (doStrength){
+        api_updateUser({"stats.buffs.str" : LOW_STRENGTH_MODE_SETPOINT - antiBuffAmount})
+        MSG_MODE += "Strength"
+      }
+      else if (doIntelligence){
+        api_updateUser({"stats.buffs.int" : LOW_INTELLIGENCE_MODE_SETPOINT - antiBuffAmount})
+        MSG_MODE += "Intelligence"
+      } 
+      else if (doConstitution) {
+        api_updateUser({"stats.buffs.con" : LOW_CONSTITUTION_MODE_SETPOINT - antiBuffAmount})
+        MSG_MODE += "Constitution"
+      } 
+      else if (doPerception) {
+        api_updateUser({"stats.buffs.per" : LOW_PERCEPTION_MODE_SETPOINT - antiBuffAmount})
+        MSG_MODE += "Perception"
+      } 
+      else { // Send error message of all of the Booleans are false
+        api_sendPrivateMessage({"message" : MSG_LOW_STAT_MODE_ERROR, "toUserId" : USER_ID})
+      }
+      
+      // Finish building message
+      MSG_MODE += MSG_LOW_STAT_MODE_END
+
+      // Send message (except for when doing Multi, it will send its message separately)
+      if (!ignoreMessage) {
+        api_sendPrivateMessage({"message" : MSG_MODE, "toUserId" : USER_ID})
+      }
+
+      // Unsave anti-buff value, increment counter
+      antiBuffAmount = 0
+      antiBuffUsage++
+    }
+    // Things to do irrespective of whether they are entering vs. exiting the Mode
+
+    // Send message (except for when doing Multi)
+      if (!ignoreMessage) {
+        api_sendPrivateMessage({"message" : MSG_MODE, "toUserId" : USER_ID})
+    }
+
+    // Save values to non-volatile memory
+    scriptProperties.setProperty(antiBuffAmountKey, antiBuffAmount)
+    scriptProperties.setProperty(antiBuffUsageKey, antiBuffUsage)
   }
-  
-  // Save values to non-volatile memory
-  scriptProperties.setProperty(antiBuffAmountKey, antiBuffAmount)
-  scriptProperties.setProperty(antiBuffUsageKey, antiBuffUsage)
+}
+
+// Creates the Multi Low Stat Mode button
+function createMultiLowStatButton() {
+  // Build notes section of button
+  let NOTES_STATS = buildMultiLowStatStrings(false, "/")
+  let NOTES_STATS_VALUES = buildMultiLowStatStrings(true, ",")
+
+  // By now, those two strings should be correct. Combine them to create the button's Notes section
+  const MULTI_LOW_STAT_MODE_NOTES = LOW_STAT_MODE_NOTES_START + NOTES_STATS + LOW_STAT_MODE_NOTES_MID_1 + NOTES_STATS_VALUES + LOW_STAT_MODE_NOTES_MID_3 + NOTES_STATS + LOW_STAT_MODE_NOTES_END
+
+  // Now that this is correct, create the button constant
+  const MULTI_LOW_STAT_MODE_BUTTON = {
+      "text": MULTI_LOW_STAT_MODE_TEXT,
+      "type": "reward",
+      "alias": MULTI_LOW_STAT_MODE_ALIAS,
+      "notes": MULTI_LOW_STAT_MODE_NOTES,
+      "value": MULTI_LOW_STAT_MODE_VALUE,
+  }
+
+  // Finally, create the button
+  api_createNewTaskForUser([MULTI_LOW_STAT_MODE_BUTTON])
 }
 
 // Create custom reward buttons
@@ -270,6 +566,78 @@ function apiFree_getAllAvailableContentObjects() {
   return UrlFetchApp.fetch(url, params)
 }
 
+// Calculates total STR
+function calculateStrength() {
+  const levelStrRaw = Math.floor(user.stats.lvl / 2)
+  const levelStr = (levelStrRaw > 50) ? 50 : levelStrRaw
+
+  var totalEquipmentAndClassStr = 0
+  const allocatedStr = user.stats.str
+  const buffsStr = user.stats.buffs.str
+
+  // Get STR from equipped gear
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.weapon])
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.shield])
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.head])
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.armor])
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.headAccessory])
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.eyewear])
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.body])
+  totalEquipmentAndClassStr += calcEquipmentAndClassStr(content.gear.flat[user.items.gear.equipped.back])
+
+  return levelStr + totalEquipmentAndClassStr + allocatedStr + buffsStr
+}
+
+// Calculates how much STR comes from the equipment
+function calcEquipmentAndClassStr(equipment) {
+  var equipmentAndClassStr = 0
+
+  if (equipment != undefined) {  
+    equipmentAndClassStr += equipment.str
+    if ( (equipment.klass == user.stats.class) || ( (equipment.klass == "special") && (equipment.specialClass == user.stats.class) ) ) {
+      equipmentAndClassStr += equipment.str / 2
+    }
+  }
+
+  return equipmentAndClassStr
+}
+
+// Calculates total INT
+function calculateIntelligence() {
+  const levelIntRaw = Math.floor(user.stats.lvl / 2)
+  const levelInt = (levelIntRaw > 50) ? 50 : levelIntRaw
+
+  var totalEquipmentAndClassInt = 0
+  const allocatedInt = user.stats.int
+  const buffsInt = user.stats.buffs.int
+
+  // Get INT from equipped gear
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.weapon])
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.shield])
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.head])
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.armor])
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.headAccessory])
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.eyewear])
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.body])
+  totalEquipmentAndClassInt += calcEquipmentAndClassInt(content.gear.flat[user.items.gear.equipped.back])
+
+  return levelInt + totalEquipmentAndClassInt + allocatedInt + buffsInt
+}
+
+// Calculates how much INT comes from the equipment
+function calcEquipmentAndClassInt(equipment) {
+  var equipmentAndClassInt = 0
+
+  if (equipment != undefined) {  
+    equipmentAndClassInt += equipment.int
+    if ( (equipment.klass == user.stats.class) || ( (equipment.klass == "special") && (equipment.specialClass == user.stats.class) ) ) {
+      equipmentAndClassInt += equipment.int / 2
+    }
+  }
+
+  return equipmentAndClassInt
+}
+
 // Calculate total CON
 function calculateConstitution() {
   const levelConRaw = Math.floor(user.stats.lvl / 2)
@@ -303,6 +671,42 @@ function calcEquipmentAndClassCon(equipment) {
   }
   
   return equipmentAndClassCon
+}
+
+// Calculates total PER
+function calculatePerception() {
+  const levelPerRaw = Math.floor(user.stats.lvl / 2)
+  const levelPer = (levelPerRaw > 50) ? 50 : levelPerRaw
+
+  var totalEquipmentAndClassPer = 0
+  const allocatedPer = user.stats.per
+  const buffsPer = user.stats.buffs.per
+
+  // Get PER from equipped gear
+  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.weapon])
+  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.shield])
+  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.head])
+  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.armor])
+  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.headAccessory])
+  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.eyewear])
+  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.body])
+  totalEquipmentAndClassPer += calcEquipmentAndClassPer(content.gear.flat[user.items.gear.equipped.back])
+
+  return levelPer + totalEquipmentAndClassPer + allocatedPer + buffsPer
+}
+
+// Calculates how much PER comes from the equipment
+function calcEquipmentAndClassPer(equipment) {
+  var equipmentAndClassPer = 0
+
+  if (equipment != undefined) {  
+    equipmentAndClassPer += equipment.per
+    if ( (equipment.klass == user.stats.class) || ( (equipment.klass == "special") && (equipment.specialClass == user.stats.class) ) ) {
+      equipmentAndClassPer += equipment.per / 2
+    }
+  }
+
+  return equipmentAndClassPer
 }
 
 // Changes stats
@@ -340,8 +744,134 @@ function api_sendPrivateMessage(payload) {
 
 // Resets usage counters, usually done at Cron
 function resetCounters(){
-  scriptProperties.setProperty(ANTI_BUFF_AMOUNT_KEY, 0)
-  scriptProperties.setProperty(ANTI_BUFF_USAGE_KEY, 0)
+  scriptProperties.setProperty(ANTI_BUFF_AMOUNT_STR_KEY , 0)
+  scriptProperties.setProperty(ANTI_BUFF_USAGE_STR_KEY, 0)
+  scriptProperties.setProperty(ANTI_BUFF_AMOUNT_INT_KEY, 0)
+  scriptProperties.setProperty(ANTI_BUFF_USAGE_INT_KEY, 0)
+  scriptProperties.setProperty(ANTI_BUFF_AMOUNT_CON_KEY, 0)
+  scriptProperties.setProperty(ANTI_BUFF_USAGE_CON_KEY, 0)      
+  scriptProperties.setProperty(ANTI_BUFF_AMOUNT_PER_KEY, 0)
+  scriptProperties.setProperty(ANTI_BUFF_USAGE_PER_KEY, 0)
+}
+
+// Determines which stat is the last one (of Low Multi-Stat Mode), and builds a string accordingly.
+function buildMultiLowStatStrings(needsSetpointValue, joinerCharacter){
+  // Figure out which stat is the final one. That way, you don't put a commma after it in the string.
+
+  // Initialize Booleans at false
+  var isPerFinal = false
+  var isConFinal = false
+  var isIntFinal = false
+  var isStrFinal = false
+
+  // If Perception is the final stat, it will not have a comma after it
+  if (MULTIPLE_LOW_STAT_MODE_PERCEPTION == 1) {
+    isPerFinal = true
+  } else if (MULTIPLE_LOW_STAT_MODE_CONSTITUTION == 1) { // If not Perception, try Constitution
+    isConFinal = true
+  } else if (MULTIPLE_LOW_STAT_MODE_INTELLIGENCE == 1) { // If not Constitution, try Intelligence
+    isIntFinal = true
+  } else if (MULTIPLE_LOW_STAT_MODE_STRENGTH == 1) { // If not Intelligence, try Strength
+    isStrFinal = true
+  }
+
+  // Initialize a blank strong
+  var messageString = ""
+
+  // If Strength is one of the stats, add it to the strings.
+  if (MULTIPLE_LOW_STAT_MODE_STRENGTH == 1) {
+    messageString += "STR"
+
+    // This version requires the setpoint as an input, then adds to the string
+    if (needsSetpointValue) { 
+      messageString += LOW_STAT_MODE_NOTES_MID_2 + LOW_STRENGTH_MODE_SETPOINT
+    }
+
+    // If Strength is not final, add joiner character (usually, slash or comma)
+    if (!isStrFinal) {
+      messageString += joinerCharacter
+    }
+  }
+  // Same but for Intelligence
+  if (MULTIPLE_LOW_STAT_MODE_INTELLIGENCE == 1) {
+    messageString += "INT"
+
+    // This version requires the setpoint as an input, then adds to the string
+    if (needsSetpointValue) { 
+      messageString += LOW_STAT_MODE_NOTES_MID_2 + LOW_INTELLIGENCE_MODE_SETPOINT
+    }        
+
+    // If Intelligence is not final, add joiner character (usually, slash or comma)
+    if (!isIntFinal) {
+      messageString += joinerCharacter
+    }
+  }
+  // Same but for Constitution
+  if (MULTIPLE_LOW_STAT_MODE_CONSTITUTION == 1) {
+    messageString += "CON"
+
+    // This version requires the setpoint as an input, then adds to the string
+    if (needsSetpointValue) { 
+      messageString += LOW_STAT_MODE_NOTES_MID_2 + LOW_CONSTITUTION_MODE_SETPOINT
+    }
+
+    // If Constitution is not final, add joiner character (usually, slash or comma)
+    if (!isConFinal) {
+      messageString += joinerCharacter
+    }
+  }
+  // Same but for Perception
+  if (MULTIPLE_LOW_STAT_MODE_PERCEPTION == 1) {
+    messageString += "PER"
+
+    // This version requires the setpoint as an input, then adds to the string
+    if (needsSetpointValue) { 
+      messageString += LOW_STAT_MODE_NOTES_MID_2 + LOW_PERCEPTION_MODE_SETPOINT
+    }
+
+    // If Perception is not final, add joiner character (usually, slash or comma)
+    if (!isPerFinal) {
+      messageString += joinerCharacter
+    }
+  }
+
+  return messageString
+}
+
+// Determines which stats to do for automatically entering Low Stat Modes at Cron, then enters the Modes.
+function automaticLowStatMode(){
+  // Determine which stats
+
+  // Initialize Booleans at false
+  let doMulti = false
+  let automaticStr = false
+  let automaticInt = false
+  let automaticCon = false
+  let automaticPer = false
+
+  // Flip Booleans as needed
+  if (AUTOMATIC_LOW_MULTI_STAT == 1){ 
+    doMulti = true
+  }
+  // Automatic Low-Strength happens if 1)  AUTOMATIC_LOW_STRENGTH is flagged, or 2) if AUTOMATIC_LOW_MULTI_STAT is flagged and the Multi-Stat includes Strength
+  if ( (AUTOMATIC_LOW_STRENGTH == 1) || ( (AUTOMATIC_LOW_MULTI_STAT == 1) && (MULTIPLE_LOW_STAT_MODE_STRENGTH == 1) ) ) {
+    automaticStr = true
+  }
+  // Repeat for the other stats
+  if ( (AUTOMATIC_LOW_INTELLIGENCE == 1) || ( (AUTOMATIC_LOW_MULTI_STAT == 1) && (MULTIPLE_LOW_STAT_MODE_INTELLIGENCE == 1) ) ) {
+    automaticInt = true
+  }
+  if ( (AUTOMATIC_LOW_CONSTITUTION == 1) || ( (AUTOMATIC_LOW_MULTI_STAT == 1) && (MULTIPLE_LOW_STAT_MODE_CONSTITUTION == 1) ) ) {
+    automaticCon = true
+  }
+  if ( (AUTOMATIC_LOW_PERCEPTION == 1) || ( (AUTOMATIC_LOW_MULTI_STAT == 1) && (MULTIPLE_LOW_STAT_MODE_PERCEPTION == 1) ) ) {
+    automaticPer = true
+  }
+
+  // Wait 2 seconds  
+  Utilities.sleep(2000)
+
+  toggleLowStatMode(doMulti, automaticStr, automaticInt, automaticCon, automaticPer, false)
 }
 
 // Send a notification as a private message regardless of if they're enabled
@@ -359,6 +889,31 @@ function api_sendPrivateMessageAlways(payload) {
 
 // FUNCTIONS FOR DEBUGGING. SCRIPT DOES NOT USE THEM, THEY MUST BE TRIGGERED MANUALLY
 
+// If it didn't trigger at Cron like it was supposed to, you can do so here.
+function debugAutomaticLowStatMode(){
+  automaticLowStatMode()
+}
+
+function debugToggleLowMultiStatMode(){
+  toggleLowMultiStatMode()
+}
+
+function debugToggleLowStrengthMode(){
+  toggleLowStatMode(false, true, false, false, false, false)
+}
+
+function debugToggleLowIntelligenceMode(){
+  toggleLowStatMode(false, false, true, false, false, false)
+}
+
+function debugToggleLowConstitutionMode(){
+  toggleLowStatMode(false, false, false, true, false, false)
+}
+
+function debugToggleLowPerceptionMode(){
+  toggleLowStatMode(false, false, false, false, true, false)
+}
+
 // Manually reset usage counters
 function debugResetCounters() {
   resetCounters()
@@ -367,16 +922,20 @@ function debugResetCounters() {
 // Retrieves saved values and sends them in a private message
 function debugGetSavedValues(){
   let cronCount = Number(scriptProperties.getProperty(CRON_COUNT_KEY))
-  let antiBuffAmount = Number(scriptProperties.getProperty(ANTI_BUFF_AMOUNT_KEY))
-  let antiBuffUsage = Number(scriptProperties.getProperty(ANTI_BUFF_USAGE_KEY))
+  let antiBuffAmountStr = Number(scriptProperties.getProperty(ANTI_BUFF_AMOUNT_STR_KEY))
+  let antiBuffUsageStr = Number(scriptProperties.getProperty(ANTI_BUFF_USAGE_STR_KEY))
+  let antiBuffAmountInt = Number(scriptProperties.getProperty(ANTI_BUFF_AMOUNT_INT_KEY))
+  let antiBuffUsageInt = Number(scriptProperties.getProperty(ANTI_BUFF_USAGE_INT_KEY))
+  let antiBuffAmountCon = Number(scriptProperties.getProperty(ANTI_BUFF_AMOUNT_CON_KEY))
+  let antiBuffUsageCon = Number(scriptProperties.getProperty(ANTI_BUFF_USAGE_CON_KEY))
+  let antiBuffAmountPer = Number(scriptProperties.getProperty(ANTI_BUFF_AMOUNT_PER_KEY))
+  let antiBuffUsagePer = Number(scriptProperties.getProperty(ANTI_BUFF_USAGE_PER_KEY))
 
   // saving these will make my life easier
   let MSG_JOINER_BEFORE = " is `"
   let MSG_JOINER_AFTER = "`, "
-  
-  api_sendPrivateMessageAlways({"message" : "Saved values are as follows: cronCount is `" + cronCount + MSG_JOINER_AFTER
-                                + "antiBuffAmount" + MSG_JOINER_BEFORE + antiBuffAmount + MSG_JOINER_AFTER
-                                + "antiBuffUsage" + MSG_JOINER_BEFORE + antiBuffUsage + "`", "toUserId" : USER_ID})
+
+  api_sendPrivateMessageAlways({"message" : "Saved values are as follows: cronCount is `" + cronCount + MSG_JOINER_AFTER + "antiBuffAmountStr" + MSG_JOINER_BEFORE + antiBuffAmountStr + MSG_JOINER_AFTER + "antiBuffUsageStr" + MSG_JOINER_BEFORE + antiBuffUsageStr + MSG_JOINER_AFTER + "antiBuffAmountInt" + MSG_JOINER_BEFORE + antiBuffAmountInt + MSG_JOINER_AFTER + "antiBuffUsageInt" + MSG_JOINER_BEFORE + antiBuffUsageInt + MSG_JOINER_AFTER + "antiBuffAmountCon" + MSG_JOINER_BEFORE + antiBuffAmountCon + MSG_JOINER_AFTER + "antiBuffUsageCon" + MSG_JOINER_BEFORE + antiBuffUsageCon + MSG_JOINER_AFTER + "antiBuffAmountPer" + MSG_JOINER_BEFORE + antiBuffAmountPer + MSG_JOINER_AFTER + "antiBuffUsagePer" + MSG_JOINER_BEFORE + antiBuffUsagePer + "`", "toUserId" : USER_ID})
 }
 
 // Mannually edits and saves the selected value (in case it saved incorrectly)
