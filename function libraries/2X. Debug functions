@@ -27,7 +27,7 @@
         debugResetCountersXpAndMpPotion()
         debugResetCountersAntiPotions()
         debugResetCountersHpOrXpForMp()
-        debugResetCountersLowConstitutionMode()
+        debugResetCountersLowStatMode()
       }
 
       function debugResetCountersXpAndMpPotion() {
@@ -46,22 +46,59 @@
         scriptProperties.setProperty(XP_FOR_MP_KEY, 0)
       }
 
-      function debugResetCountersLowConstitutionMode(){
-        scriptProperties.setProperty(ANTI_BUFF_AMOUNT_KEY, 0)
-        scriptProperties.setProperty(ANTI_BUFF_USAGE_KEY, 0)
+      function debugResetCountersLowStatMode(){
+        scriptProperties.setProperty(ANTI_BUFF_AMOUNT_STR_KEY , 0)
+        scriptProperties.setProperty(ANTI_BUFF_USAGE_STR_KEY, 0)
+        scriptProperties.setProperty(ANTI_BUFF_AMOUNT_INT_KEY, 0)
+        scriptProperties.setProperty(ANTI_BUFF_USAGE_INT_KEY, 0)
+        scriptProperties.setProperty(ANTI_BUFF_AMOUNT_CON_KEY, 0)
+        scriptProperties.setProperty(ANTI_BUFF_USAGE_CON_KEY, 0)      
+        scriptProperties.setProperty(ANTI_BUFF_AMOUNT_PER_KEY, 0)
+        scriptProperties.setProperty(ANTI_BUFF_USAGE_PER_KEY, 0)
       }
-
-      // In case the Partial Healing script saved the wrong value for HP and level, use FCV to set them to the correct amounts and then run the function below to save them
-      function debugResetSavedHpAndLevel() {
-        const responseInit = api_getAuthenticatedUserProfile("stats")
-        user = JSON.parse(responseInit).data
-          
-        var currentHp = user.stats.hp
-        var currentLvl = user.stats.lvl
+      
+      // MANUALLY ENTER A MODE
+      
+        // LOW CONSTITUTION MODE (AND OTHER STATS)
         
-        scriptProperties.setProperty(HP_KEY, currentHp)
-        scriptProperties.setProperty(LVL_KEY, currentLvl)
-      }
+          // If it didn't trigger at Cron like it was supposed to, you can do so here.
+          function debugAutomaticLowStatMode(){
+            automaticLowStatMode()
+          }
+
+          function debugToggleLowMultiStatMode(){
+            toggleLowMultiStatMode()
+          }
+
+          function debugToggleLowStrengthMode(){
+            toggleLowStatMode(false, true, false, false, false, false)
+          }
+
+          function debugToggleLowIntelligenceMode(){
+            toggleLowStatMode(false, false, true, false, false, false)
+          }
+
+          function debugToggleLowConstitutionMode(){
+            toggleLowStatMode(false, false, false, true, false, false)
+          }
+
+          function debugToggleLowPerceptionMode(){
+            toggleLowStatMode(false, false, false, false, true, false)
+          }
+        
+        // PARTIAL HEALING
+
+          // In case the Partial Healing script saved the wrong value for HP and level, use FCV to set them to the correct amounts and then run the function below to save them
+          function debugResetSavedHpAndLevel() {
+            const responseInit = api_getAuthenticatedUserProfile("stats")
+            user = JSON.parse(responseInit).data
+
+            var currentHp = user.stats.hp
+            var currentLvl = user.stats.lvl
+
+            scriptProperties.setProperty(HP_KEY, currentHp)
+            scriptProperties.setProperty(LVL_KEY, currentLvl)
+          }
 
       // Resets saved duel values
       function debugResetDuelValues(){
@@ -130,16 +167,22 @@
         api_sendPrivateMessageAlways({"message" : "Saved values are as follows: cronCount is `" + cronCount + MSG_JOINER_AFTER + "HpForMpUsage" + MSG_JOINER_BEFORE + HpForMpUsage + MSG_JOINER_AFTER + "XpForMpUsage" + MSG_JOINER_BEFORE + XpForMpUsage + "`", "toUserId" : USER_ID})
       }
 
-      function debugGetSavedCountersLowConstitutionMode(){
+      function debugGetSavedCountersLowStatMode(){
         let cronCount = Number(scriptProperties.getProperty(CRON_COUNT_KEY))
-        let antiBuffAmount = Number(scriptProperties.getProperty(ANTI_BUFF_AMOUNT_KEY))
-        let antiBuffUsage = Number(scriptProperties.getProperty(ANTI_BUFF_USAGE_KEY))
+        let antiBuffAmountStr = Number(scriptProperties.getProperty(ANTI_BUFF_AMOUNT_STR_KEY))
+        let antiBuffUsageStr = Number(scriptProperties.getProperty(ANTI_BUFF_USAGE_STR_KEY))
+        let antiBuffAmountInt = Number(scriptProperties.getProperty(ANTI_BUFF_AMOUNT_INT_KEY))
+        let antiBuffUsageInt = Number(scriptProperties.getProperty(ANTI_BUFF_USAGE_INT_KEY))
+        let antiBuffAmountCon = Number(scriptProperties.getProperty(ANTI_BUFF_AMOUNT_CON_KEY))
+        let antiBuffUsageCon = Number(scriptProperties.getProperty(ANTI_BUFF_USAGE_CON_KEY))
+        let antiBuffAmountPer = Number(scriptProperties.getProperty(ANTI_BUFF_AMOUNT_PER_KEY))
+        let antiBuffUsagePer = Number(scriptProperties.getProperty(ANTI_BUFF_USAGE_PER_KEY))
 
         // saving these will make my life easier
         let MSG_JOINER_BEFORE = " is `"
         let MSG_JOINER_AFTER = "`, "
         
-        api_sendPrivateMessageAlways({"message" : "Saved values are as follows: cronCount is `" + cronCount + MSG_JOINER_AFTER + "antiBuffAmount" + MSG_JOINER_BEFORE + antiBuffAmount + MSG_JOINER_AFTER + "antiBuffUsage" + MSG_JOINER_BEFORE + antiBuffUsage + "`", "toUserId" : USER_ID})
+        api_sendPrivateMessageAlways({"message" : "Saved values are as follows: cronCount is `" + cronCount + MSG_JOINER_AFTER + "antiBuffAmountStr" + MSG_JOINER_BEFORE + antiBuffAmountStr + MSG_JOINER_AFTER + "antiBuffUsageStr" + MSG_JOINER_BEFORE + antiBuffUsageStr + MSG_JOINER_AFTER + "antiBuffAmountInt" + MSG_JOINER_BEFORE + antiBuffAmountInt + MSG_JOINER_AFTER + "antiBuffUsageInt" + MSG_JOINER_BEFORE + antiBuffUsageInt + MSG_JOINER_AFTER + "antiBuffAmountCon" + MSG_JOINER_BEFORE + antiBuffAmountCon + MSG_JOINER_AFTER + "antiBuffUsageCon" + MSG_JOINER_BEFORE + antiBuffUsageCon + MSG_JOINER_AFTER + "antiBuffAmountPer" + MSG_JOINER_BEFORE + antiBuffAmountPer + MSG_JOINER_AFTER + "antiBuffUsagePer" + MSG_JOINER_BEFORE + antiBuffUsagePer + "`", "toUserId" : USER_ID})
       }
 
       // Retrieves saved values and sends them in a private message
