@@ -1,0 +1,138 @@
+// TABLE OF CONTENTS
+  // 1. API basics – functions made directly from Habitica's API. Each individual script probably won't use all of these, but that's okay.
+  // 2. Non-API functions 
+    // 2A. Basics – functions that can be used in a wide variety of scripts
+    // 2B. Skills – functions used to make custom skills
+    // 2X. Debug functions – while the specific kind of debug function depends greatly on the script, they do share some commonalities
+  // 3. Idiosyncratic functions – functions that are used only in a single script.
+    // If a script has no idiosyncratic functions (i.e. all its functions are accounted for in the above categories), it will not be listed in this section.
+    // Not listed here: Dueling Script – Announcer Bot, since you run that script from a secondary/bot account, not your main account, and thus won't run it alongside any other scripts.
+    // 3A. Editable Fix Character Values Buttons
+    // 3B. Dueling Script – Scoring
+    // 3C. Low Constitution Mode (and other stats)
+    // 3D. Transform Yourself Year-Round
+
+// 3. IDIOSYNCRATIC FUNCTIONS
+  // If a script has no idiosyncratic functions (i.e. all its functions are accounted for in the above categories), that script will not be listed in this section.
+  
+  // 3C. LOW CONSTITUTION MODE (AND OTHER STATS)
+  
+    // Determines which stat is the last one (of Low Multi-Stat Mode), and builds a string accordingly.
+      function buildMultiLowStatStrings(needsSetpointValue, joinerCharacter){
+        // Figure out which stat is the final one. That way, you don't put a commma after it in the string.
+
+        // Initialize Booleans at false
+        var isPerFinal = false
+        var isConFinal = false
+        var isIntFinal = false
+        var isStrFinal = false
+
+        // If Perception is the final stat, it will not have a comma after it
+        if (MULTIPLE_LOW_STAT_MODE_PERCEPTION == 1) {
+          isPerFinal = true
+        } else if (MULTIPLE_LOW_STAT_MODE_CONSTITUTION == 1) { // If not Perception, try Constitution
+          isConFinal = true
+        } else if (MULTIPLE_LOW_STAT_MODE_INTELLIGENCE == 1) { // If not Constitution, try Intelligence
+          isIntFinal = true
+        } else if (MULTIPLE_LOW_STAT_MODE_STRENGTH == 1) { // If not Intelligence, try Strength
+          isStrFinal = true
+        }
+
+        // Initialize a blank strong
+        var messageString = ""
+
+        // If Strength is one of the stats, add it to the strings.
+        if (MULTIPLE_LOW_STAT_MODE_STRENGTH == 1) {
+          messageString += "STR"
+
+          // This version requires the setpoint as an input, then adds to the string
+          if (needsSetpointValue) { 
+            messageString += LOW_STAT_MODE_NOTES_MID_2 + LOW_STRENGTH_MODE_SETPOINT
+          }
+          
+          // If Strength is not final, add joiner character (usually, slash or comma)
+          if (!isStrFinal) {
+            messageString += joinerCharacter
+          }
+        }
+        // Same but for Intelligence
+        if (MULTIPLE_LOW_STAT_MODE_INTELLIGENCE == 1) {
+          messageString += "INT"
+
+          // This version requires the setpoint as an input, then adds to the string
+          if (needsSetpointValue) { 
+            messageString += LOW_STAT_MODE_NOTES_MID_2 + LOW_INTELLIGENCE_MODE_SETPOINT
+          }        
+
+          // If Intelligence is not final, add joiner character (usually, slash or comma)
+          if (!isIntFinal) {
+            messageString += joinerCharacter
+          }
+        }
+        // Same but for Constitution
+        if (MULTIPLE_LOW_STAT_MODE_CONSTITUTION == 1) {
+          messageString += "CON"
+
+          // This version requires the setpoint as an input, then adds to the string
+          if (needsSetpointValue) { 
+            messageString += LOW_STAT_MODE_NOTES_MID_2 + LOW_CONSTITUTION_MODE_SETPOINT
+          }
+
+          // If Constitution is not final, add joiner character (usually, slash or comma)
+          if (!isConFinal) {
+            messageString += joinerCharacter
+          }
+        }
+        // Same but for Perception
+        if (MULTIPLE_LOW_STAT_MODE_PERCEPTION == 1) {
+          messageString += "PER"
+
+          // This version requires the setpoint as an input, then adds to the string
+          if (needsSetpointValue) { 
+            messageString += LOW_STAT_MODE_NOTES_MID_2 + LOW_PERCEPTION_MODE_SETPOINT
+          }
+
+          // If Perception is not final, add joiner character (usually, slash or comma)
+          if (!isPerFinal) {
+            messageString += joinerCharacter
+          }
+        }
+
+        return messageString
+      }
+
+      // Determines which stats to do for automatically entering Low Stat Modes at Cron, then enters the Modes.
+      function automaticLowStatMode(){
+        // Determine which stats
+
+        // Initialize Booleans at false
+        let doMulti = false
+        let automaticStr = false
+        let automaticInt = false
+        let automaticCon = false
+        let automaticPer = false
+
+        // Flip Booleans as needed
+        if (AUTOMATIC_LOW_MULTI_STAT == 1){ 
+          doMulti = true
+        }
+        // Automatic Low-Strength happens if 1)  AUTOMATIC_LOW_STRENGTH is flagged, or 2) if AUTOMATIC_LOW_MULTI_STAT is flagged and the Multi-Stat includes Strength
+        if ( (AUTOMATIC_LOW_STRENGTH == 1) || ( (AUTOMATIC_LOW_MULTI_STAT == 1) && (MULTIPLE_LOW_STAT_MODE_STRENGTH == 1) ) ) {
+          automaticStr = true
+        }
+        // Repeat for the other stats
+        if ( (AUTOMATIC_LOW_INTELLIGENCE == 1) || ( (AUTOMATIC_LOW_MULTI_STAT == 1) && (MULTIPLE_LOW_STAT_MODE_INTELLIGENCE == 1) ) ) {
+          automaticInt = true
+        }
+        if ( (AUTOMATIC_LOW_CONSTITUTION == 1) || ( (AUTOMATIC_LOW_MULTI_STAT == 1) && (MULTIPLE_LOW_STAT_MODE_CONSTITUTION == 1) ) ) {
+          automaticCon = true
+        }
+        if ( (AUTOMATIC_LOW_PERCEPTION == 1) || ( (AUTOMATIC_LOW_MULTI_STAT == 1) && (MULTIPLE_LOW_STAT_MODE_PERCEPTION == 1) ) ) {
+          automaticPer = true
+        }
+
+        // Wait 2 seconds  
+        Utilities.sleep(2000)
+        
+        toggleLowStatMode(doMulti, automaticStr, automaticInt, automaticCon, automaticPer, false)
+      }
