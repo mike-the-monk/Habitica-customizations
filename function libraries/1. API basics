@@ -78,6 +78,33 @@
   // DATA EXPORT
 
   // GROUP
+  
+    // Gets all of a user's Groups (Guilds or party)
+    function api_getGroups(payload) {
+      const params = {
+        "method" : "get",
+        "headers" : HEADERS,
+        "contentType" : "application/json",
+        "payload" : JSON.stringify(payload),
+        "muteHttpExceptions" : true,
+      }
+      
+      const url = "https://habitica.com/api/v3/groups"
+      return UrlFetchApp.fetch(url, params)
+    }
+
+    // Gets Party ID of user's party
+    function getParty(){
+      let paramsTemplate = {
+          "method": "get",
+          "headers": HEADERS,
+      }
+      let response = UrlFetchApp.fetch("https://habitica.com/api/v3/groups/party", paramsTemplate)
+      let party = JSON.parse(response).data
+      let partyId = party._id
+      
+      return partyId
+    }
 
   // INBOX
 
