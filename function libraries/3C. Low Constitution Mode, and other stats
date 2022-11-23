@@ -100,6 +100,57 @@
 
         return messageString
       }
+      
+      function determinePenultimateStat(isIntFinal, isConFinal, isPerFinal){
+        let counter = countNumberOfLowMultiStat() // The count of how many are indicated
+
+        if (counter == 1) { // If there's only one stat, then there can't be a penultimate stat
+          return "none"
+        } else if (isIntFinal) { // If INT is the final stat, then STR should be penultimate
+          return "STR"
+        } else if (isConFinal) { // If CON is the final stat, STR or INT could be penultimate
+          if (counter == 3) { // If counter is 3, then the 3 are STR/INT/CON, making INT penultimate
+            return "INT"
+          } else if (counter == 2) { // If counter is 2, whichever of STR or INT is active is thus penultimate.
+            if (MULTIPLE_LOW_STAT_MODE_INTELLIGENCE == 1) {
+              return "INT"
+            } else if (MULTIPLE_LOW_STAT_MODE_STRENGTH == 1) {
+              return "STR"
+            }
+          }
+        } else if (isPerFinal) { // If PER is final stat, any of the others could be penultimate
+          if (counter == 4) { // If the counter is 4, then CON must be penultimate
+            return "CON"
+          } else {
+            if (MULTIPLE_LOW_STAT_MODE_CONSTITUTION == 1) {
+              return "CON"
+            } else if (MULTIPLE_LOW_STAT_MODE_INTELLIGENCE == 1) {
+              return "INT"
+            } else if (MULTIPLE_LOW_STAT_MODE_STRENGTH == 1) {
+              return "STR"
+            }
+          }
+        }
+      }
+
+      function countNumberOfLowMultiStat(){
+        let counter = 0 // Initialize
+
+        // For each of the four that are indicated, increase the counter by 1
+        if (MULTIPLE_LOW_STAT_MODE_PERCEPTION == 1) {
+          counter++
+        }
+        if (MULTIPLE_LOW_STAT_MODE_CONSTITUTION == 1) {
+          counter++
+        }
+        if (MULTIPLE_LOW_STAT_MODE_INTELLIGENCE == 1) {
+          counter++
+        }
+        if (MULTIPLE_LOW_STAT_MODE_STRENGTH == 1) {
+          counter++
+        }
+        return counter
+      }
 
       // Determines which stats to do for automatically entering Low Stat Modes at Cron, then enters the Modes.
       function automaticLowStatMode(){
