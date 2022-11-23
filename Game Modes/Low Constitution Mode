@@ -70,6 +70,13 @@ const HEADERS = {
 const scriptProperties = PropertiesService.getScriptProperties() // Constants can have properties changed
 
 // Messages
+const LOW_STAT_MODE_TEXT_START = "**Low "
+const LOW_STAT_MODE_TEXT_END = "  Mode**"
+const LOW_STAT_MODE_NOTES_START = "Press once to enter Low "
+const LOW_STAT_MODE_NOTES_MID_1 = " Mode, creating an anti-buff that sets your "
+const LOW_STAT_MODE_NOTES_MID_2 = " to "
+const LOW_STAT_MODE_NOTES_MID_3 = " until you Cron tomorrow. Press again to exit Low "
+const LOW_STAT_MODE_NOTES_END = " Mode."
 const MSG_IN_LOW_STAT_MODE_START = "Currently in Low "
 const MSG_NOT_IN_LOW_STAT_MODE_START = "Not currently in Low "
 const MSG_LOW_STAT_MODE_END = " Mode."
