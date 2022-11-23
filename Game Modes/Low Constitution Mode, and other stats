@@ -462,7 +462,7 @@ function toggleLowStatMode(doMulti, doStrength, doIntelligence, doConstitution, 
 function createMultiLowStatButton() {
   // Build notes section of button
   let NOTES_STATS = buildMultiLowStatStrings(false, "/")
-  let NOTES_STATS_VALUES = buildMultiLowStatStrings(true, ",")
+  let NOTES_STATS_VALUES = buildMultiLowStatStrings(true, ", ")
 
   // By now, those two strings should be correct. Combine them to create the button's Notes section
   const MULTI_LOW_STAT_MODE_NOTES = LOW_STAT_MODE_NOTES_START + NOTES_STATS + LOW_STAT_MODE_NOTES_MID_1 + NOTES_STATS_VALUES + LOW_STAT_MODE_NOTES_MID_3 + NOTES_STATS + LOW_STAT_MODE_NOTES_END
