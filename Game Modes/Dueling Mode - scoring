@@ -477,12 +477,12 @@ function api_sendPrivateMessageAlways(payload) {
 }
 
 // Once you've achieved victory, checks if the correct message posted and does other error-checking actions.
-function victoryCondition(troubleshootingKey, guildIdKey, announcerBotUsernameKey, timestampIdentifierKey){
+function victoryCondition(troubleshootingKey, groupIdKey, announcerBotUsernameKey, timestampIdentifierKey){
   var troubleshootingFlag = Number(scriptProperties.getProperty(troubleshootingKey))
   
   // If troubleshooting flag is active, do nothing. Only do things if it is equal to 0
   if (troubleshootingFlag == 0) {
-    var guildId = scriptProperties.getProperty(guildIdKey)
+    var guildId = scriptProperties.getProperty(groupIdKey)
     var timestampIdentifier = Number(scriptProperties.getProperty(timestampIdentifierKey))
     var announcerBotUsername = scriptProperties.getProperty(announcerBotUsernameKey)
     
@@ -716,7 +716,7 @@ function api_deleteChatMessage(groupId, chatId) {
 }
 
 // Increases duel score while duel is running. Also checks to see if user has won.
-function increaseDuelScore(duelScoreKey, scoreNeededGoalKey, guildIdKey, selfUsernameKey, opponentUsernameKey, wagerKey, announcerBotUsernameKey, timestampIdentifierKey, troubleshootingKey, taskDifficulty, taskDelta, taskType){
+function increaseDuelScore(duelScoreKey, scoreNeededGoalKey, groupIdKey, selfUsernameKey, opponentUsernameKey, wagerKey, announcerBotUsernameKey, timestampIdentifierKey, troubleshootingKey, taskDifficulty, taskDelta, taskType){
   // Retrieve saved values
   let duelScore = Number(scriptProperties.getProperty(duelScoreKey))
   let scoreNeededGoal = Number(scriptProperties.getProperty(scoreNeededGoalKey))
@@ -745,14 +745,14 @@ function increaseDuelScore(duelScoreKey, scoreNeededGoalKey, guildIdKey, selfUse
   // Check against Score Needed / Goal. If victory, create Duel End string for duel bot to check/evaluate.
   if (duelScore >= scoreNeededGoal) {
     let DUEL_END_MSG = createDuelEndString(selfUsernameKey, opponentUsernameKey, wagerKey, scoreNeededGoalKey, announcerBotUsernameKey, timestampIdentifierKey)
-    var guildId = scriptProperties.getProperty(guildIdKey)
+    var guildId = scriptProperties.getProperty(groupIdKey)
     api_postChatMessageToGroup({"message": DUEL_END_MSG}, guildId)
     
     // Wait 5 seconds
     Utilities.sleep(5000)
     
     // Check to see if automated message posted correctly
-    victoryCondition(troubleshootingKey, guildIdKey, announcerBotUsernameKey, timestampIdentifierKey)
+    victoryCondition(troubleshootingKey, groupIdKey, announcerBotUsernameKey, timestampIdentifierKey)
   }
 }
 
@@ -826,13 +826,13 @@ function createHash(string) {
 }
 
 // Does correct actions when Duel Start button is pressed
-function duelStartButton(taskNotes, taskIdStart, duelCurrentlyActiveKey, duelScoreKey, selfUsernameKey, opponentUsernameKey, wagerKey, scoreNeededGoalKey, guildIdKey, announcerBotUsernameKey, timestampIdentifierKey){
+function duelStartButton(taskNotes, taskIdStart, duelCurrentlyActiveKey, duelScoreKey, selfUsernameKey, opponentUsernameKey, wagerKey, scoreNeededGoalKey, groupIdKey, announcerBotUsernameKey, timestampIdentifierKey){
   // Check if valid string, send error message if not, and if valid, parse and save values and start duel and deletes Duel Start button.
-  parseDuelStartString(taskNotes, taskIdStart, duelCurrentlyActiveKey, duelScoreKey, selfUsernameKey, opponentUsernameKey, wagerKey, scoreNeededGoalKey, guildIdKey, announcerBotUsernameKey, timestampIdentifierKey)
+  parseDuelStartString(taskNotes, taskIdStart, duelCurrentlyActiveKey, duelScoreKey, selfUsernameKey, opponentUsernameKey, wagerKey, scoreNeededGoalKey, groupIdKey, announcerBotUsernameKey, timestampIdentifierKey)
 }
 
 // Checks if string is valid, returns error messages if not. Same with GP for wager. If valid, saves all duel values and starts duel.
-function parseDuelStartString(inputString, buttonToDeleteTaskId, duelCurrentlyActiveKey, duelScoreKey, selfUsernameKey, opponentUsernameKey, wagerKey, scoreNeededGoalKey, guildIdKey, announcerBotUsernameKey, timestampIdentifierKey) { 
+function parseDuelStartString(inputString, buttonToDeleteTaskId, duelCurrentlyActiveKey, duelScoreKey, selfUsernameKey, opponentUsernameKey, wagerKey, scoreNeededGoalKey, groupIdKey, announcerBotUsernameKey, timestampIdentifierKey) { 
   // Count number of semicolons. 7 are expected.
   var countSemicolons = ( inputString.match(/\;/g) || [] ).length
   
@@ -933,7 +933,7 @@ function parseDuelStartString(inputString, buttonToDeleteTaskId, duelCurrentlyAc
     
     // If no errors, check GP and start duel
     if (errorsNotPresent) {
-      checkGpAndStartDuel(buttonToDeleteTaskId, duelCurrentlyActiveKey, duelScoreKey, selfUsernameKey, selfUsername, opponentUsernameKey, opponentUsername, wagerKey, wager, scoreNeededGoalKey, scoreNeededGoal, guildIdKey, guildId, announcerBotUsernameKey, announcerBotUsername, timestampIdentifierKey, timestampIdentifier)
+      checkGpAndStartDuel(buttonToDeleteTaskId, duelCurrentlyActiveKey, duelScoreKey, selfUsernameKey, selfUsername, opponentUsernameKey, opponentUsername, wagerKey, wager, scoreNeededGoalKey, scoreNeededGoal, groupIdKey, groupId, announcerBotUsernameKey, announcerBotUsername, timestampIdentifierKey, timestampIdentifier)
     }
   }
 }
@@ -1207,7 +1207,7 @@ function checkDuelStartErrors(wager, scoreNeededGoal, timestampIdentifier, guild
 }
 
 // Checks GP and starts duel
-function checkGpAndStartDuel(buttonToDeleteTaskId, duelCurrentlyActiveKey, duelScoreKey, selfUsernameKey, selfUsername, opponentUsernameKey, opponentUsername, wagerKey, wager, scoreNeededGoalKey, scoreNeededGoal, guildIdKey, guildId, announcerBotUsernameKey, announcerBotUsername, timestampIdentifierKey, timestampIdentifier){
+function checkGpAndStartDuel(buttonToDeleteTaskId, duelCurrentlyActiveKey, duelScoreKey, selfUsernameKey, selfUsername, opponentUsernameKey, opponentUsername, wagerKey, wager, scoreNeededGoalKey, scoreNeededGoal, groupIdKey, groupId, announcerBotUsernameKey, announcerBotUsername, timestampIdentifierKey, timestampIdentifier){
   const responseUser = api_getAuthenticatedUserProfile("stats")
   const user = JSON.parse(responseUser).data
   
@@ -1230,7 +1230,7 @@ function checkGpAndStartDuel(buttonToDeleteTaskId, duelCurrentlyActiveKey, duelS
     scriptProperties.setProperty(opponentUsernameKey, opponentUsername)
     scriptProperties.setProperty(wagerKey, wager)
     scriptProperties.setProperty(scoreNeededGoalKey, scoreNeededGoal)
-    scriptProperties.setProperty(guildIdKey, guildId)
+    scriptProperties.setProperty(groupIdKey, guildId)
     scriptProperties.setProperty(announcerBotUsernameKey, announcerBotUsername)
     scriptProperties.setProperty(timestampIdentifierKey, timestampIdentifier)
     
@@ -1324,7 +1324,7 @@ function duelScoreButton(duelScoreKey, scoreNeededGoalKey){
 }
 
 // Does correct actions when Duel End button is pressed
-function duelEndButton(taskNotes, selfUsernameKey, opponentUsernameKey, wagerKey, scoreNeededGoalKey, timestampIdentifierKey, troubleshootingKey, guildIdKey, announcerBotUsernameKey){
+function duelEndButton(taskNotes, selfUsernameKey, opponentUsernameKey, wagerKey, scoreNeededGoalKey, timestampIdentifierKey, troubleshootingKey, groupIdKey, announcerBotUsernameKey){
   // Initialize value. -2 indicates some kind of invalid string, so default to that.
   let validity = -2
   
