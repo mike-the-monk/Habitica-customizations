@@ -482,19 +482,19 @@ function victoryCondition(troubleshootingKey, groupIdKey, announcerBotUsernameKe
   
   // If troubleshooting flag is active, do nothing. Only do things if it is equal to 0
   if (troubleshootingFlag == 0) {
-    var guildId = scriptProperties.getProperty(groupIdKey)
+    var groupId = scriptProperties.getProperty(groupIdKey)
     var timestampIdentifier = Number(scriptProperties.getProperty(timestampIdentifierKey))
     var announcerBotUsername = scriptProperties.getProperty(announcerBotUsernameKey)
     
     // Update Duel Score button to indicate victory (and do this regardless of any of the conditions below)
-    if (guildId != "") {
-      let guildUrl = "https://habitica.com/groups/guild/" + guildId
-      var newDuelScoreNotes = MSG_DUEL_SCORE_VICTORY1 + guildUrl + MSG_DUEL_SCORE_VICTORY2 + announcerBotUsername + MSG_DUEL_SCORE_VICTORY3
+    if (groupId != "") {
+      let groupUrl = "https://habitica.com/groups/" + groupId
+      var newDuelScoreNotes = MSG_DUEL_SCORE_VICTORY1 + groupUrl + MSG_DUEL_SCORE_VICTORY2 + announcerBotUsername + MSG_DUEL_SCORE_VICTORY3
       api_updateTask(DUEL_SCORE_ALIAS, {"notes" : newDuelScoreNotes})
     }
     
     // Check if the automated Duel End message successfully posted or not
-    var msgIdAuto = findAutomatedDuelEndMessages("user", guildId, "not needed", timestampIdentifier, announcerBotUsername, AUTOMATED_MSG_END_DUEL)
+    var msgIdAuto = findAutomatedDuelEndMessages("user", groupId, "not needed", timestampIdentifier, announcerBotUsername, AUTOMATED_MSG_END_DUEL)
     if (msgIdAuto == "nope") {
       // User message was supposed to post but didn't.
       
@@ -507,10 +507,10 @@ function victoryCondition(troubleshootingKey, groupIdKey, announcerBotUsernameKe
       api_sendPrivateMessageAlways({"message" : ERROR_MSG_AUTOMATED_SELF + ERROR_MSG_AUTOMATED_START + ERROR_MSG_AUTOMATED_MESSAGE_DIDNT_POST, "toUserId" : USER_ID})
     } else {
       // Find announcer bot response to the automated post. First, check the "valid" automated message
-      let msgIdBotValid = findAutomatedDuelEndMessages("bot", guildId, msgIdAuto, timestampIdentifier, announcerBotUsername, AUTOMATED_MSG_BOT_DECLARES_WINNER)
+      let msgIdBotValid = findAutomatedDuelEndMessages("bot", groupId, msgIdAuto, timestampIdentifier, announcerBotUsername, AUTOMATED_MSG_BOT_DECLARES_WINNER)
       if (msgIdBotValid == "nope") {
         // Next, check the  "invalid" automated meessage
-        let msgIdBotInvalid = findAutomatedDuelEndMessages("bot", guildId, msgIdAuto, timestampIdentifier, announcerBotUsername, AUTOMATED_MSG_BOT_INVALID_END_STRING)
+        let msgIdBotInvalid = findAutomatedDuelEndMessages("bot", groupId, msgIdAuto, timestampIdentifier, announcerBotUsername, AUTOMATED_MSG_BOT_INVALID_END_STRING)
         if (msgIdBotInvalid == "nope") {
           // This condition shouldn't be possible. It means the user message posted but the bot didn't resppond either way (valid or invalid)
           // This means that was probably an issue with the bot username (possibly saving incorrectly or not tagging the bot).
@@ -536,7 +536,7 @@ function victoryCondition(troubleshootingKey, groupIdKey, announcerBotUsernameKe
         }
       } else {
         // Message posted and bot found it valid. User message is no longer needed, so delete.
-        api_deleteChatMessage(guildId, msgIdAuto)
+        api_deleteChatMessage(groupId, msgIdAuto)
         
         // Flip the troubleshooting flag so that this script does not post additional automated messages
         // A 2 indicates victory, unlike 1, which indicates error
@@ -563,12 +563,12 @@ function api_updateTask(taskIdOrAlias, payload) {
 }
 
 // Finds if the automated message was posted or not
-function findAutomatedDuelEndMessages(version, guildId, msgIdEarliestAllowed, earliestAllowedTimestamp, announcerBotUsername, searchTerm){
+function findAutomatedDuelEndMessages(version, groupId, msgIdEarliestAllowed, earliestAllowedTimestamp, announcerBotUsername, searchTerm){
   // Initialize so it defaults to the error condition
   let msgId = "nope"
   
-  // Grab messages from Guild
-  let response = api_getChatMessagesFromGroup(guildId)
+  // Grab messages from Guild/party
+  let response = api_getChatMessagesFromGroup(groupId)
   let chatMessages = JSON.parse(response).data
   
   let earliestTimestamp = earliestAllowedTimestamp
@@ -619,15 +619,15 @@ function findAutomatedDuelEndMessages(version, guildId, msgIdEarliestAllowed, ea
   return msgId
 }
 
-// Gets chat messages given a Guild ID
-function api_getChatMessagesFromGroup(guildId) {
+// Gets chat messages given a Guild/party ID
+function api_getChatMessagesFromGroup(groupId) {
   const params = {
     "method" : "get",
     "headers" : HEADERS,
     "muteHttpExceptions" : true,
   }
   
-  const url = "https://habitica.com/api/v3/groups/" + guildId + "/chat"
+  const url = "https://habitica.com/api/v3/groups/" + groupId + "/chat"
 
   return UrlFetchApp.fetch(url, params)
 }
@@ -684,7 +684,7 @@ function createSubstring(string, startingIndex, endingIndex) {
   return trimmed
 }
 
-function api_postChatMessageToGroup(payload, guildId) {
+function api_postChatMessageToGroup(payload, groupId) {
   const params = {
     "method" : "post",
     "headers" : HEADERS,
@@ -692,7 +692,7 @@ function api_postChatMessageToGroup(payload, guildId) {
     "payload" : JSON.stringify(payload),
     "muteHttpExceptions" : true,
   }
-  const url = "https://habitica.com/api/v3/groups/" + guildId + "/chat"
+  const url = "https://habitica.com/api/v3/groups/" + groupId + "/chat"
   return UrlFetchApp.fetch(url, params)
 }
 
@@ -745,8 +745,8 @@ function increaseDuelScore(duelScoreKey, scoreNeededGoalKey, groupIdKey, selfUse
   // Check against Score Needed / Goal. If victory, create Duel End string for duel bot to check/evaluate.
   if (duelScore >= scoreNeededGoal) {
     let DUEL_END_MSG = createDuelEndString(selfUsernameKey, opponentUsernameKey, wagerKey, scoreNeededGoalKey, announcerBotUsernameKey, timestampIdentifierKey)
-    var guildId = scriptProperties.getProperty(groupIdKey)
-    api_postChatMessageToGroup({"message": DUEL_END_MSG}, guildId)
+    var groupId = scriptProperties.getProperty(groupIdKey)
+    api_postChatMessageToGroup({"message": DUEL_END_MSG}, groupId)
     
     // Wait 5 seconds
     Utilities.sleep(5000)
@@ -911,10 +911,10 @@ function parseDuelStartString(inputString, buttonToDeleteTaskId, duelCurrentlyAc
     
     // Repeat to parse out Guild ID
     semicolonIndex = findIndexOfSemicolon(inputString)
-    let guildId = createSubstring(inputString, 0, semicolonIndex)
+    let groupId = createSubstring(inputString, 0, semicolonIndex)
     
-    // Check to make sure it's a valid format for a Guild ID
-    let guildIdFormatCheck = checkUuidFormat(guildId)
+    // Check to make sure it's a valid format for a Group ID
+    let groupIdFormatCheck = checkUuidFormat(groupId)
     
     // Remove that section from the input string, save as a smaller substring
     inputStringTemp = createSubstring(inputString, semicolonIndex + 1, length)
@@ -929,7 +929,7 @@ function parseDuelStartString(inputString, buttonToDeleteTaskId, duelCurrentlyAc
     let announcerBotUsername = checkNameFormatting(announcerBotUsernameTemp)
 
     // If there are any errors, let user know by sending messages.
-    let errorsNotPresent = checkDuelStartErrors(wager, scoreNeededGoal, timestampIdentifier, guildIdFormatCheck)
+    let errorsNotPresent = checkDuelStartErrors(wager, scoreNeededGoal, timestampIdentifier, groupIdFormatCheck)
     
     // If no errors, check GP and start duel
     if (errorsNotPresent) {
@@ -994,10 +994,10 @@ function sanitizeInput(input, minimum, maximum) {
   }
 }
 
-// Checks if a Guild ID is in the correct formatting: 00000000-0000-4000-A000-000000000000
-function checkUuidFormat(guildIdToCheck){
+// Checks if a UUID ID is in the correct formatting: 00000000-0000-4000-A000-000000000000
+function checkUuidFormat(uuidToCheck){
   // Trim, just in case there was extra whitespace
-  let stringTemp = guildIdToCheck.trim()
+  let stringTemp = uuidToCheck.trim()
   
   // Total length of string should be 36 (Four total dashes and 32 other hexadecimal characters)
   let length = stringTemp.length;
@@ -1093,12 +1093,12 @@ function checkDashLocations(stringToCheck) {
 }
 
 // If errors exist in Duel Start string, sends messages.
-function checkDuelStartErrors(wager, scoreNeededGoal, timestampIdentifier, guildIdFormatCheck) {
+function checkDuelStartErrors(wager, scoreNeededGoal, timestampIdentifier, groupIdFormatCheck) {
   // Initialize Booleans
   let wagerIsError = false
   let scoreNeededGoalIsError = false
   let timestampIdentifierIsError = false
-  let guildIdError = false
+  let groupIdError = false
   
   let errorCount = 0
   
@@ -1114,8 +1114,8 @@ function checkDuelStartErrors(wager, scoreNeededGoal, timestampIdentifier, guild
     timestampIdentifierIsError = true
     errorCount++
   }
-  if (!guildIdFormatCheck) { // This one was already a Boolean
-    guildIdError = true
+  if (!groupIdFormatCheck) { // This one was already a Boolean
+    groupIdError = true
     errorCount++
   }
   
@@ -1131,7 +1131,7 @@ function checkDuelStartErrors(wager, scoreNeededGoal, timestampIdentifier, guild
         api_sendPrivateMessageAlways({"message" : ERROR_MSG_SINGULAR_START + ERROR_MSG_SCORE_NEEDED + ERROR_MSG_SINGULAR_END, "toUserId" : USER_ID})
       } else if (timestampIdentifierIsError) {
         api_sendPrivateMessageAlways({"message" : ERROR_MSG_SINGULAR_START + ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_SINGULAR_END, "toUserId" : USER_ID})
-      } else if (guildIdError) {
+      } else if (groupIdError) {
         api_sendPrivateMessageAlways({"message" : ERROR_MSG_SINGULAR_START + ERROR_MSG_GROUP_ID + ERROR_MSG_SINGULAR_END, "toUserId" : USER_ID})
       } else {
         api_sendPrivateMessageAlways({"message" : ERROR_MSG_SINGULAR_START + "UNKNOWN" + ERROR_MSG_SINGULAR_END, "toUserId" : USER_ID})
@@ -1157,7 +1157,7 @@ function checkDuelStartErrors(wager, scoreNeededGoal, timestampIdentifier, guild
           api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID
                                         + ERROR_MSG_WAGER + ERROR_MSG_AND + ERROR_MSG_SCORE_NEEDED + ERROR_MSG_AND 
                                         + ERROR_MSG_GROUP_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
-        } else if (!guildIdError) {
+        } else if (!groupIdError) {
           api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID
                                         + ERROR_MSG_WAGER + ERROR_MSG_AND + ERROR_MSG_SCORE_NEEDED + ERROR_MSG_AND 
                                         + ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
@@ -1189,13 +1189,13 @@ function checkDuelStartErrors(wager, scoreNeededGoal, timestampIdentifier, guild
             api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID +  ERROR_MSG_SCORE_NEEDED + ERROR_MSG_AND + "UNKNOWN" + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
           }
         } else if (timestampIdentifierIsError) { // This section is for the errors being Timestamp Identifier and something else
-          if (guildIdError) {
+          if (groupIdError) {
             api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_AND + ERROR_MSG_GROUP_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
           }
           else {
             api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID +  ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_AND + "UNKNOWN" + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
           }
-        } else if (guildIdError) {
+        } else if (groupIdError) {
           api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID +  ERROR_MSG_GROUP_ID + ERROR_MSG_AND + "UNKNOWN" + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
         }
       } else {
@@ -1230,7 +1230,7 @@ function checkGpAndStartDuel(buttonToDeleteTaskId, duelCurrentlyActiveKey, duelS
     scriptProperties.setProperty(opponentUsernameKey, opponentUsername)
     scriptProperties.setProperty(wagerKey, wager)
     scriptProperties.setProperty(scoreNeededGoalKey, scoreNeededGoal)
-    scriptProperties.setProperty(groupIdKey, guildId)
+    scriptProperties.setProperty(groupIdKey, groupId)
     scriptProperties.setProperty(announcerBotUsernameKey, announcerBotUsername)
     scriptProperties.setProperty(timestampIdentifierKey, timestampIdentifier)
     
