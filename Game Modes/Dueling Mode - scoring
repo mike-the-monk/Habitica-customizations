@@ -1132,7 +1132,7 @@ function checkDuelStartErrors(wager, scoreNeededGoal, timestampIdentifier, guild
       } else if (timestampIdentifierIsError) {
         api_sendPrivateMessageAlways({"message" : ERROR_MSG_SINGULAR_START + ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_SINGULAR_END, "toUserId" : USER_ID})
       } else if (guildIdError) {
-        api_sendPrivateMessageAlways({"message" : ERROR_MSG_SINGULAR_START + ERROR_MSG_GUILD_ID + ERROR_MSG_SINGULAR_END, "toUserId" : USER_ID})
+        api_sendPrivateMessageAlways({"message" : ERROR_MSG_SINGULAR_START + ERROR_MSG_GROUP_ID + ERROR_MSG_SINGULAR_END, "toUserId" : USER_ID})
       } else {
         api_sendPrivateMessageAlways({"message" : ERROR_MSG_SINGULAR_START + "UNKNOWN" + ERROR_MSG_SINGULAR_END, "toUserId" : USER_ID})
       }
@@ -1142,21 +1142,21 @@ function checkDuelStartErrors(wager, scoreNeededGoal, timestampIdentifier, guild
       if ( errorCount == 4 ) {
         api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID
                                       + ERROR_MSG_WAGER + ERROR_MSG_AND + ERROR_MSG_SCORE_NEEDED + ERROR_MSG_AND 
-                                      + ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_AND + ERROR_MSG_GUILD_ID
+                                      + ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_AND + ERROR_MSG_GROUP_ID
                                       + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
       } else if ( errorCount == 3 ) { // If three errors, figure out which one is not an error
         if (!wagerIsError) {
           api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID
                                         + ERROR_MSG_SCORE_NEEDED + ERROR_MSG_AND + ERROR_MSG_TIMESTAMP_IDENTIFIER 
-                                        + ERROR_MSG_AND + ERROR_MSG_GUILD_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
+                                        + ERROR_MSG_AND + ERROR_MSG_GROUP_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
         } else if (!scoreNeededGoalIsError) {
           api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID
                                         + ERROR_MSG_WAGER + ERROR_MSG_AND + ERROR_MSG_TIMESTAMP_IDENTIFIER 
-                                        + ERROR_MSG_AND + ERROR_MSG_GUILD_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
+                                        + ERROR_MSG_AND + ERROR_MSG_GROUP_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
         } else if (!timestampIdentifierIsError) {
           api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID
                                         + ERROR_MSG_WAGER + ERROR_MSG_AND + ERROR_MSG_SCORE_NEEDED + ERROR_MSG_AND 
-                                        + ERROR_MSG_GUILD_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
+                                        + ERROR_MSG_GROUP_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
         } else if (!guildIdError) {
           api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID
                                         + ERROR_MSG_WAGER + ERROR_MSG_AND + ERROR_MSG_SCORE_NEEDED + ERROR_MSG_AND 
@@ -1172,8 +1172,8 @@ function checkDuelStartErrors(wager, scoreNeededGoal, timestampIdentifier, guild
           else if (timestampIdentifierIsError) {
             api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + ERROR_MSG_WAGER + ERROR_MSG_AND + ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
           }
-          else if (guildIdError) {
-            api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + ERROR_MSG_WAGER + ERROR_MSG_AND + ERROR_MSG_GUILD_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
+          else if (groupIdError) {
+            api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + ERROR_MSG_WAGER + ERROR_MSG_AND + ERROR_MSG_GROUP_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
           }
           else {
             api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + ERROR_MSG_WAGER + ERROR_MSG_AND + "UNKNOWN" + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
@@ -1182,21 +1182,21 @@ function checkDuelStartErrors(wager, scoreNeededGoal, timestampIdentifier, guild
           if (timestampIdentifierIsError) {
             api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + ERROR_MSG_SCORE_NEEDED + ERROR_MSG_AND + ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
           }
-          else if (guildIdError) {
-            api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + ERROR_MSG_SCORE_NEEDED + ERROR_MSG_AND + ERROR_MSG_GUILD_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
+          else if (groupIdError) {
+            api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + ERROR_MSG_SCORE_NEEDED + ERROR_MSG_AND + ERROR_MSG_GROUP_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
           }
           else {
             api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID +  ERROR_MSG_SCORE_NEEDED + ERROR_MSG_AND + "UNKNOWN" + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
           }
         } else if (timestampIdentifierIsError) { // This section is for the errors being Timestamp Identifier and something else
           if (guildIdError) {
-            api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_AND + ERROR_MSG_GUILD_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+            api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_AND + ERROR_MSG_GROUP_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
           }
           else {
             api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID +  ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_AND + "UNKNOWN" + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
           }
         } else if (guildIdError) {
-          api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID +  ERROR_MSG_GUILD_ID + ERROR_MSG_AND + "UNKNOWN" + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
+          api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID +  ERROR_MSG_GROUP_ID + ERROR_MSG_AND + "UNKNOWN" + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
         }
       } else {
         api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + "UNKNOWN" + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
@@ -1528,7 +1528,7 @@ function debugClearTroubleshootingFlagAndThenRetry(){
   // Now, run (most of) incrementDuelScore. Since there's no actual task, assign it a difficulty of 0 and a delta of 0
   // Running this function will show that the user won, and therefore post the automated message again
   
-  increaseDuelScore(DUEL_SCORE_KEY, SCORE_NEEDED_GOAL_KEY, GUILD_ID_KEY, SELF_USERNAME_KEY, OPPONENT_USERNAME_KEY, WAGER_KEY, ANNOUNCER_BOT_USERNAME_KEY, TIMESTAMP_IDENTIFIER_KEY, 0, 0, "habit")
+  increaseDuelScore(DUEL_SCORE_KEY, SCORE_NEEDED_GOAL_KEY, GROUP_ID_KEY, SELF_USERNAME_KEY, OPPONENT_USERNAME_KEY, WAGER_KEY, ANNOUNCER_BOT_USERNAME_KEY, TIMESTAMP_IDENTIFIER_KEY, 0, 0, "habit")
 }
 
 // Retrieves expected hashes for duel parameter and user ID and some
@@ -1549,7 +1549,7 @@ function debugGetSavedValues(){
   let wager = Number(scriptProperties.getProperty(WAGER_KEY))
   let scoreNeededGoal = Number(scriptProperties.getProperty(SCORE_NEEDED_GOAL_KEY))
   let timestampIdentifier = Number(scriptProperties.getProperty(TIMESTAMP_IDENTIFIER_KEY))
-  let guildId = scriptProperties.getProperty(GUILD_ID_KEY)
+  let groupId = scriptProperties.getProperty(GROUP_ID_KEY)
   let announcerBotUsername = scriptProperties.getProperty(ANNOUNCER_BOT_USERNAME_KEY)
   let troubleshootingFlag = Number(scriptProperties.getProperty(TROUBLESHOOTING_KEY))
   
@@ -1564,7 +1564,7 @@ function debugGetSavedValues(){
                                 + "wager" + MSG_JOINER_BEFORE + wager + MSG_JOINER_AFTER
                                 + "scoreNeededGoal" + MSG_JOINER_BEFORE + scoreNeededGoal + MSG_JOINER_AFTER
                                 + "timestampIdentifier" + MSG_JOINER_BEFORE + timestampIdentifier + MSG_JOINER_AFTER
-                                + "guildId" + MSG_JOINER_BEFORE + guildId + MSG_JOINER_AFTER
+                                + "guildId" + MSG_JOINER_BEFORE + groupId + MSG_JOINER_AFTER
                                 + "announcerBotUsername" + MSG_JOINER_BEFORE + announcerBotUsername + MSG_JOINER_AFTER
                                 + "troubleshootingFlag" + MSG_JOINER_BEFORE + troubleshootingFlag + "`", "toUserId" : USER_ID})
 }
