@@ -294,7 +294,8 @@ function doButtonAntiXpPotion(lvl, exp, gp, AntiXpUsageKey, AntiXpUsage){
       } else {
         // Run potion as normal since all checks passed.
         api_updateUser({"stats.exp" : exp - ANTI_XP_POTION_XP_COST, "stats.gp" : gp + ANTI_XP_POTION_GP_GAIN})
-        AntiXpUsage++
+        
+        AntiXpUsage += ANTI_XP_POTION_XP_COST
         
         // Save new counter value since it's updated
         scriptProperties.setProperty(AntiXpUsageKey, AntiXpUsage)
