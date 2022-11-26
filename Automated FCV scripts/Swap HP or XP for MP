@@ -232,7 +232,7 @@ function doButtonHpForMp(lvl, hp, mp, mpDiff, HpForMpUsage, HpForMpUsageKey){
   let sufficientLevel = checkLevelLock(lvl, HP_FOR_MP_LEVEL_LOCK, "skill.")
   if (sufficientLevel) {
     // Check if they've exceeded daily usage. If yes, send failure message.
-    let usageLimitOkay = checkUsageLimit(HpForMpUsage, MAX_DAILY_HP_FOR_MP_USAGE, MaxDailyAntiXpUsage, "skill ", false)
+    let usageLimitOkay = checkUsageLimit(HpForMpUsage, MAX_DAILY_HP_FOR_MP_USAGE, MaxDailyAntiXpUsage, "skill ", false, false)
     if (usageLimitOkay) {
       // Check if they have sufficient Health. Send failure message if not.
       if (hp < HP_COST_HP_FOR_MP) {
@@ -274,7 +274,7 @@ function doButtonXpForMp(lvl, exp, mp, mpDiff, XpForMpUsage, XpForMpUsageKey){
     let XpToNextLevel = Math.round((Math.pow(lvl, 2) * 0.25 + 10 * lvl + 139.75) / 10) * 10
     let MaxDailyXpUsage = Math.floor(XpToNextLevel * eval(MAX_DAILY_XP_FOR_MP_USAGE))
     
-    let usageLimitOkay = checkUsageLimit(XpForMpUsage, XP_COST_XP_FOR_MP, MaxDailyXpUsage, "skill ", true)
+    let usageLimitOkay = checkUsageLimit(XpForMpUsage, XP_COST_XP_FOR_MP, MaxDailyXpUsage, "skill ", true, true)
     if (usageLimitOkay) {
       // Check if they have sufficient Experience. Send failure message if not.
       if (exp < XP_COST_XP_FOR_MP) {
@@ -452,13 +452,20 @@ function checkLevelLock(level, levelLock, messageEndVariable){
 
 
 // Check if (daily) usage exceeded, send message if yes.
-function checkUsageLimit(usageCounter, newUsageIncrement, maxUsage, messageMidVariable, isForXp){
+function checkUsageLimit(usageCounter, newUsageIncrement, maxUsage, messageMidVariable, isForXp, isForXpPaid){
   if ( (usageCounter + newUsageIncrement) > maxUsage ) {
     let errorMsg = MSG_DAILY_USAGE_EXCEEDED_START + messageMidVariable + maxUsage + MSG_DAILY_USAGE_EXCEEDED_END
 
     // Since the max usage for XP potion/skill is different, the message will be different.
     if (isForXp) {
-      errorMsg = MSG_DAILY_USAGE_EXCEEDED_XP_START + messageMidVariable + MSG_DAILY_USAGE_EXCEEDED_XP_MID_1 + maxUsage + MSG_DAILY_USAGE_EXCEEDED_XP_MID_2 + MAX_DAILY_XP_POTION_USAGE + MSG_DAILY_USAGE_EXCEEDED_XP_END
+      // Message start differs if it's XP gained vs. XP paid
+      if (isForXpPaid) {
+        errorMsg = MSG_DAILY_USAGE_EXCEEDED_XP_START_PAY
+      } else {
+        errorMsg = MSG_DAILY_USAGE_EXCEEDED_XP_START
+      }
+
+      errorMsg += messageMidVariable + MSG_DAILY_USAGE_EXCEEDED_XP_MID_1 + maxUsage + MSG_DAILY_USAGE_EXCEEDED_XP_MID_2 + MAX_DAILY_XP_POTION_USAGE + MSG_DAILY_USAGE_EXCEEDED_XP_END
     }
 
     api_sendPrivateMessage({"message" : errorMsg, "toUserId" : USER_ID})
