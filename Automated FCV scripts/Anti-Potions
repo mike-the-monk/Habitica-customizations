@@ -243,7 +243,7 @@ function doButtonAntiMpPotion(lvl, mp, gp, AntiMpUsageKey, AntiMpUsage){
   let sufficientLevel = checkLevelLock(lvl, ANTI_MP_POTION_LEVEL_LOCK, "potion.")
   if (sufficientLevel) {
     // Check if they've exceeded daily usage. If yes, send failure message.
-    let usageLimitOkay = checkUsageLimit(AntiMpUsage, 1, MAX_DAILY_ANTI_MP_POTION_USAGE, "potion ", false)
+    let usageLimitOkay = checkUsageLimit(AntiMpUsage, 1, MAX_DAILY_ANTI_MP_POTION_USAGE, "potion ", false, false)
     if (usageLimitOkay) {
       // Check if they have sufficient Mana. Send failure message if not.
       if (mp < ANTI_MP_POTION_MP_COST) {
@@ -264,7 +264,7 @@ function doButtonAntiMpPotion(lvl, mp, gp, AntiMpUsageKey, AntiMpUsage){
 // When the Anti-HP Potion button is clicked
 function doButtonAntiHpPotion(hp, gp, AntiHpUsageKey, AntiHpUsage){
   // Check if they've exceeded daily usage. If yes, send failure message.
-  let usageLimitOkay = checkUsageLimit(AntiHpUsage, 1, MAX_DAILY_ANTI_HP_POTION_USAGE, "potion ", false)
+  let usageLimitOkay = checkUsageLimit(AntiHpUsage, 1, MAX_DAILY_ANTI_HP_POTION_USAGE, "potion ", false, false)
   if (usageLimitOkay){
     // Check if they have sufficient Health. Send failure message if not.
     if (hp < ANTI_HP_POTION_HP_COST) {
@@ -286,7 +286,7 @@ function doButtonAntiXpPotion(lvl, exp, gp, AntiXpUsageKey, AntiXpUsage){
   let sufficientLevel = checkLevelLock(lvl, ANTI_XP_POTION_LEVEL_LOCK, "potion.")
   if (sufficientLevel) {
     // Check if they've exceeded daily usage. If yes, send failure message.
-    let usageLimitOkay = checkUsageLimit(AntiXpUsage, ANTI_XP_POTION_XP_COST, MAX_DAILY_ANTI_XP_POTION_USAGE, "potion ", true)
+    let usageLimitOkay = checkUsageLimit(AntiXpUsage, ANTI_XP_POTION_XP_COST, MAX_DAILY_ANTI_XP_POTION_USAGE, "potion ", true, true)
     if (usageLimitOkay) {
       // Check if they have sufficient Experience. Send failure message if not.
       if (exp < ANTI_XP_POTION_XP_COST) {
@@ -444,14 +444,22 @@ function checkLevelLock(level, levelLock, messageEndVariable){
 }
 
 
+
 // Check if (daily) usage exceeded, send message if yes.
-function checkUsageLimit(usageCounter, newUsageIncrement, maxUsage, messageMidVariable, isForXp){
+function checkUsageLimit(usageCounter, newUsageIncrement, maxUsage, messageMidVariable, isForXp, isForXpPaid){
   if ( (usageCounter + newUsageIncrement) > maxUsage ) {
     let errorMsg = MSG_DAILY_USAGE_EXCEEDED_START + messageMidVariable + maxUsage + MSG_DAILY_USAGE_EXCEEDED_END
 
     // Since the max usage for XP potion/skill is different, the message will be different.
     if (isForXp) {
-      errorMsg = MSG_DAILY_USAGE_EXCEEDED_XP_START + messageMidVariable + MSG_DAILY_USAGE_EXCEEDED_XP_MID_1 + maxUsage + MSG_DAILY_USAGE_EXCEEDED_XP_MID_2 + MAX_DAILY_XP_POTION_USAGE + MSG_DAILY_USAGE_EXCEEDED_XP_END
+      // Message start differs if it's XP gained vs. XP paid
+      if (isForXpPaid) {
+        errorMsg = MSG_DAILY_USAGE_EXCEEDED_XP_START_PAY
+      } else {
+        errorMsg = MSG_DAILY_USAGE_EXCEEDED_XP_START
+      }
+
+      errorMsg += messageMidVariable + MSG_DAILY_USAGE_EXCEEDED_XP_MID_1 + maxUsage + MSG_DAILY_USAGE_EXCEEDED_XP_MID_2 + MAX_DAILY_XP_POTION_USAGE + MSG_DAILY_USAGE_EXCEEDED_XP_END
     }
 
     api_sendPrivateMessage({"message" : errorMsg, "toUserId" : USER_ID})
