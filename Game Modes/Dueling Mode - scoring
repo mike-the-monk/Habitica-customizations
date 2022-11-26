@@ -488,7 +488,7 @@ function victoryCondition(troubleshootingKey, groupIdKey, announcerBotUsernameKe
     
     // Update Duel Score button to indicate victory (and do this regardless of any of the conditions below)
     if (groupId != "") {
-      let groupUrl = "https://habitica.com/groups/" + groupId
+      let groupUrl = "https://habitica.com/groups/guild/" + groupId
       var newDuelScoreNotes = MSG_DUEL_SCORE_VICTORY1 + groupUrl + MSG_DUEL_SCORE_VICTORY2 + announcerBotUsername + MSG_DUEL_SCORE_VICTORY3
       api_updateTask(DUEL_SCORE_ALIAS, {"notes" : newDuelScoreNotes})
     }
