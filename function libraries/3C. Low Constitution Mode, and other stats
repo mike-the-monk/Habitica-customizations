@@ -50,16 +50,16 @@
         // This version requires the setpoint as an input, then adds to the string
         if (needsSetpointValue) { 
           messageString += LOW_STAT_MODE_NOTES_MID_2 + LOW_STRENGTH_MODE_SETPOINT
-
-          // If STR is penultimate, then add "and " after
-          if (penultimateStat == "STR") {
-            messageString += "and "
-          }
         }
 
         // If Strength is not final, add joiner character (usually, slash or comma)
         if (!isStrFinal) {
           messageString += joinerCharacter
+
+          // If STR is penultimate for the Setpoint version, then add "and " after
+          if ( (penultimateStat == "STR") && (needsSetpointValue) ) {
+            messageString += "and "
+          }
         }
       }
       // Same but for Intelligence
@@ -69,16 +69,16 @@
         // This version requires the setpoint as an input, then adds to the string
         if (needsSetpointValue) { 
           messageString += LOW_STAT_MODE_NOTES_MID_2 + LOW_INTELLIGENCE_MODE_SETPOINT
-
-          // If INT is penultimate, then add "and " after
-          if (penultimateStat == "INT") {
-            messageString += "and "
-          }
         }        
 
         // If Intelligence is not final, add joiner character (usually, slash or comma)
         if (!isIntFinal) {
           messageString += joinerCharacter
+
+          // If INT is penultimate for the Setpoint version, then add "and " after
+          if ( (penultimateStat == "INT") && (needsSetpointValue) ) {
+            messageString += "and "
+          }
         }
       }
       // Same but for Constitution
@@ -88,16 +88,16 @@
         // This version requires the setpoint as an input, then adds to the string
         if (needsSetpointValue) { 
           messageString += LOW_STAT_MODE_NOTES_MID_2 + LOW_CONSTITUTION_MODE_SETPOINT
-
-          // If CON is penultimate, then add "and " after
-          if (penultimateStat == "CON") {
-            messageString += "and "
-          }
         }
 
         // If Constitution is not final, add joiner character (usually, slash or comma)
         if (!isConFinal) {
           messageString += joinerCharacter
+
+          // If CON is penultimate for the Setpoint version, then add "and " after
+          if ( (penultimateStat == "CON") && (needsSetpointValue) ) {
+            messageString += "and "
+          }
         }
       }
       // Same but for Perception
