@@ -98,7 +98,7 @@ const SEAFOAM_BUTTON = {
 
 const SPOOKY_SPARKLES_TEXT = "**Spooky Sparkles (self only)**"
 const SPOOKY_SPARKLES_ALIAS = "spooky_sparkles"
-const SPOOKY_SPARKLES_NOTES = "Turn yourself into a transparent pal! Costs 15 GP, lasts until tomorrow. " + TRANSFORMATION_NOTES_END
+const SPOOKY_SPARKLES_NOTES = "Turn yourself into a transparent pal! " + TRANSFORMATION_NOTES_END
 const SPOOKY_SPARKLES_VALUE = "0"
 
 const SPOOKY_SPARKLES_BUTTON = {
