@@ -107,9 +107,6 @@ const LOW_PER_MODE_ALIAS = "LOW_PER"
 const LOW_PER_MODE_NOTES = LOW_STAT_MODE_NOTES_START + "Perception" + LOW_STAT_MODE_NOTES_MID_1 + "PER" + LOW_STAT_MODE_NOTES_MID_2 + LOW_PERCEPTION_MODE_SETPOINT + LOW_STAT_MODE_NOTES_MID_3 + "Perception" + LOW_STAT_MODE_NOTES_END
 const LOW_PER_MODE_VALUE = "0"
 
-const MSG_IN_LOW_CONSTITUTION_MODE = "Currently in Low Constitution Mode."
-const MSG_NOT_IN_LOW_CONSTITUTION_MODE = "Not currently in Low Constitution Mode." 
-
 // On purpose, Multi Low Stat Mode button is not here (because the Notes section changes based on which stats are selected)
 
 const LOW_STR_MODE_BUTTON = {
