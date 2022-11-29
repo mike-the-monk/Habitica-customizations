@@ -88,12 +88,12 @@ const MSG_NEAR_MAX_MANA = "This skill filled you to maximum Mana, but not beyond
 
 const HP_FOR_MP_TEXT = "**Swap Health for Mana**"
 const HP_FOR_MP_ALIAS = "HPforMP"
-const HP_FOR_MP_NOTES = NOTES_START + HP_COST_HP_FOR_MP + " HP" + NOTES_MID1 + MP_GAIN_HP_FOR_MP + "MP" + NOTES_MID2 + MAX_DAILY_HP_FOR_MP_USAGE + NOTES_END
+const HP_FOR_MP_NOTES = NOTES_START + HP_COST_HP_FOR_MP + " HP" + NOTES_MID1 + MP_GAIN_HP_FOR_MP + " MP" + NOTES_MID2 + MAX_DAILY_HP_FOR_MP_USAGE + NOTES_END
 const HP_FOR_MP_VALUE = "0"
 
 const XP_FOR_MP_TEXT = "**Swap Experience for Mana**"
 const XP_FOR_MP_ALIAS = "XPforMP"
-const XP_FOR_MP_NOTES = NOTES_START + XP_COST_XP_FOR_MP + " XP" + NOTES_MID1 + MP_GAIN_XP_FOR_MP + "MP" + NOTES_MID2 + " XP spent per day: " + MAX_DAILY_XP_FOR_MP_USAGE + " of what's needed to level up."
+const XP_FOR_MP_NOTES = NOTES_START + XP_COST_XP_FOR_MP + " XP" + NOTES_MID1 + MP_GAIN_XP_FOR_MP + " MP" + NOTES_MID2 + " XP spent per day: " + MAX_DAILY_XP_FOR_MP_USAGE + " of what's needed to level up."
 const XP_FOR_MP_VALUE = "0"
 
 const HP_FOR_MP_BUTTON = {
