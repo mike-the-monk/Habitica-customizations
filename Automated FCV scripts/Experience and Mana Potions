@@ -55,7 +55,6 @@ const MAX_DAILY_XP_POTION_USAGE = "1/3"
 const XP_POTION_NOTES = "Gain " + XP_GAIN + " Experience (Instant Use). Maximum per day: no more than " + MAX_DAILY_XP_POTION_USAGE + " of what's needed to level up."
 const XP_POTION_LEVEL_LOCK = 21
 const MSG_XP_POTION_LEVEL_LOCK_FAIL = MSG_LEVEL_LOCK_START + XP_POTION_LEVEL_LOCK + MSG_LEVEL_LOCK_END_POTION
-const MSG_XP_POTION_DAILY_USAGE_EXCEEDED = "You've already gained your maximum allowable XP from potions today."
 
 const MP_POTION_TEXT = "**Mana Potion** ![Blue potion](https://raw.githubusercontent.com/mike-the-monk/Habitica-customizations/main/Automated%20FCV%20scripts/images/mana%20potion%20large%20transparent%20wide%20432.png)"
 const MP_POTION_ALIAS = "MPpotion"
@@ -65,7 +64,6 @@ const MAX_DAILY_MP_POTION_USAGE = 4
 const MP_POTION_NOTES = "Recover " + MP_GAIN + " Mana (Instant Use). Maximum " + MAX_DAILY_MP_POTION_USAGE + " per day."
 const MP_POTION_LEVEL_LOCK = 11
 const MSG_MP_POTION_LEVEL_LOCK_FAIL = MSG_LEVEL_LOCK_START + MP_POTION_LEVEL_LOCK + MSG_LEVEL_LOCK_END_POTION
-const MSG_MP_POTION_DAILY_USAGE_EXCEEDED = MSG_DAILY_USAGE_EXCEEDED_START_POTION + MAX_DAILY_MP_POTION_USAGE + MSG_DAILY_USAGE_EXCEEDED_END
 const MSG_ALREADY_AT_MAX_MANA = "You are already have maximum mana. This potion had no effect and did not count towards your daily limit of "+MAX_DAILY_MP_POTION_USAGE+" potions."
 const MSG_NEAR_MAX_MANA = "This potion filled you to maximum Mana, but not beyond the max."
 
