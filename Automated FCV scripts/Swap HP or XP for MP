@@ -232,7 +232,7 @@ function doButtonHpForMp(lvl, hp, mp, mpDiff, HpForMpUsage, HpForMpUsageKey){
   let sufficientLevel = checkLevelLock(lvl, HP_FOR_MP_LEVEL_LOCK, "skill.")
   if (sufficientLevel) {
     // Check if they've exceeded daily usage. If yes, send failure message.
-    let usageLimitOkay = checkUsageLimit(HpForMpUsage, MAX_DAILY_HP_FOR_MP_USAGE, MaxDailyAntiXpUsage, "skill ", false, false)
+    let usageLimitOkay = checkUsageLimit(HpForMpUsage, 1, MAX_DAILY_HP_FOR_MP_USAGE, "skill ", false, false)
     if (usageLimitOkay) {
       // Check if they have sufficient Health. Send failure message if not.
       if (hp < HP_COST_HP_FOR_MP) {
