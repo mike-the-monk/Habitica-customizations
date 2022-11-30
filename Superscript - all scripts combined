@@ -645,7 +645,7 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
       const BAD_DAY_MODE_NOTES = "Declare today a 'day of low expectations', fully healing you, buffing your CON to 9999, and Stealthing all your Dailies so you take no damage if you don't complete them. This wears off tomorrow at Cron."
       const BAD_DAY_MODE_VALUE = "0"
 
-      // Button notes&text change depending on whether you are/aren't in Low Constitution Mode
+      // Button notes&text change depending on whether you are/aren't in Partial Healing Mode
       const PARTIAL_HEALING_MODE_TEXT_EXIT = PARTIAL_HEALING_MODE_TEXT_START + "exit" + PARTIAL_HEALING_MODE_TEXT_END
       const PARTIAL_HEALING_MODE_TEXT_ENTER = PARTIAL_HEALING_MODE_TEXT_START + "enter" + PARTIAL_HEALING_MODE_TEXT_END
 
