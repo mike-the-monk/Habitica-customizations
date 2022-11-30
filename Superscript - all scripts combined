@@ -432,13 +432,13 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
       const ANTI_HP_POTION_ALIAS = "antiHPpotion"
       const ANTI_HP_POTION_VALUE = "0"
       const ANTI_HP_POTION_GP_GAIN = ANTI_HP_POTION_HP_COST / HP_CONVERSION_RATE
-      const ANTI_HP_POTION_NOTES = NOTES_START + ANTI_HP_POTION_HP_COST + " HP" + NOTES_MID1 + ANTI_HP_POTION_GP_GAIN + " GP" + NOTES_MID2A
+      const ANTI_HP_POTION_NOTES = NOTES_START + ANTI_HP_POTION_HP_COST + " HP" + NOTES_MID1 + ANTI_HP_POTION_GP_GAIN + " GP" + NOTES_MID2 + MAX_DAILY_ANTI_HP_POTION_USAGE + NOTES_END
 
       const ANTI_XP_POTION_TEXT = "**Stupefying Potion** ![Indigo potion](https://raw.githubusercontent.com/mike-the-monk/Habitica-customizations/main/Automated%20FCV%20scripts/images/stupefying%20potion%20transparent%20large%20wide%20432.png)"
       const ANTI_XP_POTION_ALIAS = "antiXPpotion"
       const ANTI_XP_POTION_VALUE = "0"
       const ANTI_XP_POTION_GP_GAIN = ANTI_XP_POTION_XP_COST / XP_CONVERSION_RATE
-      const ANTI_XP_POTION_NOTES = NOTES_START + ANTI_XP_POTION_XP_COST + " XP" + NOTES_MID1 + ANTI_XP_POTION_GP_GAIN + " GP" + NOTES_MID2 + "per day: no more than " + MAX_DAILY_ANTI_XP_POTION_USAGE +      MSG_XP_DAILY_USAGE 
+      const ANTI_XP_POTION_NOTES = NOTES_START + ANTI_XP_POTION_XP_COST + " XP" + NOTES_MID1 + ANTI_XP_POTION_GP_GAIN + " GP" + NOTES_MID2 + MAX_DAILY_ANTI_XP_POTION_USAGE + NOTES_END
 
       const HP_FOR_MP_TEXT = "**Swap Health for Mana**"
       const HP_FOR_MP_ALIAS = "HPforMP"
