@@ -208,11 +208,11 @@ const WEB_APP_URL = "PasteGeneratedWebAppUrlHere"
 
         // Do you want to automatically enter Low Constitution Mode (or other stat) each day at Cron? 
         // If yes, change the 0 to a 1 in the lines below for each stat you want.
-        const AUTOMATIC_LOW_MULTI_STAT = 1 // For all the stats you chose in the Required Customizations section for Multi-Stat
         const AUTOMATIC_LOW_STRENGTH = 0
         const AUTOMATIC_LOW_INTELLIGENCE = 0
         const AUTOMATIC_LOW_CONSTITUTION = 0
         const AUTOMATIC_LOW_PERCEPTION = 0
+        const AUTOMATIC_LOW_MULTI_STAT = 0 // For all the stats you chose in the Required Customizations section for Multi-Stat
 
       // Partial Healing Mode
         // Do you want a button that lets you enter/exit Partial Healing Mode? If yes, change the 0 to a 1 below.
@@ -227,7 +227,7 @@ const WEB_APP_URL = "PasteGeneratedWebAppUrlHere"
     /* ========================================== */
     /* Section: Just for fun */
       // Do you want to randomly transform for free each day at Cron? If yes, change the 0 to a 1 in the line below.
-      const AUTOMATIC_TRANSFORM_RANDOM = 1
+      const AUTOMATIC_TRANSFORM_RANDOM = 0
 
 /* ========================================== */
 /* [Users] Do not edit code below this line   */
