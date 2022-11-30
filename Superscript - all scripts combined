@@ -404,7 +404,7 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
       const MAX_DAILY_MP_POTION_USAGE = 4
       const MAX_DAILY_ANTI_MP_POTION_USAGE = 4
       const MAX_DAILY_ANTI_HP_POTION_USAGE = 4
-      const MAX_DAILY_ANTI_XP_POTION_USAGE = MAX_DAILY_XP_POTION_USAGE
+      const MAX_DAILY_ANTI_XP_POTION_USAGE = 4
       const MAX_DAILY_HP_FOR_MP_USAGE = 12
       const MAX_DAILY_XP_FOR_MP_USAGE = MAX_DAILY_XP_POTION_USAGE
 
@@ -2329,15 +2329,12 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
       }
 
       // When the Anti-XP Potion button is clicked
-      function doButtonAntiXpPotion(lvl, exp, gp, AntiXpUsageKey, AntiXpUsage){
-        let XpToNextLevel = Math.round((Math.pow(lvl, 2) * 0.25 + 10 * lvl + 139.75) / 10) * 10
-        let MaxDailyAntiXpUsage = Math.floor(XpToNextLevel * eval(MAX_DAILY_ANTI_XP_POTION_USAGE))
-        
+      function doButtonAntiXpPotion(lvl, exp, gp, AntiXpUsageKey, AntiXpUsage){   
         // If level lock fails, send failure message
         let sufficientLevel = checkLevelLock(lvl, ANTI_XP_POTION_LEVEL_LOCK, "potion.")
         if (sufficientLevel) {
           // Check if they've exceeded daily usage. If yes, send failure message.
-          let usageLimitOkay = checkUsageLimit(AntiXpUsage, ANTI_XP_POTION_XP_COST, MaxDailyAntiXpUsage, "potion ", true, true)
+          let usageLimitOkay = checkUsageLimit(AntiXpUsage, 1, MAX_DAILY_ANTI_XP_POTION_USAGE, "potion ", false, false)
           if (usageLimitOkay) {
             // Check if they have sufficient Experience. Send failure message if not.
             if (exp < ANTI_XP_POTION_XP_COST) {
@@ -2345,7 +2342,7 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
             } else {
               // Run potion as normal since all checks passed.
               api_updateUser({"stats.exp" : exp - ANTI_XP_POTION_XP_COST, "stats.gp" : gp + ANTI_XP_POTION_GP_GAIN})
-              AntiXpUsage =+ ANTI_XP_POTION_XP_COST
+              AntiXpUsage++
               
               // Save new counter value since it's updated
               scriptProperties.setProperty(AntiXpUsageKey, AntiXpUsage)
