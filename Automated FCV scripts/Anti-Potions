@@ -286,7 +286,7 @@ function doButtonAntiXpPotion(lvl, exp, gp, AntiXpUsageKey, AntiXpUsage){
   let sufficientLevel = checkLevelLock(lvl, ANTI_XP_POTION_LEVEL_LOCK, "potion.")
   if (sufficientLevel) {
     // Check if they've exceeded daily usage. If yes, send failure message.
-    let usageLimitOkay = checkUsageLimit(AntiXpUsage, ANTI_XP_POTION_XP_COST, MAX_DAILY_ANTI_XP_POTION_USAGE, "potion ", true, true)
+    let usageLimitOkay = checkUsageLimit(AntiXpUsage, 1, MAX_DAILY_ANTI_XP_POTION_USAGE, "potion ", false, false)
     if (usageLimitOkay) {
       // Check if they have sufficient Experience. Send failure message if not.
       if (exp < ANTI_XP_POTION_XP_COST) {
