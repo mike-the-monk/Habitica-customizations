@@ -3277,15 +3277,15 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
               let validity = -2
               
               // Check if search terms are found
-              let duelEndIndex = findIndex(DUEL_END, taskNotes); // Since the user will be copy/pasting, I want this to be case-sensitive
-              let duelEndDebugIndex = findIndex(DUEL_END_DEBUG, taskNotes,false); // Since the user will type this one, I don't want to be case-sensitive
+              let duelEndIndex = findIndex(DUEL_END, taskNotes, true) // Since the user will be copy/pasting, I want this to be case-sensitive
+              let duelEndDebugIndex = findIndex(DUEL_END_DEBUG, taskNotes, false) // Since the user will type this one, I don't want to be case-sensitive
               
               // Set "validity" to the correct value
               if (duelEndIndex == -1) {
-                validity = -3; // User didn't paste in a new message at all into the Notes section
+                validity = -3 // User didn't paste in a new message at all into the Notes section
               } else {
                 if (duelEndDebugIndex != -1) {
-                  validity = 3; // 3 indicates you aren't the winner, i.e. the override command won't make you win the duel.
+                  validity = 3 // 3 indicates you aren't the winner, i.e. the override command won't make you win the duel.
                 } else {
                   // Create hashes for duel parameters
                   let hashAllExpected = createDuelHash(selfUsernameKey, opponentUsernameKey, wagerKey, scoreNeededGoalKey, timestampIdentifierKey)
