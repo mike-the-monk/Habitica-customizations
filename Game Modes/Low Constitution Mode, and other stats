@@ -166,7 +166,7 @@ function doOneTimeSetup() {
   if (CREATE_LOW_PERCEPTION_MODE_BUTTON == 1) {
     api_createNewTaskForUser([LOW_PER_MODE_BUTTON])
   } 
-  if (LOW_CONSTITUTION_TOGGLE_BUTTON == 1) {
+  if (CREATE_LOW_CONSTITUTION_MODE_BUTTON == 1) {
     api_createNewTaskForUser([LOW_CON_MODE_BUTTON])
   } 
   if (CREATE_LOW_INTELLIGENCE_MODE_BUTTON == 1) {
