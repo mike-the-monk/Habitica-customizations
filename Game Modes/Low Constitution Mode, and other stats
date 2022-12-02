@@ -541,8 +541,14 @@ function initScriptProperties() {
   let cronCount = user.flags.cronCount
   scriptProperties.setProperty(CRON_COUNT_KEY, cronCount)
   
-  scriptProperties.setProperty(ANTI_BUFF_AMOUNT_KEY, 0)
-  scriptProperties.setProperty(ANTI_BUFF_USAGE_KEY, 0)
+  scriptProperties.setProperty(ANTI_BUFF_AMOUNT_STR_KEY , 0)
+  scriptProperties.setProperty(ANTI_BUFF_USAGE_STR_KEY, 0)
+  scriptProperties.setProperty(ANTI_BUFF_AMOUNT_INT_KEY, 0)
+  scriptProperties.setProperty(ANTI_BUFF_USAGE_INT_KEY, 0)
+  scriptProperties.setProperty(ANTI_BUFF_AMOUNT_CON_KEY, 0)
+  scriptProperties.setProperty(ANTI_BUFF_USAGE_CON_KEY, 0)      
+  scriptProperties.setProperty(ANTI_BUFF_AMOUNT_PER_KEY, 0)
+  scriptProperties.setProperty(ANTI_BUFF_USAGE_PER_KEY, 0)
 }
 
 // Gets user info so I can use it, especially stats like mana, experience, and level
