@@ -346,7 +346,6 @@ function api_addTagToTask(taskIdOrAlias, tagId){
 
     if ( (tagId != "") && (tagId != undefined) && (tagId != null) ) {
       url += tagId
-      api_sendPrivateMessageAlways({"message" : "URL is" + url, "toUserId" : USER_ID})
     }
   }
   return UrlFetchApp.fetch(url, params)
