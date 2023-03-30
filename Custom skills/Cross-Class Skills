@@ -1258,7 +1258,7 @@ function setpointIteration (low, high, targetDamage) {
   // truth conditions regarding damage and where it falls (compared to the setpoints)
   let targetAboveLow = (damageLow < targetDamage) ? true : false
   let targetAboveMidpoint = (damageMidpoint < targetDamage) ? true : false
-  let targetBelowHigh = (damageHigh > targetDamage) ? true : false
+  let targetBelowHigh = (damageHigh >= targetDamage) ? true : false
   
   // if these values are within 2 of each other, iteration is done
   if ( ( high - low ) <= 2) {
