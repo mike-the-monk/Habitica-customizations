@@ -399,17 +399,17 @@
         const MSG_ERROR_DAMAGE_FINAL_ITERATION = "Error computing damage. Please contact the author of the script to debug (note to author: final iteration triggered this message)."
         const MSG_ERROR_DAMAGE_SETPOINT = "Error computing damage. Please contact the author of the script to debug (note to author: target damage not between low and high setpoints)."
         
-        var midpoint = Math.floor(((low+high)/2))
+        let midpoint = Math.floor(((low+high)/2))
         
         // damage at each setpoint
-        var damageLow = damageAtSetpoint(low)
-        var damageMidpoint = damageAtSetpoint(midpoint)
-        var damageHigh = damageAtSetpoint(high)
+        let damageLow = damageAtSetpoint(low)
+        let damageMidpoint = damageAtSetpoint(midpoint)
+        let damageHigh = damageAtSetpoint(high)
         
         // truth conditions regarding damage and where it falls (compared to the setpoints)
-        var targetAboveLow = (damageLow < targetDamage) ? true : false
-        var targetAboveMidpoint = (damageMidpoint < targetDamage) ? true : false
-        var targetBelowHigh = (damageHigh > targetDamage) ? true : false
+        let targetAboveLow = (damageLow < targetDamage) ? true : false
+        let targetAboveMidpoint = (damageMidpoint < targetDamage) ? true : false
+        let targetBelowHigh = (damageHigh >= targetDamage) ? true : false
         
         // if these values are within 2 of each other, iteration is done
         if ( ( high - low ) <= 2) {
