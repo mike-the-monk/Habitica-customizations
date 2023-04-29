@@ -1216,7 +1216,7 @@ function doDamage(damage, mpCost, nTimes, unbuffedStr, unbuffedInt, unbuffedPer,
   Utilities.sleep(1000)
         
   // buff STR up to setpoint, INT and PER down to 1
-  api_updateUser({"stats.buffs.str" : setpoint - unbuffedStr, "stats.buffs.int" : 1 - unbuffedInt, "stats.buffs.per" : 1 - unbuffedPer})
+  api_updateUser({"stats.buffs.str" : setpoint - unbuffedStr})
         
   // pause for 1 second
   Utilities.sleep(1000)
@@ -1237,11 +1237,11 @@ function doDamage(damage, mpCost, nTimes, unbuffedStr, unbuffedInt, unbuffedPer,
   // reset values back to their original ones, including FCV-able ones that may have changed. Deduct mana cost also
   // if XP needs to increase (Burst of Flames), do this in this step also
   if (isFlamesXp) {
-    api_updateUser({"stats.buffs.str" : buffsStr, "stats.buffs.int" : buffsInt, "stats.buffs.per" : buffsPer,
+    api_updateUser({"stats.buffs.str" : buffsStr,
                     "stats.hp" : hp, "stats.exp" : xp + valueToChange, "stats.mp" : mp - totalMpCost, "stats.gp" : gp, "stats.lvl" : lvl})
   }
   else {
-    api_updateUser({"stats.buffs.str" : buffsStr, "stats.buffs.int" : buffsInt, "stats.buffs.per" : buffsPer,
+    api_updateUser({"stats.buffs.str" : buffsStr,
                     "stats.hp" : hp, "stats.exp" : xp, "stats.mp" : mp - totalMpCost, "stats.gp" : gp, "stats.lvl" : lvl})
   }
 }
