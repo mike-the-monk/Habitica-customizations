@@ -425,19 +425,19 @@ function doPost(e) {
             doButtonBurstOfFlamesXpOnly(lvl, mp, xp, intelligence, perception)
             break
           case BURST_OF_FLAMES_DAMAGE_ONLY_ALIAS:
-            doButtonBurstOfFlamesDamageOnly(lvl, hp, xp, mp, gp, intelligence, perception, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer)
+            doButtonBurstOfFlamesDamageOnly(lvl, hp, xp, mp, gp, intelligence, perception, unbuffedStr, buffsStr)
             break
           case BURST_OF_FLAMES_XP_PLUS_DAMAGE_ALIAS:
-            doButtonBurstOfFlamesXpAndDamage(lvl, hp, xp, mp, gp, intelligence, perception, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer)
+            doButtonBurstOfFlamesXpAndDamage(lvl, hp, xp, mp, gp, intelligence, perception, unbuffedStr, buffsStr)
             break
           case BRUTAL_SMASH_ALIAS:
-            doButtonBrutalSmash(lvl, hp, xp, mp, gp, strength, constitution, intelligence, perception, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer)
+            doButtonBrutalSmash(lvl, hp, xp, mp, gp, strength, constitution, intelligence, perception, unbuffedStr, buffsStr)
             break
           case RADIANT_SHIELD_ALIAS:
-            doButtonRadiantShield(lvl, hp, xp, mp, gp, constitution, intelligence, perception, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer)
+            doButtonRadiantShield(lvl, hp, xp, mp, gp, constitution, intelligence, perception, unbuffedStr, buffsStr)
             break
           case SNEAK_ATTACK_ALIAS:
-            doButtonSneakAttack(lvl, hp, xp, mp, gp, perception, intelligence, strength, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer)
+            doButtonSneakAttack(lvl, hp, xp, mp, gp, perception, intelligence, strength, unbuffedStr, buffsStr)
             break
         }
 
@@ -549,7 +549,7 @@ function doButtonBurstOfFlamesXpOnly(lvl, mp, xp, intelligence, perception){
 }
 
 // When the Burst of Flames (damage only) button is clicked
-function doButtonBurstOfFlamesDamageOnly(lvl, hp, xp, mp, gp, intelligence, perception, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer){
+function doButtonBurstOfFlamesDamageOnly(lvl, hp, xp, mp, gp, intelligence, perception, unbuffedStr, buffsStr){
   let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_BURST_OF_FLAMES, "skill.")
   if (sufficientLevel){
     // Check how much damage it will deal once, and then whether they have enough MP for multi-use (to exceed 90.71 damage)
@@ -559,13 +559,13 @@ function doButtonBurstOfFlamesDamageOnly(lvl, hp, xp, mp, gp, intelligence, perc
     // If mana is sufficient
     if (numberTimes > 0) {
       let damageDealt = damageOnce * numberTimes
-      doDamage(damageDealt, MP_COST_BURST_OF_FLAMES_DAMAGE_ONLY, numberTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, false, 0)
+      doDamage(damageDealt, MP_COST_BURST_OF_FLAMES_DAMAGE_ONLY, numberTimes, unbuffedStr, buffsStr, hp, xp, mp, gp, lvl, false, 0)
     }
   }
 }
 
 // When the Burst of Flames (XP and damage) button is clicked
-function doButtonBurstOfFlamesXpAndDamage(lvl, hp, xp, mp, gp, intelligence, perception, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer){
+function doButtonBurstOfFlamesXpAndDamage(lvl, hp, xp, mp, gp, intelligence, perception, unbuffedStr, buffsStr){
   let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_BURST_OF_FLAMES, "skill.")
   if (sufficientLevel){
     // Check how much damage it will deal once, and then whether they have enough MP for multi-use (to exceed 90.71 damage)
@@ -576,13 +576,13 @@ function doButtonBurstOfFlamesXpAndDamage(lvl, hp, xp, mp, gp, intelligence, per
     if (numberTimes > 0) {
       let xpGain = burstOfFlamesXp(intelligence, perception, numberTimes);
       let damageDealt = damageOnce * numberTimes
-      doDamage(damageDealt, MP_COST_BURST_OF_FLAMES_XP_PLUS_DAMAGE, numberTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, true, xpGain)
+      doDamage(damageDealt, MP_COST_BURST_OF_FLAMES_XP_PLUS_DAMAGE, numberTimes, unbuffedStr, buffsStr, hp, xp, mp, gp, lvl, true, xpGain)
     }
   }
 }
 
 // When the Brutal Smash button is clicked
-function doButtonBrutalSmash(lvl, hp, xp, mp, gp, strength, constitution, intelligence, perception, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer){
+function doButtonBrutalSmash(lvl, hp, xp, mp, gp, strength, constitution, intelligence, perception, unbuffedStr, buffsStr){
   let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_BRUTAL_SMASH, "skill.")
   if (sufficientLevel){
     // Check how much damage it will deal once, and then whether they have enough MP for multi-use (to exceed 90.71 damage)
@@ -592,13 +592,13 @@ function doButtonBrutalSmash(lvl, hp, xp, mp, gp, strength, constitution, intell
     // If mana is sufficient
     if (numberTimes > 0) {
       let damageDealt = smashDamageActual(strength, constitution, numberTimes)
-      doDamage(damageDealt, MP_COST_BRUTAL_SMASH, numberTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, false, 0)
+      doDamage(damageDealt, MP_COST_BRUTAL_SMASH, numberTimes, unbuffedStr, buffsStr, hp, xp, mp, gp, lvl, false, 0)
     }
   }
 }
 
 // When the Radiant Shield button is clicked
-function doButtonRadiantShield(lvl, hp, xp, mp, gp, constitution, intelligence, perception, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer){
+function doButtonRadiantShield(lvl, hp, xp, mp, gp, constitution, intelligence, perception, unbuffedStr, buffsStr){
   let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_RADIANT_SHIELD, "skill.")
   if (sufficientLevel){
     // Check how much damage it will deal once, and then whether they have enough MP for multi-use (to exceed 90.71 damage)
@@ -608,13 +608,13 @@ function doButtonRadiantShield(lvl, hp, xp, mp, gp, constitution, intelligence, 
     // If mana is sufficient
     if (numberTimes > 0) {
       let damageDealt = radiantDamageActual(constitution, intelligence, numberTimes)
-      doDamage(damageDealt, MP_COST_RADIANT_SHIELD, numberTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, false, 0)
+      doDamage(damageDealt, MP_COST_RADIANT_SHIELD, numberTimes, unbuffedStr, buffsStr, hp, xp, mp, gp, lvl, false, 0)
     }
   }
 }
 
 // When the Sneak Attack button is clicked
-function doButtonSneakAttack(lvl, hp, xp, mp, gp, perception, intelligence, strength, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer) {
+function doButtonSneakAttack(lvl, hp, xp, mp, gp, perception, intelligence, strength, unbuffedStr, buffsStr) {
   let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_SNEAK_ATTACK, "skill.")
   if (sufficientLevel){
     // Check how much damage it will deal once, and then whether they have enough MP for multi-use (to exceed 90.71 damage)
@@ -624,7 +624,7 @@ function doButtonSneakAttack(lvl, hp, xp, mp, gp, perception, intelligence, stre
     // If mana is sufficient
     if (numberTimes > 0) {
       let damageDealt = sneakDamageActual(perception, strength, numberTimes)
-      doDamage(damageDealt, MP_COST_SNEAK_ATTACK, numberTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, false, 0)
+      doDamage(damageDealt, MP_COST_SNEAK_ATTACK, numberTimes, unbuffedStr, buffsStr, hp, xp, mp, gp, lvl, false, 0)
     }
   }
 }
@@ -1202,7 +1202,7 @@ function sneakDamageActual(per, str, nTimes) {
 }
 
 // Deals boss damage
-function doDamage(damage, mpCost, nTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, isFlamesXp, valueToChange) {
+function doDamage(damage, mpCost, nTimes, unbuffedStr, buffsStr, hp, xp, mp, gp, lvl, isFlamesXp, valueToChange) {
   let totalMpCost = mpCost * nTimes
   
   // calculate STR setpoint needed to achieve expected damage. Damage = (1+(STR*0.005)) * (1.5 + ((4*STR)/(200+STR)) ) * 1, since crit is 100% guaranteed and task value delta resolves to 1
@@ -1215,7 +1215,7 @@ function doDamage(damage, mpCost, nTimes, unbuffedStr, unbuffedInt, unbuffedPer,
   // pause for 1 second
   Utilities.sleep(1000)
         
-  // buff STR up to setpoint, INT and PER down to 1
+  // buff STR up to setpoint
   api_updateUser({"stats.buffs.str" : setpoint - unbuffedStr})
         
   // pause for 1 second
