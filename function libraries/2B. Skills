@@ -340,7 +340,7 @@
       }
 
       // Deals boss damage
-      function doDamage(damage, mpCost, nTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, isFlamesXp, valueToChange) {
+      function doDamage(damage, mpCost, nTimes, unbuffedStr, buffsStr, hp, xp, mp, gp, lvl, isFlamesXp, valueToChange) {
         var totalMpCost = mpCost * nTimes
         
         // calculate STR setpoint needed to achieve expected damage. Damage = (1+(STR*0.005)) * (1.5 + ((4*STR)/(200+STR)) ) * 1, since crit is 100% guaranteed and task value delta resolves to 1
@@ -363,8 +363,8 @@
         // pause for 1 second
         Utilities.sleep(1000)
               
-        // buff STR up to setpoint, INT and PER down to 1
-        api_updateUser({"stats.buffs.str" : setpoint - unbuffedStr, "stats.buffs.int" : 1 - unbuffedInt, "stats.buffs.per" : 1 - unbuffedPer})
+        // buff STR up to setpoint
+        api_updateUser({"stats.buffs.str" : setpoint - unbuffedStr})
               
         // pause for 1 second
         Utilities.sleep(1000)
@@ -385,12 +385,10 @@
         // reset values back to their original ones, including FCV-able ones that may have changed. Deduct mana cost also
         // if XP needs to increase (Burst of Flames), do this in this step also
         if (isFlamesXp) {
-          api_updateUser({"stats.buffs.str" : buffsStr, "stats.buffs.int" : buffsInt, "stats.buffs.per" : buffsPer,
-                          "stats.hp" : hp, "stats.exp" : xp + valueToChange, "stats.mp" : mp - totalMpCost, "stats.gp" : gp, "stats.lvl" : lvl})
+          api_updateUser({"stats.buffs.str" : buffsStr, "stats.hp" : hp, "stats.exp" : xp + valueToChange, "stats.mp" : mp - totalMpCost, "stats.gp" : gp, "stats.lvl" : lvl})
         }
         else {
-          api_updateUser({"stats.buffs.str" : buffsStr, "stats.buffs.int" : buffsInt, "stats.buffs.per" : buffsPer,
-                          "stats.hp" : hp, "stats.exp" : xp, "stats.mp" : mp - totalMpCost, "stats.gp" : gp, "stats.lvl" : lvl})
+          api_updateUser({"stats.buffs.str" : buffsStr, "stats.hp" : hp, "stats.exp" : xp, "stats.mp" : mp - totalMpCost, "stats.gp" : gp, "stats.lvl" : lvl})
         }
       }
 
