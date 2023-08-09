@@ -2757,7 +2757,7 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
               // If mana is sufficient
               if (numberTimes > 0) {
                 let damageDealt = damageOnce * numberTimes
-                doDamage(damageDealt, MP_COST_BURST_OF_FLAMES_DAMAGE_ONLY, numberTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, false, 0)
+                doDamage(damageDealt, MP_COST_BURST_OF_FLAMES_DAMAGE_ONLY, numberTimes, unbuffedStr, buffsStr, hp, xp, mp, gp, lvl, false, 0)
               }
             }
           }
@@ -2774,7 +2774,7 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
               if (numberTimes > 0) {
                 let xpGain = burstOfFlamesXp(intelligence, perception, numberTimes)
                 let damageDealt = damageOnce * numberTimes
-                doDamage(damageDealt, MP_COST_BURST_OF_FLAMES_XP_PLUS_DAMAGE, numberTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, true, xpGain)
+                doDamage(damageDealt, MP_COST_BURST_OF_FLAMES_XP_PLUS_DAMAGE, numberTimes, unbuffedStr, buffsStr, hp, xp, mp, gp, lvl, true, xpGain)
               }
             }
           }
@@ -2790,7 +2790,7 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
               // If mana is sufficient
               if (numberTimes > 0) {
                 let damageDealt = smashDamageActual(strength, constitution, numberTimes)
-                doDamage(damageDealt, MP_COST_BRUTAL_SMASH, numberTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, false, 0)
+                doDamage(damageDealt, MP_COST_BRUTAL_SMASH, numberTimes, unbuffedStr, buffsStr, hp, xp, mp, gp, lvl, false, 0)
               }
             }
           }
@@ -2806,7 +2806,7 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
               // If mana is sufficient
               if (numberTimes > 0) {
                 let damageDealt = radiantDamageActual(constitution, intelligence, numberTimes);
-                doDamage(damageDealt, MP_COST_RADIANT_SHIELD, numberTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, false, 0)
+                doDamage(damageDealt, MP_COST_RADIANT_SHIELD, numberTimes, unbuffedStr, buffsStr, hp, xp, mp, gp, lvl, false, 0)
               }
             }
           }
@@ -2822,7 +2822,7 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
               // If mana is sufficient
               if (numberTimes > 0) {
                 let damageDealt = sneakDamageActual(perception, strength, numberTimes)
-                doDamage(damageDealt, MP_COST_SNEAK_ATTACK, numberTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, false, 0)
+                doDamage(damageDealt, MP_COST_SNEAK_ATTACK, numberTimes, unbuffedStr, buffsStr, hp, xp, mp, gp, lvl, false, 0)
               }
             }
           }
@@ -4776,7 +4776,7 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
       }
 
       // Deals boss damage
-      function doDamage(damage, mpCost, nTimes, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer, hp, xp, mp, gp, lvl, isFlamesXp, valueToChange) {
+      function doDamage(damage, mpCost, nTimes, unbuffedStr, buffsStr, hp, xp, mp, gp, lvl, isFlamesXp, valueToChange) {
         var totalMpCost = mpCost * nTimes
         
         // calculate STR setpoint needed to achieve expected damage. Damage = (1+(STR*0.005)) * (1.5 + ((4*STR)/(200+STR)) ) * 1, since crit is 100% guaranteed and task value delta resolves to 1
@@ -4790,8 +4790,8 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
         // pause for 1 second
         Utilities.sleep(1000)
               
-        // buff STR up to setpoint, INT and PER down to 1
-        api_updateUser({"stats.buffs.str" : setpoint - unbuffedStr, "stats.buffs.int" : 1 - unbuffedInt, "stats.buffs.per" : 1 - unbuffedPer})
+        // buff STR up to setpoint
+        api_updateUser({"stats.buffs.str" : setpoint - unbuffedStr})
               
         // pause for 1 second
         Utilities.sleep(1000)
@@ -4812,12 +4812,10 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
         // reset values back to their original ones, including FCV-able ones that may have changed. Deduct mana cost also
         // if XP needs to increase (Burst of Flames), do this in this step also
         if (isFlamesXp) {
-          api_updateUser({"stats.buffs.str" : buffsStr, "stats.buffs.int" : buffsInt, "stats.buffs.per" : buffsPer,
-                          "stats.hp" : hp, "stats.exp" : xp + valueToChange, "stats.mp" : mp - totalMpCost, "stats.gp" : gp, "stats.lvl" : lvl})
+          api_updateUser({"stats.buffs.str" : buffsStr, "stats.hp" : hp, "stats.exp" : xp + valueToChange, "stats.mp" : mp - totalMpCost, "stats.gp" : gp, "stats.lvl" : lvl})
         }
         else {
-          api_updateUser({"stats.buffs.str" : buffsStr, "stats.buffs.int" : buffsInt, "stats.buffs.per" : buffsPer,
-                          "stats.hp" : hp, "stats.exp" : xp, "stats.mp" : mp - totalMpCost, "stats.gp" : gp, "stats.lvl" : lvl})
+          api_updateUser({"stats.buffs.str" : buffsStr, "stats.hp" : hp, "stats.exp" : xp, "stats.mp" : mp - totalMpCost, "stats.gp" : gp, "stats.lvl" : lvl})
         }
       }
 
@@ -4833,7 +4831,7 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
         // truth conditions regarding damage and where it falls (compared to the setpoints)
         var targetAboveLow = (damageLow < targetDamage) ? true : false
         var targetAboveMidpoint = (damageMidpoint < targetDamage) ? true : false
-        var targetBelowHigh = (damageHigh > targetDamage) ? true : false
+        var targetBelowHigh = (damageHigh >= targetDamage) ? true : false
         
         // if these values are within 2 of each other, iteration is done
         if ( ( high - low ) <= 2) {
