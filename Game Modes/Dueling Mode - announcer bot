@@ -752,7 +752,7 @@ function createCase100s(indexAutoError1, indexAutoError2, indexFastStartDuel, in
       // If there are errors in the other script, it probably won't pass here.
       let passedDuelEndChecks = parseAndCheckDuelEnd(text, indexEndDuel)
       
-      // If it didn't pass, create generic error message to post to the Guild/party.
+      // If it didn't pass, create generic error message to post to the party.
       // Specific causes of the error will be not shown publicly, instead just in the Console log and have already been posted by the function above.
       if (!passedDuelEndChecks) {
         let TAG_DUEL_ENDER = appendAtSymbol(usernameWhoPosted)
