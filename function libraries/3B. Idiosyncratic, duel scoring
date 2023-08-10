@@ -208,7 +208,7 @@
         let groupId = createSubstring(inputString, 0, semicolonIndex)
         
         // Check to make sure it's a valid format for a Group ID
-        let guildIdFormatCheck = checkGuildIdFormat(groupId)
+        let groupIdFormatCheck = checkUuidFormat(groupId)
         
         // Remove that section from the input string, save as a smaller substring
         inputStringTemp = createSubstring(inputString, semicolonIndex + 1, length)
@@ -233,7 +233,7 @@
     }
 
     // If errors exist in Duel Start string, sends messages.
-    function checkDuelStartErrors(wager, scoreNeededGoal, timestampIdentifier, guildIdFormatCheck) {
+    function checkDuelStartErrors(wager, scoreNeededGoal, timestampIdentifier, groupIdFormatCheck) {
       // Initialize Booleans
       let wagerIsError = false
       let scoreNeededGoalIsError = false
@@ -254,7 +254,7 @@
         timestampIdentifierIsError = true
         errorCount++
       }
-      if (!guildIdFormatCheck) { // This one was already a Boolean
+      if (!groupIdFormatCheck) { // This one was already a Boolean
         groupIdError = true
         errorCount++
       }
