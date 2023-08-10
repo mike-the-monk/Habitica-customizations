@@ -19,35 +19,35 @@
     // Check if there's supposed to be a tag for the task, add if yes. Create tag if needed.
     function checkAndAddTagToTask(taskIdOrAlias, optionalSecondTaskIdOrAlias){
       if (TAG_FOR_DUEL_BUTTONS != "typeTagHere"){    
-        var tagId = apiMult_createNewTagNoDuplicates(TAG_FOR_DUEL_BUTTONS);
+        var tagId = apiMult_createNewTagNoDuplicates(TAG_FOR_DUEL_BUTTONS)
         
         // If the function created the tag anew, it did not grab its ID yet. Do so now.
         if (tagId == "newlyCreated") {
-          tagId = apiMult_createNewTagNoDuplicates(TAG_FOR_DUEL_BUTTONS);
+          tagId = apiMult_createNewTagNoDuplicates(TAG_FOR_DUEL_BUTTONS)
         }
         
         // Add the tag to the task(s)
-        api_addTagToTask(taskIdOrAlias, tagId);
+        api_addTagToTask(taskIdOrAlias, tagId)
         if (optionalSecondTaskIdOrAlias != "none"){
-          api_addTagToTask(optionalSecondTaskIdOrAlias, tagId);
+          api_addTagToTask(optionalSecondTaskIdOrAlias, tagId)
         }
       }
     }
 
     // Finds if the automated message was posted or not
-    function findAutomatedDuelEndMessages(version, guildId, msgIdEarliestAllowed, earliestAllowedTimestamp, announcerBotUsername, searchTerm){
+    function findAutomatedDuelEndMessages(version, groupId, msgIdEarliestAllowed, earliestAllowedTimestamp, announcerBotUsername, searchTerm){
       // Initialize so it defaults to the error condition
-      let msgId = "nope";
+      let msgId = "nope"
       
-      // Grab messages from Guild
-      let response = api_getChatMessagesFromGroup(guildId);
-      let chatMessages = JSON.parse(response).data;
+      // Grab messages from Party
+      let response = api_getChatMessagesFromGroup(groupId)
+      let chatMessages = JSON.parse(response).data
             
       // For "bot" version, I need to find timestamp of the user's automated chat message
       if (version == "bot") {
         for (var i in chatMessages) {
           if (chatMessages[i]._id == msgIdEarliestAllowed) {
-            earliestAllowedTimestamp = chatMessages[i].timestamp;
+            earliestAllowedTimestamp = chatMessages[i].timestamp
           }
         }
       }
@@ -59,113 +59,113 @@
           if (version == "user") {
             // Look for messages the user posted
             if (chatMessages[i].uuid == USER_ID) {
-              let text = chatMessages[i].text;
+              let text = chatMessages[i].text
               
               // See if both search terms are found (automated message and bot username)
-              let autoMsgIndex = findIndex(searchTerm, text);
-              let botIndex = findIndex(announcerBotUsername, text);
+              let autoMsgIndex = findIndex(searchTerm, text)
+              let botIndex = findIndex(announcerBotUsername, text)
               
               if ( (botIndex != -1) && (autoMsgIndex != -1) ) {
-                msgId = chatMessages[i]._id;
+                msgId = chatMessages[i]._id
               } 
             }
           } else if (version == "bot") {
             // For this one, I need to remove the @ symbol from announcer bot username
-            let untaggedAnnouncerBotUsername = checkFirstCharacter(announcerBotUsername);
-            let text = chatMessages[i].text;
+            let untaggedAnnouncerBotUsername = checkFirstCharacter(announcerBotUsername)
+            let text = chatMessages[i].text
             
             // Look for messages the bot posted
             if (chatMessages[i].username == untaggedAnnouncerBotUsername) {
               // See if search term is found
-              let botMsgIndex = findIndex(searchTerm, text);
+              let botMsgIndex = findIndex(searchTerm, text)
               if (botMsgIndex != -1) {
-                msgId = chatMessages[i]._id;
+                msgId = chatMessages[i]._id
               }
             }
           } 
         }
       }
       
-      return msgId;
+      return msgId
     }
 
     // Creates Duel End string for duel bot to check/evaluate
     function createDuelEndString(selfUsernameKey, opponentUsernameKey, wagerKey, scoreNeededGoalKey, announcerBotUsernameKey, timestampIdentifierKey){
       // Retrieve saved values
-      var selfUsername = scriptProperties.getProperty(selfUsernameKey); 
-      var opponentUsername = scriptProperties.getProperty(opponentUsernameKey);
-      var wager = Number(scriptProperties.getProperty(wagerKey));
-      var scoreNeededGoal = Number(scriptProperties.getProperty(scoreNeededGoalKey));
-      var announcerBotUsername = scriptProperties.getProperty(announcerBotUsernameKey);
-      var timestampIdentifier = Number(scriptProperties.getProperty(timestampIdentifierKey));
+      var selfUsername = scriptProperties.getProperty(selfUsernameKey)
+      var opponentUsername = scriptProperties.getProperty(opponentUsernameKey)
+      var wager = Number(scriptProperties.getProperty(wagerKey))
+      var scoreNeededGoal = Number(scriptProperties.getProperty(scoreNeededGoalKey))
+      var announcerBotUsername = scriptProperties.getProperty(announcerBotUsernameKey)
+      var timestampIdentifier = Number(scriptProperties.getProperty(timestampIdentifierKey))
       
       // Combine self&opponent usernames, then sort characters alphabetically.
       // This will ensure it's the same regardless of which participant is "self" and which is "opponent"
-      let alphabeticalCombinedUsernames = alphabetizeString(selfUsername, opponentUsername);
+      let alphabeticalCombinedUsernames = alphabetizeString(selfUsername, opponentUsername)
       
       // Create string of all duel parameters.
       let SEMICOLON = ";";
       let ALL_PARAMETERS = alphabeticalCombinedUsernames + SEMICOLON + wager + SEMICOLON + scoreNeededGoal + SEMICOLON
-      + timestampIdentifier + SEMICOLON;
+      + timestampIdentifier + SEMICOLON
       
       // Create a string of both the usernames. Ends in a period for easier parsing.
-      let bothUsernames = selfUsername + SEMICOLON + opponentUsername + SEMICOLON + ".";
+      let bothUsernames = selfUsername + SEMICOLON + opponentUsername + SEMICOLON + "."
       
       // Create hashes
-      let hashAll = createHash(ALL_PARAMETERS);
-      let hashSelfUserId = createHash(USER_ID); // for indicating who won
-      let hashSum = hashAll + hashSelfUserId; // So I don't directly expose the hash of the user ID (mostly for anti-cheating purposes)
+      let hashAll = createHash(ALL_PARAMETERS)
+      let hashSelfUserId = createHash(USER_ID) // for indicating who won
+      let hashSum = hashAll + hashSelfUserId // So I don't directly expose the hash of the user ID (mostly for anti-cheating purposes)
       
       // Create string of hashes. Ends in a period for easier parsing.
-      let HASHES = hashAll + SEMICOLON + hashSum + SEMICOLON +  ".";
+      let HASHES = hashAll + SEMICOLON + hashSum + SEMICOLON +  "."
       
-      // Generate victory string. Post message to guild and tag bot. Bot will be the one to declare victory (after checking if the string is valid)
-      let DUEL_END_MSG = announcerBotUsername + "\nEND DUEL\n." + ALL_PARAMETERS + "." + bothUsernames + HASHES;
+      // Generate victory string. Post message to Party and tag bot. Bot will be the one to declare victory (after checking if the string is valid)
+      let DUEL_END_MSG = announcerBotUsername + "\nEND DUEL\n." + ALL_PARAMETERS + "." + bothUsernames + HASHES
       
-      return DUEL_END_MSG;
+      return DUEL_END_MSG
     }
 
     // Checks if string is valid, returns error messages if not. Same with GP for wager. If valid, saves all duel values and starts duel.
-    function parseDuelStartString(inputString, buttonToDeleteTaskId, duelCurrentlyActiveKey, duelScoreKey, selfUsernameKey, opponentUsernameKey, wagerKey, scoreNeededGoalKey, guildIdKey, announcerBotUsernameKey, timestampIdentifierKey) { 
+    function parseDuelStartString(inputString, buttonToDeleteTaskId, duelCurrentlyActiveKey, duelScoreKey, selfUsernameKey, opponentUsernameKey, wagerKey, scoreNeededGoalKey, groupIdKey, announcerBotUsernameKey, timestampIdentifierKey) { 
       // Count number of semicolons. 7 are expected.
-      var countSemicolons = ( inputString.match(/\;/g) || [] ).length;
+      var countSemicolons = ( inputString.match(/\;/g) || [] ).length
       
       // Send error message if there aren't 7 semicolons. Otherwise, parse string.
       if ( countSemicolons != 7 ) {
-        api_sendPrivateMessageAlways({"message" : ERROR_MSG_SEMICOLONS_START + countSemicolons + ERROR_MSG_SEMICOLONS_END, "toUserId" : USER_ID});
+        api_sendPrivateMessageAlways({"message" : ERROR_MSG_SEMICOLONS_START + countSemicolons + ERROR_MSG_SEMICOLONS_END, "toUserId" : USER_ID})
       } else if ( countSemicolons == 7 ) {
         
         // Initialize some values so I can use them later
-        let length = inputString.length;
-        let semicolonIndex = 0;
+        let length = inputString.length
+        let semicolonIndex = 0
       
         // Use first semicolon to parse out self username
-        semicolonIndex = findIndexOfSemicolon(inputString);
-        let selfUsernameTemp = createSubstring(inputString, 0, semicolonIndex);
+        semicolonIndex = findIndexOfSemicolon(inputString)
+        let selfUsernameTemp = createSubstring(inputString, 0, semicolonIndex)
         
         // Check if first character is @. If not, add it.
-        let selfUsername = checkNameFormatting(selfUsernameTemp);
+        let selfUsername = checkNameFormatting(selfUsernameTemp)
         
         // Remove that section from the input string, save as a smaller substring
-        let inputStringTemp = createSubstring(inputString, semicolonIndex + 1, length);
-        inputString = inputStringTemp;
-        length = inputString.length;
+        let inputStringTemp = createSubstring(inputString, semicolonIndex + 1, length)
+        inputString = inputStringTemp
+        length = inputString.length
         
         // Repeat to parse out opponent username
-        semicolonIndex = findIndexOfSemicolon(inputString);
+        semicolonIndex = findIndexOfSemicolon(inputString)
         let opponentUsernameTemp = createSubstring(inputString, 3, semicolonIndex); // Start at index 3 because of "vs."
         
         // Check if first character is @. If not, add it.
-        let opponentUsername = checkNameFormatting(opponentUsernameTemp);
+        let opponentUsername = checkNameFormatting(opponentUsernameTemp)
         
         // Remove that section from the input string, save as a smaller substring
-        inputStringTemp = createSubstring(inputString, semicolonIndex + 1, length);
-        inputString = inputStringTemp;
-        length = inputString.length;
+        inputStringTemp = createSubstring(inputString, semicolonIndex + 1, length)
+        inputString = inputStringTemp
+        length = inputString.length
         
         // Repeat to parse out wager
-        semicolonIndex = findIndexOfSemicolon(inputString);
-        let wagerTemp = createSubstring(inputString, 0, semicolonIndex);
+        semicolonIndex = findIndexOfSemicolon(inputString)
+        let wagerTemp = createSubstring(inputString, 0, semicolonIndex)
         
         // If it's not a number, the function will return -2
         let wager = checkIfNumber(wagerTemp);
@@ -173,57 +173,57 @@
         // I'll keep parsing the substring in case there are other errors.
         
         // Remove that section from the input string, save as a smaller substring
-        inputStringTemp = createSubstring(inputString, semicolonIndex + 1, length);
-        inputString = inputStringTemp;
-        length = inputString.length;
+        inputStringTemp = createSubstring(inputString, semicolonIndex + 1, length)
+        inputString = inputStringTemp
+        length = inputString.length
         
         // Repeat to parse out Score Needed / Goal
-        semicolonIndex = findIndexOfSemicolon(inputString);
-        let scoreNeededGoalTemp = createSubstring(inputString, 0, semicolonIndex);
+        semicolonIndex = findIndexOfSemicolon(inputString)
+        let scoreNeededGoalTemp = createSubstring(inputString, 0, semicolonIndex)
         
         // If it's not a number, the function will return -2
-        let scoreNeededGoal = checkIfNumber(scoreNeededGoalTemp);
+        let scoreNeededGoal = checkIfNumber(scoreNeededGoalTemp)
 
         // I'll keep parsing the substring in case there are other errors.
         
         // Remove that section from the input string, save as a smaller substring
-        inputStringTemp = createSubstring(inputString, semicolonIndex + 1, length);
-        inputString = inputStringTemp;
-        length = inputString.length;
+        inputStringTemp = createSubstring(inputString, semicolonIndex + 1, length)
+        inputString = inputStringTemp
+        length = inputString.length
         
         // Repeat to parse out Timestamp identifier
-        semicolonIndex = findIndexOfSemicolon(inputString);
-        let timestampIdentifierTemp = createSubstring(inputString, 0, semicolonIndex);
+        semicolonIndex = findIndexOfSemicolon(inputString)
+        let timestampIdentifierTemp = createSubstring(inputString, 0, semicolonIndex)
         
         // If it's not a number, the function will return -2
-        let timestampIdentifier = checkIfNumber(timestampIdentifierTemp);
+        let timestampIdentifier = checkIfNumber(timestampIdentifierTemp)
         
         // Remove that section from the input string, save as a smaller substring
-        inputStringTemp = createSubstring(inputString, semicolonIndex + 1, length);
-        inputString = inputStringTemp;
-        length = inputString.length;
+        inputStringTemp = createSubstring(inputString, semicolonIndex + 1, length)
+        inputString = inputStringTemp
+        length = inputString.length
         
-        // Repeat to parse out Guild ID
-        semicolonIndex = findIndexOfSemicolon(inputString);
-        let guildId = createSubstring(inputString, 0, semicolonIndex);
+        // Repeat to parse out Party ID
+        semicolonIndex = findIndexOfSemicolon(inputString)
+        let groupId = createSubstring(inputString, 0, semicolonIndex)
         
-        // Check to make sure it's a valid format for a Guild ID
-        let guildIdFormatCheck = checkGuildIdFormat(guildId);
+        // Check to make sure it's a valid format for a Group ID
+        let guildIdFormatCheck = checkGuildIdFormat(groupId)
         
         // Remove that section from the input string, save as a smaller substring
-        inputStringTemp = createSubstring(inputString, semicolonIndex + 1, length);
-        inputString = inputStringTemp;
-        length = inputString.length;
+        inputStringTemp = createSubstring(inputString, semicolonIndex + 1, length)
+        inputString = inputStringTemp
+        length = inputString.length
         
         // Repeat to parse out Bot Announcer ID
-        semicolonIndex = findIndexOfSemicolon(inputString);
-        let announcerBotUsernameTemp = createSubstring(inputString, 0, semicolonIndex);
+        semicolonIndex = findIndexOfSemicolon(inputString)
+        let announcerBotUsernameTemp = createSubstring(inputString, 0, semicolonIndex)
         
         // Check if first character is @. If not, add it.
-        let announcerBotUsername = checkNameFormatting(announcerBotUsernameTemp);
+        let announcerBotUsername = checkNameFormatting(announcerBotUsernameTemp)
 
         // If there are any errors, let user know by sending messages.
-        let errorsNotPresent = checkDuelStartErrors(wager, scoreNeededGoal, timestampIdentifier, guildIdFormatCheck);
+        let errorsNotPresent = checkDuelStartErrors(wager, scoreNeededGoal, timestampIdentifier, guildIdFormatCheck)
         
         // If no errors, check GP and start duel
         if (errorsNotPresent) {
@@ -235,28 +235,28 @@
     // If errors exist in Duel Start string, sends messages.
     function checkDuelStartErrors(wager, scoreNeededGoal, timestampIdentifier, guildIdFormatCheck) {
       // Initialize Booleans
-      let wagerIsError = false;
-      let scoreNeededGoalIsError = false;
-      let timestampIdentifierIsError = false;
-      let guildIdError = false;
+      let wagerIsError = false
+      let scoreNeededGoalIsError = false
+      let timestampIdentifierIsError = false
+      let groupIdError = false
       
-      let errorCount = 0;
+      let errorCount = 0
       
       if (wager == -2) {
-        wagerIsError = true;
-        errorCount++;
+        wagerIsError = true
+        errorCount++
       }
       if (scoreNeededGoal == -2) {
-        scoreNeededGoalIsError = true;
-        errorCount++;
+        scoreNeededGoalIsError = true
+        errorCount++
       }
       if (timestampIdentifier == -2) {
-        timestampIdentifierIsError = true;
-        errorCount++;
+        timestampIdentifierIsError = true
+        errorCount++
       }
       if (!guildIdFormatCheck) { // This one was already a Boolean
-        guildIdError = true;
-        errorCount++;
+        groupIdError = true
+        errorCount++
       }
       
       if (errorCount == 0) {
@@ -266,15 +266,15 @@
         if ( errorCount == 1 ) {
           // Message tells user location of error
           if (wagerIsError) {
-            api_sendPrivateMessageAlways({"message" : ERROR_MSG_SINGULAR_START + ERROR_MSG_WAGER + ERROR_MSG_SINGULAR_END, "toUserId" : USER_ID});
+            api_sendPrivateMessageAlways({"message" : ERROR_MSG_SINGULAR_START + ERROR_MSG_WAGER + ERROR_MSG_SINGULAR_END, "toUserId" : USER_ID})
           } else if (scoreNeededGoalIsError) {
-            api_sendPrivateMessageAlways({"message" : ERROR_MSG_SINGULAR_START + ERROR_MSG_SCORE_NEEDED + ERROR_MSG_SINGULAR_END, "toUserId" : USER_ID});
+            api_sendPrivateMessageAlways({"message" : ERROR_MSG_SINGULAR_START + ERROR_MSG_SCORE_NEEDED + ERROR_MSG_SINGULAR_END, "toUserId" : USER_ID})
           } else if (timestampIdentifierIsError) {
-            api_sendPrivateMessageAlways({"message" : ERROR_MSG_SINGULAR_START + ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_SINGULAR_END, "toUserId" : USER_ID});
-          } else if (guildIdError) {
-            api_sendPrivateMessageAlways({"message" : ERROR_MSG_SINGULAR_START + ERROR_MSG_GUILD_ID + ERROR_MSG_SINGULAR_END, "toUserId" : USER_ID});
+            api_sendPrivateMessageAlways({"message" : ERROR_MSG_SINGULAR_START + ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_SINGULAR_END, "toUserId" : USER_ID})
+          } else if (groupIdError) {
+            api_sendPrivateMessageAlways({"message" : ERROR_MSG_SINGULAR_START + ERROR_MSG_GROUP_ID + ERROR_MSG_SINGULAR_END, "toUserId" : USER_ID})
           } else {
-            api_sendPrivateMessageAlways({"message" : ERROR_MSG_SINGULAR_START + "UNKNOWN" + ERROR_MSG_SINGULAR_END, "toUserId" : USER_ID});
+            api_sendPrivateMessageAlways({"message" : ERROR_MSG_SINGULAR_START + "UNKNOWN" + ERROR_MSG_SINGULAR_END, "toUserId" : USER_ID})
           }
         } 
         else {
@@ -282,131 +282,131 @@
           if ( errorCount == 4 ) {
             api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID
                                           + ERROR_MSG_WAGER + ERROR_MSG_AND + ERROR_MSG_SCORE_NEEDED + ERROR_MSG_AND 
-                                          + ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_AND + ERROR_MSG_GUILD_ID
-                                          + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+                                          + ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_AND + ERROR_MSG_GROUP_ID
+                                          + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
           } else if ( errorCount == 3 ) { // If three errors, figure out which one is not an error
             if (!wagerIsError) {
               api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID
                                             + ERROR_MSG_SCORE_NEEDED + ERROR_MSG_AND + ERROR_MSG_TIMESTAMP_IDENTIFIER 
-                                            + ERROR_MSG_AND + ERROR_MSG_GUILD_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+                                            + ERROR_MSG_AND + ERROR_MSG_GROUP_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
             } else if (!scoreNeededGoalIsError) {
               api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID
                                             + ERROR_MSG_WAGER + ERROR_MSG_AND + ERROR_MSG_TIMESTAMP_IDENTIFIER 
-                                            + ERROR_MSG_AND + ERROR_MSG_GUILD_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+                                            + ERROR_MSG_AND + ERROR_MSG_GROUP_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
             } else if (!timestampIdentifierIsError) {
               api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID
                                             + ERROR_MSG_WAGER + ERROR_MSG_AND + ERROR_MSG_SCORE_NEEDED + ERROR_MSG_AND 
-                                            + ERROR_MSG_GUILD_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
-            } else if (!guildIdError) {
+                                            + ERROR_MSG_GROUP_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
+            } else if (!groupIdError) {
               api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID
                                             + ERROR_MSG_WAGER + ERROR_MSG_AND + ERROR_MSG_SCORE_NEEDED + ERROR_MSG_AND 
-                                            + ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+                                            + ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
             } else {
-              api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + "UNKNOWN" + ERROR_MSG_SINGULAR_END, "toUserId" : USER_ID}); 
+              api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + "UNKNOWN" + ERROR_MSG_SINGULAR_END, "toUserId" : USER_ID})
             }
           } else if ( errorCount == 2 ) { // If two errors, figure out which two
             if (wagerIsError) { // This section is for the errors being Wager and something else
               if (scoreNeededGoalIsError){
-                api_sendPrivateMessageAlways({"message" :  ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + ERROR_MSG_WAGER + ERROR_MSG_AND + ERROR_MSG_SCORE_NEEDED + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+                api_sendPrivateMessageAlways({"message" :  ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + ERROR_MSG_WAGER + ERROR_MSG_AND + ERROR_MSG_SCORE_NEEDED + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
               }
               else if (timestampIdentifierIsError) {
-                api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + ERROR_MSG_WAGER + ERROR_MSG_AND + ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+                api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + ERROR_MSG_WAGER + ERROR_MSG_AND + ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
               }
-              else if (guildIdError) {
-                api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + ERROR_MSG_WAGER + ERROR_MSG_AND + ERROR_MSG_GUILD_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+              else if (groupIdError) {
+                api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + ERROR_MSG_WAGER + ERROR_MSG_AND + ERROR_MSG_GROUP_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
               }
               else {
-                api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + ERROR_MSG_WAGER + ERROR_MSG_AND + "UNKNOWN" + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+                api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + ERROR_MSG_WAGER + ERROR_MSG_AND + "UNKNOWN" + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
               }
             } else if (scoreNeededGoalIsError) {  // This section is for the errors being Score Needed Goal and something else 
               if (timestampIdentifierIsError) {
-                api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + ERROR_MSG_SCORE_NEEDED + ERROR_MSG_AND + ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+                api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + ERROR_MSG_SCORE_NEEDED + ERROR_MSG_AND + ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
               }
-              else if (guildIdError) {
-                api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + ERROR_MSG_SCORE_NEEDED + ERROR_MSG_AND + ERROR_MSG_GUILD_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+              else if (groupIdError) {
+                api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + ERROR_MSG_SCORE_NEEDED + ERROR_MSG_AND + ERROR_MSG_GROUP_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
               }
               else {
-                api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID +  ERROR_MSG_SCORE_NEEDED + ERROR_MSG_AND + "UNKNOWN" + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+                api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID +  ERROR_MSG_SCORE_NEEDED + ERROR_MSG_AND + "UNKNOWN" + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
               }
             } else if (timestampIdentifierIsError) { // This section is for the errors being Timestamp Identifier and something else
-              if (guildIdError) {
-                api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_AND + ERROR_MSG_GUILD_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+              if (groupIdError) {
+                api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_AND + ERROR_MSG_GROUP_ID + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
               }
               else {
-                api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID +  ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_AND + "UNKNOWN" + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+                api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID +  ERROR_MSG_TIMESTAMP_IDENTIFIER + ERROR_MSG_AND + "UNKNOWN" + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
               }
-            } else if (guildIdError) {
-              api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID +  ERROR_MSG_GUILD_ID + ERROR_MSG_AND + "UNKNOWN" + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+            } else if (groupIdError) {
+              api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID +  ERROR_MSG_GROUP_ID + ERROR_MSG_AND + "UNKNOWN" + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
             }
           } else {
-            api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + "UNKNOWN" + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID});
+            api_sendPrivateMessageAlways({"message" : ERROR_MSG_PLURAL_START + errorCount + ERROR_MSG_PLURAL_MID + "UNKNOWN" + ERROR_MSG_PLURAL_END, "toUserId" : USER_ID})
           }
         }
-        return false; // Indicates errors
+        return false // Indicates errors
       }
     }
 
     // Checks GP and starts duel
-    function checkGpAndStartDuel(buttonToDeleteTaskId, duelCurrentlyActiveKey, duelScoreKey, selfUsernameKey, selfUsername, opponentUsernameKey, opponentUsername, wagerKey, wager, scoreNeededGoalKey, scoreNeededGoal, guildIdKey, guildId, announcerBotUsernameKey, announcerBotUsername, timestampIdentifierKey, timestampIdentifier){
-      const responseUser = api_getAuthenticatedUserProfile("stats");
-      const user = JSON.parse(responseUser).data;
+    function checkGpAndStartDuel(buttonToDeleteTaskId, duelCurrentlyActiveKey, duelScoreKey, selfUsernameKey, selfUsername, opponentUsernameKey, opponentUsername, wagerKey, wager, scoreNeededGoalKey, scoreNeededGoal, groupIdKey, groupId, announcerBotUsernameKey, announcerBotUsername, timestampIdentifierKey, timestampIdentifier){
+      const responseUser = api_getAuthenticatedUserProfile("stats")
+      const user = JSON.parse(responseUser).data
       
       let gp = user.stats.gp;
       
       // If not enough GP, send error message. If enough, deduct wager and start duel.
       if ( gp < wager ) {
-        api_sendPrivateMessageAlways({"message" : MSG_INSUFFICIENT_GP, "toUserId" : USER_ID});
+        api_sendPrivateMessageAlways({"message" : MSG_INSUFFICIENT_GP, "toUserId" : USER_ID})
       } else {
-        api_updateUser({"stats.gp" : gp - wager});
+        api_updateUser({"stats.gp" : gp - wager})
         
         // Start duel
-        let duelCurrentlyActive = 1;
-        let duelScore = 0;
+        let duelCurrentlyActive = 1
+        let duelScore = 0
         
         // Save values
-        scriptProperties.setProperty(duelCurrentlyActiveKey, duelCurrentlyActive);
-        scriptProperties.setProperty(duelScoreKey, duelScore);
-        scriptProperties.setProperty(selfUsernameKey, selfUsername);
-        scriptProperties.setProperty(opponentUsernameKey, opponentUsername);
-        scriptProperties.setProperty(wagerKey, wager);
-        scriptProperties.setProperty(scoreNeededGoalKey, scoreNeededGoal);
-        scriptProperties.setProperty(guildIdKey, guildId);
-        scriptProperties.setProperty(announcerBotUsernameKey, announcerBotUsername);
-        scriptProperties.setProperty(timestampIdentifierKey, timestampIdentifier);
+        scriptProperties.setProperty(duelCurrentlyActiveKey, duelCurrentlyActive)
+        scriptProperties.setProperty(duelScoreKey, duelScore)
+        scriptProperties.setProperty(selfUsernameKey, selfUsername)
+        scriptProperties.setProperty(opponentUsernameKey, opponentUsername)
+        scriptProperties.setProperty(wagerKey, wager)
+        scriptProperties.setProperty(scoreNeededGoalKey, scoreNeededGoal)
+        scriptProperties.setProperty(groupIdKey, groupId)
+        scriptProperties.setProperty(announcerBotUsernameKey, announcerBotUsername)
+        scriptProperties.setProperty(timestampIdentifierKey, timestampIdentifier)
         
-        api_sendPrivateMessage({"message" : "Your duel against " + opponentUsername + " begins now!", "toUserId" : USER_ID});
+        api_sendPrivateMessage({"message" : "Your duel against " + opponentUsername + " begins now!", "toUserId" : USER_ID})
         
         // Create the other two buttons (Duel Score and Duel End)
-        api_createNewTaskForUser([DUEL_END_BUTTON, DUEL_SCORE_BUTTON]);
+        api_createNewTaskForUser([DUEL_END_BUTTON, DUEL_SCORE_BUTTON])
         
         // If relevant, add tag to task (i.e. only if the user created a tag for these buttons)
-        checkAndAddTagToTask(DUEL_SCORE_ALIAS, DUEL_END_ALIAS);
+        checkAndAddTagToTask(DUEL_SCORE_ALIAS, DUEL_END_ALIAS)
 
         // Delete the Duel Start button
-        api_deleteTask(buttonToDeleteTaskId);
+        api_deleteTask(buttonToDeleteTaskId)
       }
     }
 
     // Creates hash of the duel parameters
     function createDuelHash(selfUsernameKey, opponentUsernameKey, wagerKey, scoreNeededGoalKey, timestampIdentifierKey) {
       // Retrieve saved values
-      var selfUsername = scriptProperties.getProperty(selfUsernameKey); 
-      var opponentUsername = scriptProperties.getProperty(opponentUsernameKey);
-      var wager = Number(scriptProperties.getProperty(wagerKey));
-      var scoreNeededGoal = Number(scriptProperties.getProperty(scoreNeededGoalKey));
-      var timestampIdentifier = Number(scriptProperties.getProperty(timestampIdentifierKey));
+      var selfUsername = scriptProperties.getProperty(selfUsernameKey)
+      var opponentUsername = scriptProperties.getProperty(opponentUsernameKey)
+      var wager = Number(scriptProperties.getProperty(wagerKey))
+      var scoreNeededGoal = Number(scriptProperties.getProperty(scoreNeededGoalKey))
+      var timestampIdentifier = Number(scriptProperties.getProperty(timestampIdentifierKey))
       
       // Combine self&opponent usernames, then sort characters alphabetically.
       // This will ensure it's the same regardless of which participant is "self" and which is "opponent"
-      let alphabeticalCombinedUsernames = alphabetizeString(selfUsername, opponentUsername);
+      let alphabeticalCombinedUsernames = alphabetizeString(selfUsername, opponentUsername)
       
       // Create string of all duel parameters.
-      let SEMICOLON = ";";
+      let SEMICOLON = ";"
       let ALL_PARAMETERS = alphabeticalCombinedUsernames + SEMICOLON + wager + SEMICOLON + scoreNeededGoal + SEMICOLON
-      + timestampIdentifier + SEMICOLON;
+      + timestampIdentifier + SEMICOLON
       
       // Create hash
-      let hashAll = createHash(ALL_PARAMETERS);
+      let hashAll = createHash(ALL_PARAMETERS)
       
       return hashAll;
     }
@@ -414,30 +414,30 @@
     // Parses the Duel End string received from the announcer bot script. Check if valid. Declare winner.
     function parseDuelEndString(string, hashAllExpected, hashSumIfWinner){
       // Count number of semicolons (2 are expected).
-      let countSemicolons = ( string.match(/\;/g) || [] ).length;
+      let countSemicolons = ( string.match(/\;/g) || [] ).length
       if (countSemicolons != 2) {
         return -2; // To indicate it's an invalid string
       } else {
         // Parse out first hash
-        let semicolonIndex = findIndexOfSemicolon(string);
-        let hashAllTemp = createSubstring(string, 0, semicolonIndex);
-        let hashAllParsed = parseFloat(hashAllTemp);
+        let semicolonIndex = findIndexOfSemicolon(string)
+        let hashAllTemp = createSubstring(string, 0, semicolonIndex)
+        let hashAllParsed = parseFloat(hashAllTemp)
 
         // Parse out second hash
-        let length = string.length;
-        let substringTemp = createSubstring(string, semicolonIndex + 1, length);
-        semicolonIndex = findIndexOfSemicolon(substringTemp);
-        let hashSumTemp = createSubstring(substringTemp, 0, semicolonIndex);
-        let hashSumParsed = parseFloat(hashSumTemp);
+        let length = string.length
+        let substringTemp = createSubstring(string, semicolonIndex + 1, length)
+        semicolonIndex = findIndexOfSemicolon(substringTemp)
+        let hashSumTemp = createSubstring(substringTemp, 0, semicolonIndex)
+        let hashSumParsed = parseFloat(hashSumTemp)
 
         // Compare the first hash to what's expected (given the duel parameters)
         if (hashAllParsed != hashAllExpected) {
-          return -2; // To indicate it's an invalid string, the hashes don't match
+          return -2 // To indicate it's an invalid string, the hashes don't match
         } else { // If it's a valid string, check if winner
           if (hashSumParsed == hashSumIfWinner) {
-            return 5; // To indicate winner
+            return 5 // To indicate winner
           } else {
-            return 3; // To indicate you didn't win
+            return 3 // To indicate you didn't win
           }
         }
       }
@@ -445,14 +445,14 @@
 
     // Resets saved duel values
     function resetDuelValues(){
-      scriptProperties.setProperty(DUEL_CURRENTLY_ACTIVE_KEY, 0);
-      scriptProperties.setProperty(DUEL_SCORE_KEY, 0);
-      scriptProperties.setProperty(SELF_USERNAME_KEY, "self");
-      scriptProperties.setProperty(OPPONENT_USERNAME_KEY, "name");
-      scriptProperties.setProperty(WAGER_KEY, 0);
-      scriptProperties.setProperty(SCORE_NEEDED_GOAL_KEY, 0);
-      scriptProperties.setProperty(GUILD_ID_KEY, "string");
-      scriptProperties.setProperty(ANNOUNCER_BOT_USERNAME_KEY, "name");
-      scriptProperties.setProperty(TIMESTAMP_IDENTIFIER_KEY, 0);
-      scriptProperties.setProperty(TROUBLESHOOTING_KEY, 0);
+      scriptProperties.setProperty(DUEL_CURRENTLY_ACTIVE_KEY, 0)
+      scriptProperties.setProperty(DUEL_SCORE_KEY, 0)
+      scriptProperties.setProperty(SELF_USERNAME_KEY, "self")
+      scriptProperties.setProperty(OPPONENT_USERNAME_KEY, "name")
+      scriptProperties.setProperty(WAGER_KEY, 0)
+      scriptProperties.setProperty(SCORE_NEEDED_GOAL_KEY, 0)
+      scriptProperties.setProperty(GROUP_ID_KEY, "string")
+      scriptProperties.setProperty(ANNOUNCER_BOT_USERNAME_KEY, "name")
+      scriptProperties.setProperty(TIMESTAMP_IDENTIFIER_KEY, 0)
+      scriptProperties.setProperty(TROUBLESHOOTING_KEY, 0)
     }
