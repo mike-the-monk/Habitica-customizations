@@ -205,7 +205,7 @@
         let wager = Number(scriptProperties.getProperty(WAGER_KEY))
         let scoreNeededGoal = Number(scriptProperties.getProperty(SCORE_NEEDED_GOAL_KEY))
         let timestampIdentifier = Number(scriptProperties.getProperty(TIMESTAMP_IDENTIFIER_KEY))
-        let guildId = scriptProperties.getProperty(GUILD_ID_KEY)
+        let groupId = scriptProperties.getProperty(GROUP_ID_KEY)
         let announcerBotUsername = scriptProperties.getProperty(ANNOUNCER_BOT_USERNAME_KEY)
         let troubleshootingFlag = Number(scriptProperties.getProperty(TROUBLESHOOTING_KEY))
         
@@ -213,7 +213,7 @@
         let MSG_JOINER_BEFORE = " is `"
         let MSG_JOINER_AFTER = "`, "
         
-        api_sendPrivateMessageAlways({"message" : "Saved values are as follows: duelCurrentlyActive is `" + duelCurrentlyActive + MSG_JOINER_AFTER + "duelScore" + MSG_JOINER_BEFORE + duelScore + MSG_JOINER_AFTER + "selfUsername" + MSG_JOINER_BEFORE + selfUsername + MSG_JOINER_AFTER + "opponentUsername" + MSG_JOINER_BEFORE + opponentUsername + MSG_JOINER_AFTER + "wager" + MSG_JOINER_BEFORE + wager + MSG_JOINER_AFTER + "scoreNeededGoal" + MSG_JOINER_BEFORE + scoreNeededGoal + MSG_JOINER_AFTER + "timestampIdentifier" + MSG_JOINER_BEFORE + timestampIdentifier + MSG_JOINER_AFTER + "guildId" + MSG_JOINER_BEFORE + guildId + MSG_JOINER_AFTER + "announcerBotUsername" + MSG_JOINER_BEFORE + announcerBotUsername + MSG_JOINER_AFTER + "troubleshootingFlag" + MSG_JOINER_BEFORE + troubleshootingFlag + "`", "toUserId" : USER_ID})
+        api_sendPrivateMessageAlways({"message" : "Saved values are as follows: duelCurrentlyActive is `" + duelCurrentlyActive + MSG_JOINER_AFTER + "duelScore" + MSG_JOINER_BEFORE + duelScore + MSG_JOINER_AFTER + "selfUsername" + MSG_JOINER_BEFORE + selfUsername + MSG_JOINER_AFTER + "opponentUsername" + MSG_JOINER_BEFORE + opponentUsername + MSG_JOINER_AFTER + "wager" + MSG_JOINER_BEFORE + wager + MSG_JOINER_AFTER + "scoreNeededGoal" + MSG_JOINER_BEFORE + scoreNeededGoal + MSG_JOINER_AFTER + "timestampIdentifier" + MSG_JOINER_BEFORE + timestampIdentifier + MSG_JOINER_AFTER + "groupId" + MSG_JOINER_BEFORE + groupId + MSG_JOINER_AFTER + "announcerBotUsername" + MSG_JOINER_BEFORE + announcerBotUsername + MSG_JOINER_AFTER + "troubleshootingFlag" + MSG_JOINER_BEFORE + troubleshootingFlag + "`", "toUserId" : USER_ID})
       }
 
       // Retrieves expected hashes for duel parameter and user ID and sum
@@ -247,7 +247,7 @@
         scriptProperties.setProperty(duelCurrentlyActiveKey, duelCurrentlyActive)
       }
 
-      // Clears troubleshooting flag and therefore allows this script to post automated messages to the Guild
+      // Clears troubleshooting flag and therefore allows this script to post automated messages to the party chat
       // A value of 0 allows automated messages to be posted. 1 and 2 to not. 1 indicates an error, 2 indicates valid/victory
       function debugClearTroubleshootingFlag(){
         scriptProperties.setProperty(TROUBLESHOOTING_KEY, 0)
