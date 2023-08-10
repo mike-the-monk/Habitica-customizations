@@ -121,35 +121,6 @@ const WEB_APP_URL = "PasteGeneratedWebAppUrlHere"
   /* ========================================== */
   /* Section: Game modes */
 
-    // Low Constitution Mode (and other stats)
-
-      // When entering Low [Stat] Mode, what SETPOINT value do you want to set that stat to?
-      // For example, the original Low Constitution Mode set Constitution to 1.
-      // If you aren't using one of the stats, you can ignore it here.
-      const LOW_STRENGTH_MODE_SETPOINT = 0 // Strength
-      const LOW_INTELLIGENCE_MODE_SETPOINT = 0 // Intelligence
-      const LOW_CONSTITUTION_MODE_SETPOINT = 0 // Constitution
-      const LOW_PERCEPTION_MODE_SETPOINT = 0 // Perception
-
-      // Next, what buttons do you want? You could do one button per Low [Stat] Mode, or you could combine multiple stats onto a single button – for example, a Low Intelligence and Perception Mode.
-
-      // If you want a SEPARATE button for certain stats, change the 0 to a 1 below for each that you want.
-      const CREATE_LOW_STRENGTH_MODE_BUTTON = 0 // Strength
-      const CREATE_LOW_INTELLIGENCE_MODE_BUTTON = 0 // Intelligence
-      const CREATE_LOW_CONSTITUTION_MODE_BUTTON = 0 // Constitution
-      const CREATE_LOW_PERCEPTION_MODE_BUTTON = 0 // Perception
-
-      // If MULTIPLE stats, change the 0 to a 1 below.
-      const CREATE_MULTIPLE_LOW_STAT_MODE_BUTTON = 0
-
-      // If MULTIPLE stats on one button, which stats you want on that button?
-      // For each stat you want on that button, change the 0 to a 1.
-      // (If you aren't doing multiple stats, ignore this section)
-      const MULTIPLE_LOW_STAT_MODE_STRENGTH = 0 // Strength
-      const MULTIPLE_LOW_STAT_MODE_INTELLIGENCE = 0 // Intelligence
-      const MULTIPLE_LOW_STAT_MODE_CONSTITUTION = 0 // Constitution
-      const MULTIPLE_LOW_STAT_MODE_PERCEPTION = 0 // Perception
-    
     // Bad Day Mode
       // If you want to create the button for Bad Day Mode, change the 0 to a 1 in the line below.
       const CREATE_BAD_DAY_MODE_BUTTON = 0
@@ -203,16 +174,6 @@ const WEB_APP_URL = "PasteGeneratedWebAppUrlHere"
 
     /* ========================================== */
     /* Section: Game modes */ 
-      
-      // Low Constitution Mode (and other stats)
-
-        // Do you want to automatically enter Low Constitution Mode (or other stat) each day at Cron? 
-        // If yes, change the 0 to a 1 in the lines below for each stat you want.
-        const AUTOMATIC_LOW_STRENGTH = 0
-        const AUTOMATIC_LOW_INTELLIGENCE = 0
-        const AUTOMATIC_LOW_CONSTITUTION = 0
-        const AUTOMATIC_LOW_PERCEPTION = 0
-        const AUTOMATIC_LOW_MULTI_STAT = 0 // For all the stats you chose in the Required Customizations section for Multi-Stat
 
       // Partial Healing Mode
         // Do you want a button that lets you enter/exit Partial Healing Mode? If yes, change the 0 to a 1 below.
@@ -3148,7 +3109,7 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
                 
                 // Update Duel Score button to indicate victory (and do this regardless of any of the conditions below)
                 if (groupId != "") {
-                  let groupUrl = "https://habitica.com/groups/guild/" + groupId
+                  let groupUrl = "https://habitica.com/groups/" + groupId
                   var newDuelScoreNotes = MSG_DUEL_SCORE_VICTORY1 + groupUrl + MSG_DUEL_SCORE_VICTORY2 + announcerBotUsername + MSG_DUEL_SCORE_VICTORY3
                   api_updateTask(DUEL_SCORE_ALIAS, {"notes" : newDuelScoreNotes})
                 }
@@ -3162,7 +3123,7 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
                   troubleshootingFlag = 1
                   scriptProperties.setProperty(TROUBLESHOOTING_KEY, troubleshootingFlag)
                   
-                  // Post error message to the Guild/party and also send it as a private message to the user in case posting to the Guild/party fails
+                  // Post error message to the Gparty and also send it as a private message to the user in case posting to the party fails
                   api_postChatMessageToGroup({"message": ERROR_MSG_AUTOMATED_START + ERROR_MSG_AUTOMATED_MESSAGE_DIDNT_POST})
                   api_sendPrivateMessageAlways({"message" : ERROR_MSG_AUTOMATED_SELF + ERROR_MSG_AUTOMATED_START + ERROR_MSG_AUTOMATED_MESSAGE_DIDNT_POST, "toUserId" : USER_ID})
                 } else {
@@ -3179,7 +3140,7 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
                       troubleshootingFlag = 1
                       scriptProperties.setProperty(TROUBLESHOOTING_KEY, troubleshootingFlag)
                       
-                      // Post error message to the Guild/party and also send it as a private message to the user in case posting to the Guild/party fails
+                      // Post error message to the party and also send it as a private message to the user in case posting to the party fails
                       api_postChatMessageToGroup({"message": ERROR_MSG_AUTOMATED_START + ERROR_MSG_AUTOMATED_BOT_DIDNT_REPLY})
                       api_sendPrivateMessageAlways({"message" : ERROR_MSG_AUTOMATED_SELF + ERROR_MSG_AUTOMATED_START + ERROR_MSG_AUTOMATED_BOT_DIDNT_REPLY, "toUserId" : USER_ID})
                     } else {
@@ -3190,7 +3151,7 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
                       troubleshootingFlag = 1
                       scriptProperties.setProperty(TROUBLESHOOTING_KEY, troubleshootingFlag)
                       
-                      // Post error message to the Guild/party and also send it as a private message to the user in case posting to the Guild/party fails
+                      // Post error message to the party and also send it as a private message to the user in case posting to the party fails
                       api_postChatMessageToGroup({"message": ERROR_MSG_AUTOMATED_START + ERROR_MSG_AUTOMATED_BOT_DIDNT_REPLY})
                       api_sendPrivateMessageAlways({"message" : ERROR_MSG_AUTOMATED_SELF + ERROR_MSG_AUTOMATED_START + ERROR_MSG_AUTOMATED_BOT_FOUND_INVALID, "toUserId" : USER_ID})
                     }
@@ -5107,13 +5068,13 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
         scriptProperties.setProperty(duelCurrentlyActiveKey, duelCurrentlyActive)
       }
 
-      // Clears troubleshooting flag and therefore allows this script to post automated messages to the Guild/party
+      // Clears troubleshooting flag and therefore allows this script to post automated messages to the party
       // A value of 0 allows automated messages to be posted. 1 and 2 to not. 1 indicates an error, 2 indicates valid/victory
       function debugClearTroubleshootingFlag(){
         scriptProperties.setProperty(TROUBLESHOOTING_KEY, 0)
       }
 
-      // Clears troubleshooting flag and therefore allows this script to post automated messages to the Guild/party.
+      // Clears troubleshooting flag and therefore allows this script to post automated messages to the party.
       // Reposts the automated message. Runs "victory condition" function again to see if new post is now valid.
       function debugClearTroubleshootingFlagAndThenRetry(){
         scriptProperties.setProperty(TROUBLESHOOTING_KEY, 0)
@@ -5363,7 +5324,7 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
       // Initialize so it defaults to the error condition
       let msgId = "nope"
   
-      // Grab messages from Guild/party
+      // Grab messages from party
       let response = api_getChatMessagesFromGroup(groupId)
       let chatMessages = JSON.parse(response).data
       
@@ -5445,7 +5406,7 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
       // Create string of hashes. Ends in a period for easier parsing.
       let HASHES = hashAll + SEMICOLON + hashSum + SEMICOLON +  "."
       
-      // Generate victory string. Post message to guild/party and tag bot. Bot will be the one to declare victory (after checking if the string is valid)
+      // Generate victory string. Post message to party and tag bot. Bot will be the one to declare victory (after checking if the string is valid)
       let DUEL_END_MSG = announcerBotUsername + "\nEND DUEL\n." + ALL_PARAMETERS + "." + bothUsernames + HASHES
       
       return DUEL_END_MSG
@@ -5529,11 +5490,11 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
         inputString = inputStringTemp
         length = inputString.length
         
-        // Repeat to parse out Guild/party ID
+        // Repeat to parse out party ID
         semicolonIndex = findIndexOfSemicolon(inputString)
         let groupId = createSubstring(inputString, 0, semicolonIndex)
         
-        // Check to make sure it's a valid format for a Guild/party ID
+        // Check to make sure it's a valid format for a party ID
         let groupIdFormatCheck = checkUuidFormat(groupId)
         
         // Remove that section from the input string, save as a smaller substring
