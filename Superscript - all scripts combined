@@ -3626,14 +3626,6 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
       scriptProperties.setProperty(ANTI_XP_USAGE_KEY, 0)
       scriptProperties.setProperty(HP_FOR_MP_KEY, 0)
       scriptProperties.setProperty(XP_FOR_MP_KEY, 0)
-      scriptProperties.setProperty(ANTI_BUFF_AMOUNT_STR_KEY , 0)
-      scriptProperties.setProperty(ANTI_BUFF_USAGE_STR_KEY, 0)
-      scriptProperties.setProperty(ANTI_BUFF_AMOUNT_INT_KEY, 0)
-      scriptProperties.setProperty(ANTI_BUFF_USAGE_INT_KEY, 0)
-      scriptProperties.setProperty(ANTI_BUFF_AMOUNT_CON_KEY, 0)
-      scriptProperties.setProperty(ANTI_BUFF_USAGE_CON_KEY, 0)      
-      scriptProperties.setProperty(ANTI_BUFF_AMOUNT_PER_KEY, 0)
-      scriptProperties.setProperty(ANTI_BUFF_USAGE_PER_KEY, 0)
     }
 
     // NUMERIC-RELATED FUNCTIONS
