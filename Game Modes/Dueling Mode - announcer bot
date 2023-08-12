@@ -82,7 +82,7 @@ const DECLINE = "DECLINE"
 
 // These are all of the messages from the announcer bot
 const MSG_CONTACT_AUTHOR1 = " contact the author of this script (@mike_the_monk)"
-const MSG_CONTACT_AUTHOR2 = " by posting in the [Aspiring Comrades Guild](https://habitica.com/groups/guild/2ff9822b-27f2-4774-98da-db349b57a38e)."
+const MSG_CONTACT_AUTHOR2 = " by sending him a [private message](https://habitica.com/private-messages?uuid=0034eb14-b4d8-494e-8386-d3f33cff7922) in Habitica."
 const MSG_WIKI_PAGE_LIST_OF_COMMANDS = " [wiki page](https://habitica.fandom.com/wiki/Dueling_Script#List_of_all_duel_bot_commands)"
 const MSG_WIKI_PAGE_FAST_START = " [wiki page](https://habitica.fandom.com/wiki/Dueling_Script#How_to_use_FAST_START_DUEL)"
 const MSG_WIKI_PAGE_PARAMETER_FORMATTING = " [wiki page](https://habitica.fandom.com/wiki/Dueling_Script#Ensuring_correct_formatting_for_the_duel_parameters)"
