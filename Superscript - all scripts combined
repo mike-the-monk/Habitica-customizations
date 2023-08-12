@@ -266,16 +266,6 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
     const MSG_NOTES_MP = " MP."
     const MSG_NOTES_TRIPLE_BUFF = "Buff these three of your stats according to each unbuffed value. "
     const MSG_NOTES_DOUBLE_BUFF = "Buff both of these stats for you according to each unbuffed value. "
-    const LOW_STAT_MODE_TEXT_START = "**Low "
-    const LOW_STAT_MODE_TEXT_END = "  Mode**"
-    const LOW_STAT_MODE_NOTES_START = "Press once to enter Low "
-    const LOW_STAT_MODE_NOTES_MID_1 = " Mode, creating an anti-buff that sets your "
-    const LOW_STAT_MODE_NOTES_MID_2 = " to "
-    const LOW_STAT_MODE_NOTES_MID_3 = " until you Cron tomorrow. Press again to exit Low "
-    const LOW_STAT_MODE_NOTES_END = " Mode."
-    const MSG_IN_LOW_STAT_MODE_START = "Currently in Low "
-    const MSG_NOT_IN_LOW_STAT_MODE_START = "Not currently in Low "
-    const MSG_LOW_STAT_MODE_END = " Mode."
     const PARTIAL_HEALING_MODE_TEXT_START = "Click to "
     const PARTIAL_HEALING_MODE_TEXT_END = " Partial Healing Mode"
     const PARTIAL_HEALING_MODE_NOTES_START = "You are "
@@ -575,31 +565,6 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
 
     // Game Modes
 
-      const MULTI_LOW_STAT_MODE_TEXT = LOW_STAT_MODE_TEXT_START + "Multi-Stat" + LOW_STAT_MODE_TEXT_END
-      const MULTI_LOW_STAT_MODE_ALIAS = "LOW_MULTI"
-      // I will need to initialize the Notes section later
-      const MULTI_LOW_STAT_MODE_VALUE = "0"
-      
-      const LOW_STR_MODE_TEXT = LOW_STAT_MODE_TEXT_START + "Strength" + LOW_STAT_MODE_TEXT_END
-      const LOW_STR_MODE_ALIAS = "LOW_STR"
-      const LOW_STR_MODE_NOTES = LOW_STAT_MODE_NOTES_START + "Strength" + LOW_STAT_MODE_NOTES_MID_1 + "STR" + LOW_STAT_MODE_NOTES_MID_2 + LOW_STRENGTH_MODE_SETPOINT + LOW_STAT_MODE_NOTES_MID_3 + "Strength" + LOW_STAT_MODE_NOTES_END
-      const LOW_STR_MODE_VALUE = "0"
-
-      const LOW_INT_MODE_TEXT = LOW_STAT_MODE_TEXT_START + "Intelligence" + LOW_STAT_MODE_TEXT_END
-      const LOW_INT_MODE_ALIAS = "LOW_INT"
-      const LOW_INT_MODE_NOTES = LOW_STAT_MODE_NOTES_START + "Intelligence" + LOW_STAT_MODE_NOTES_MID_1 + "INT" + LOW_STAT_MODE_NOTES_MID_2 + LOW_INTELLIGENCE_MODE_SETPOINT + LOW_STAT_MODE_NOTES_MID_3 + "Intelligence" + LOW_STAT_MODE_NOTES_END
-      const LOW_INT_MODE_VALUE = "0"
-
-      const LOW_CON_MODE_TEXT = LOW_STAT_MODE_TEXT_START + "Constitution" + LOW_STAT_MODE_TEXT_END
-      const LOW_CON_MODE_ALIAS = "LOW_CON"
-      const LOW_CON_MODE_NOTES = LOW_STAT_MODE_NOTES_START + "Constitution" + LOW_STAT_MODE_NOTES_MID_1 + "CON" + LOW_STAT_MODE_NOTES_MID_2 + LOW_CONSTITUTION_MODE_SETPOINT + LOW_STAT_MODE_NOTES_MID_3 + "Constitution" + LOW_STAT_MODE_NOTES_END
-      const LOW_CON_MODE_VALUE = "0"
-
-      const LOW_PER_MODE_TEXT = LOW_STAT_MODE_TEXT_START + "Perception" + LOW_STAT_MODE_TEXT_END
-      const LOW_PER_MODE_ALIAS = "LOW_PER"
-      const LOW_PER_MODE_NOTES = LOW_STAT_MODE_NOTES_START + "Perception" + LOW_STAT_MODE_NOTES_MID_1 + "PER" + LOW_STAT_MODE_NOTES_MID_2 + LOW_PERCEPTION_MODE_SETPOINT + LOW_STAT_MODE_NOTES_MID_3 + "Perception" + LOW_STAT_MODE_NOTES_END
-      const LOW_PER_MODE_VALUE = "0"
-
       const BAD_DAY_MODE_TEXT = "**Bad Day Mode**"
       const BAD_DAY_MODE_ALIAS = "badDayMode"
       const BAD_DAY_MODE_NOTES = "Declare today a 'day of low expectations', fully healing you, buffing your CON to 9999, and Stealthing all your Dailies so you take no damage if you don't complete them. This wears off tomorrow at Cron."
@@ -694,7 +659,7 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
     // Other messages
 
       const MSG_CONTACT_AUTHOR1 = " contact the author of this script (@mike_the_monk)"
-      const MSG_CONTACT_AUTHOR2 = " by posting in the [Aspiring Comrades Guild](https://habitica.com/groups/guild/2ff9822b-27f2-4774-98da-db349b57a38e)."
+      const MSG_CONTACT_AUTHOR2 = " by sending him a [private message](https://habitica.com/private-messages?uuid=0034eb14-b4d8-494e-8386-d3f33cff7922) in Habitica."
       const MSG_ERROR_DAMAGE_START = "Error computing"
       const MSG_ERROR_DAMAGE_MID = " damage. To debug, please" +  MSG_CONTACT_AUTHOR1 + MSG_CONTACT_AUTHOR2
       const MSG_ERROR_DAMAGE_END = " Note to author: "
@@ -731,8 +696,6 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
         const MSG_ERROR_DAMAGE_SETPOINT = MSG_ERROR_DAMAGE_START_MID_END + "target damage not between low and high setpoints)."
 
       // Game Modes
-        
-        const MSG_LOW_STAT_MODE_ERROR = "Error with Low Stat Mode. No stat selected."
 
         const MSG_ALREADY_IN_BAD_DAY_MODE = "You are already in Bad Day Mode, so clicking the button additional times has no effect."
 
@@ -1109,40 +1072,6 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
 
     // Game Modes
 
-      // On purpose, Multi Low Stat Mode button is not here (because the Notes section changes based on which stats are selected)
-
-      const LOW_STR_MODE_BUTTON = {
-          "text": LOW_STR_MODE_TEXT,
-          "type": "reward",
-          "alias": LOW_STR_MODE_ALIAS,
-          "notes": LOW_STR_MODE_NOTES,
-          "value": LOW_STR_MODE_VALUE,
-      }
-
-      const LOW_INT_MODE_BUTTON = {
-          "text": LOW_INT_MODE_TEXT,
-          "type": "reward",
-          "alias": LOW_INT_MODE_ALIAS,
-          "notes": LOW_INT_MODE_NOTES,
-          "value": LOW_INT_MODE_VALUE,
-      }
-
-      const LOW_CON_MODE_BUTTON = {
-          "text": LOW_CON_MODE_TEXT,
-          "type": "reward",
-          "alias": LOW_CON_MODE_ALIAS,
-          "notes": LOW_CON_MODE_NOTES,
-          "value": LOW_CON_MODE_VALUE,
-      }
-
-      const LOW_PER_MODE_BUTTON = {
-          "text": LOW_PER_MODE_TEXT,
-          "type": "reward",
-          "alias": LOW_PER_MODE_ALIAS,
-          "notes": LOW_PER_MODE_NOTES,
-          "value": LOW_PER_MODE_VALUE,
-      }
-
       const BAD_DAY_MODE_BUTTON = {
           "text": BAD_DAY_MODE_TEXT,
           "type": "reward",
@@ -1244,15 +1173,6 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
   const HP_FOR_MP_KEY = "HP_FOR_MP_KEY"
   const XP_FOR_MP_KEY = "XP_FOR_MP_KEY"
 
-  const ANTI_BUFF_AMOUNT_STR_KEY = "ANTI_BUFF_AMOUNT_STR_KEY"
-  const ANTI_BUFF_USAGE_STR_KEY = "ANTI_BUFF_USAGE_STR_KEY"
-  const ANTI_BUFF_AMOUNT_INT_KEY = "ANTI_BUFF_AMOUNT_INT_KEY"
-  const ANTI_BUFF_USAGE_INT_KEY = "ANTI_BUFF_USAGE_INT_KEY"
-  const ANTI_BUFF_AMOUNT_CON_KEY = "ANTI_BUFF_AMOUNT_CON_KEY"
-  const ANTI_BUFF_USAGE_CON_KEY = "ANTI_BUFF_USAGE_CON_KEY"
-  const ANTI_BUFF_AMOUNT_PER_KEY = "ANTI_BUFF_AMOUNT_PER_KEY"
-  const ANTI_BUFF_USAGE_PER_KEY = "ANTI_BUFF_USAGE_PER_KEY"
-
   const HP_KEY = "HP_KEY"
   const LVL_KEY = "LVL_KEY"
   const PARTIAL_HEALING_MODE_ACTIVE_KEY = "PARTIAL_HEALING_MODE_ACTIVE_KEY"
@@ -1281,15 +1201,6 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
 
   var HpForMpUsageKey = ""
   var XpForMpUsageKey = ""
-
-  var antiBuffAmountStrKey = ""
-  var antiBuffUsageStrKey = ""
-  var antiBuffAmountIntKey = ""
-  var antiBuffUsageIntKey = ""
-  var antiBuffAmountConKey = ""
-  var antiBuffUsageConKey = ""
-  var antiBuffAmountPerKey = ""
-  var antiBuffUsagePerKey = ""
 
   var hpKey = ""
   var lvlKey = ""
@@ -1442,41 +1353,6 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
         
         api_createNewTaskForUser([BAD_DAY_MODE_BUTTON])
       }
-      if (CREATE_LOW_PERCEPTION_MODE_BUTTON == 1) {
-        // Check count of API calls
-        newCount = checkApiCount(count)
-        count = newCount
-        
-        api_createNewTaskForUser([LOW_PER_MODE_BUTTON])
-      } 
-      if (CREATE_LOW_CONSTITUTION_MODE_BUTTON == 1) {
-        // Check count of API calls
-        newCount = checkApiCount(count)
-        count = newCount
-        
-        api_createNewTaskForUser([LOW_CON_MODE_BUTTON])
-      } 
-      if (CREATE_LOW_INTELLIGENCE_MODE_BUTTON == 1) {
-        // Check count of API calls
-        newCount = checkApiCount(count)
-        count = newCount
-        
-        api_createNewTaskForUser([LOW_INT_MODE_BUTTON])
-      } 
-      if (CREATE_LOW_STRENGTH_MODE_BUTTON == 1) {
-        // Check count of API calls
-        newCount = checkApiCount(count)
-        count = newCount
-        
-        api_createNewTaskForUser([LOW_STR_MODE_BUTTON])
-      } 
-      if (CREATE_MULTIPLE_LOW_STAT_MODE_BUTTON == 1) {
-        // Check count of API calls
-        newCount = checkApiCount(count)
-        count = newCount
-        
-        createMultiLowStatButton() // It needs to be its own function because the notes section changes based on which stats were selected
-      } 
       if (CREATE_SNEAK_ATTACK == 1) {
         // Check count of API calls
         newCount = checkApiCount(count)
@@ -1743,28 +1619,6 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
       }
     }
 
-    // Creates the Multi Low Stat Mode button
-    function createMultiLowStatButton() {
-      // Build notes section of button
-      let NOTES_STATS = buildMultiLowStatStrings(false, "/")
-      let NOTES_STATS_VALUES = buildMultiLowStatStrings(true, ", ")
-      
-      // By now, those two strings should be correct. Combine them to create the button's Notes section
-      const MULTI_LOW_STAT_MODE_NOTES = LOW_STAT_MODE_NOTES_START + NOTES_STATS + LOW_STAT_MODE_NOTES_MID_1 + NOTES_STATS_VALUES + LOW_STAT_MODE_NOTES_MID_3 + NOTES_STATS + LOW_STAT_MODE_NOTES_END
-
-      // Now that this is correct, create the button constant
-      const MULTI_LOW_STAT_MODE_BUTTON = {
-          "text": MULTI_LOW_STAT_MODE_TEXT,
-          "type": "reward",
-          "alias": MULTI_LOW_STAT_MODE_ALIAS,
-          "notes": MULTI_LOW_STAT_MODE_NOTES,
-          "value": MULTI_LOW_STAT_MODE_VALUE,
-      }
-
-      // Finally, create the button
-      api_createNewTaskForUser([MULTI_LOW_STAT_MODE_BUTTON])
-    }
-
     // Sets initial properties that will be used/saved later.
     function initScriptProperties() {
       const responseUser = api_getAuthenticatedUserProfile("stats")
@@ -1839,7 +1693,7 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
     // If an automatic mode is supposed to run at Cron, do it here
     function doAutomaticModes(){
       // Only run if one or more of the automatic modes is selected
-      if ( (AUTOMATIC_TRANSFORM_RANDOM == 1) || (AUTOMATIC_LOW_MULTI_STAT == 1) || (AUTOMATIC_LOW_STRENGTH == 1) || (AUTOMATIC_LOW_INTELLIGENCE == 1) || (AUTOMATIC_LOW_CONSTITUTION == 1) || (AUTOMATIC_LOW_PERCEPTION == 1) ) {
+      if (AUTOMATIC_TRANSFORM_RANDOM == 1) {
         const response = api_getAuthenticatedUserProfile("stats")
         user = JSON.parse(response).data
 
@@ -1853,14 +1707,6 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
           
           // Save value to non-volatile memory
           scriptProperties.setProperty(cronCountKey, cronCount)
-
-          // If they want to automatically enter any Low Stat Mode each day, do so
-          if ((AUTOMATIC_LOW_MULTI_STAT == 1) || (AUTOMATIC_LOW_STRENGTH == 1) || (AUTOMATIC_LOW_INTELLIGENCE == 1) || (AUTOMATIC_LOW_CONSTITUTION == 1) || (AUTOMATIC_LOW_PERCEPTION == 1) ) {
-            
-            Utilities.sleep(2000)
-            
-            automaticLowStatMode()
-          }
 
           // If they want to automatically transform, do so.
           if (AUTOMATIC_TRANSFORM_RANDOM == 1) {
@@ -2095,21 +1941,6 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
             break
           case SNEAK_ATTACK_ALIAS:
             doButtonSneakAttack(lvl, hp, xp, mp, gp, perception, intelligence, strength, unbuffedStr, unbuffedInt, unbuffedPer, buffsStr, buffsInt, buffsPer)
-            break
-          case MULTI_LOW_STAT_MODE_ALIAS:
-            toggleLowMultiStatMode() // Its own function determines which stats to run, then does so
-            break
-          case LOW_STR_MODE_ALIAS:
-            toggleLowStatMode(false, true, false, false, false, false)
-            break
-          case LOW_INT_MODE_ALIAS:
-            toggleLowStatMode(false, false, true, false, false, false)
-            break
-          case LOW_CON_MODE_ALIAS:
-            toggleLowStatMode(false, false, false, true, false, false)
-            break
-          case LOW_PER_MODE_ALIAS:
-            toggleLowStatMode(false, false, false, false, true, false)
             break
           case BAD_DAY_MODE_ALIAS:
             doButtonBadDayMode(buffsCon, stealthedDailies, totalDailies, hp, unbuffedCon)
@@ -2789,206 +2620,6 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
           }
 
     // Game Modes
-    
-        // Determines which stats to toggle Low Stat Mode on, and runs them
-        function toggleLowMultiStatMode(){
-          // Initialize Booleans at false
-          let doStrength = false
-          let doIntelligence = false
-          let doConstitution = false
-          let doPerception = false
-          
-          // Ensure Booleans are correct for each stat
-          if (MULTIPLE_LOW_STAT_MODE_STRENGTH == 1) {
-            doStrength = true
-          }
-          if (MULTIPLE_LOW_STAT_MODE_INTELLIGENCE == 1) {
-            doIntelligence = true
-          }
-          if (MULTIPLE_LOW_STAT_MODE_CONSTITUTION == 1){
-            doConstitution = true
-          }
-          if (MULTIPLE_LOW_STAT_MODE_PERCEPTION == 1){
-            doPerception = true
-          }
-
-          // Finally, toggle all relevant Low Stat Modes
-          toggleLowStatMode(true, doStrength, doIntelligence, doConstitution, doPerception, true)
-        }
-
-        // If user is in Low Stat Mode, remove them from it, and vice versa.
-        function toggleLowStatMode(doMulti, doStrength, doIntelligence, doConstitution, doPerception, ignoreMessage){
-          // If you're doing Multi Stat, this function will call itself for each relevant stat, one at a time
-          if(doMulti){
-            if (doStrength){ // Run for Strength only
-              toggleLowStatMode(false, true, false, false, false, true)
-            }
-            if (doIntelligence){ // Run for Intelligence only
-              toggleLowStatMode(false, false, true, false, false, true)
-            }
-            if (doConstitution){ // Run for Constitution only
-              toggleLowStatMode(false, false, false, true, false, true)
-            }
-            if (doPerception){ // Run for Perception only
-              toggleLowStatMode(false, false, false, false, true, true)
-            }
-          } else { // If not Multi, run the relevant stat
-            // Initialize the relevant variables.
-            // The same variables (such as "antiBuffAmount") will be used irrespective of which Low Stat Mode it is
-            if (doStrength){
-              var antiBuffAmountKey = ANTI_BUFF_AMOUNT_STR_KEY 
-              var antiBuffUsageKey = ANTI_BUFF_USAGE_STR_KEY
-            } 
-            else if (doIntelligence){
-              var antiBuffAmountKey = ANTI_BUFF_AMOUNT_INT_KEY
-              var antiBuffUsageKey = ANTI_BUFF_USAGE_INT_KEY
-            } 
-            else if (doConstitution) {
-              var antiBuffAmountKey = ANTI_BUFF_AMOUNT_CON_KEY
-              var antiBuffUsageKey = ANTI_BUFF_USAGE_CON_KEY
-            } 
-            else if (doPerception) {
-              var antiBuffAmountKey = ANTI_BUFF_AMOUNT_PER_KEY
-              var antiBuffUsageKey = ANTI_BUFF_USAGE_PER_KEY
-            } 
-            else { // Send error message of all of the Booleans are false
-              api_sendPrivateMessage({"message" : MSG_LOW_STAT_MODE_ERROR, "toUserId" : USER_ID})
-            }
-
-            // Now that the keys are correct, retrieve the saved values
-            var antiBuffAmount = Number(scriptProperties.getProperty(antiBuffAmountKey))
-            var antiBuffUsage = Number(scriptProperties.getProperty(antiBuffUsageKey))
-
-            // Initialize message as a blank string
-            var MSG_MODE = ""
-
-            // If anti-buff usage is even, then user is currently not in Low Stat Mode. Therefore, put them in it
-            if (antiBuffUsage % 2 == 0) {
-              const responseUser = api_getAuthenticatedUserProfile("stats,items.gear.equipped")
-              user = JSON.parse(responseUser).data
-              const responseContent = apiFree_getAllAvailableContentObjects()
-              content = JSON.parse(responseContent).data
-
-              // Using these, calculate total [Stat] and how much the anti-buff should be to set [Stat] to the setpoint
-
-              // Initialize these
-              var buffs = 0
-              var stat = 0
-              var unbuffedStat = 0
-              var antiBuff = 0
-              
-              // Build on existing string
-              MSG_MODE += MSG_IN_LOW_STAT_MODE_START
-
-              if (doStrength){ 
-                buffs = user.stats.buffs.str
-                if (!user.stats.buffs.str) { buffs = 0 }
-                stat = calculateStrength()
-                unbuffedStat = stat - buffs
-                antiBuff = LOW_STRENGTH_MODE_SETPOINT - unbuffedStat
-
-                // Anti-buff user
-                api_updateUser({"stats.buffs.str" : antiBuff})
-
-                // Build on existing message
-                MSG_MODE += "Strength"
-              } 
-              else if (doIntelligence){
-                buffs = user.stats.buffs.int
-                if (!user.stats.buffs.int) { buffs = 0 }
-                stat = calculateIntelligence()
-                unbuffedStat = stat - buffs
-                antiBuff = LOW_INTELLIGENCE_MODE_SETPOINT - unbuffedStat
-
-                // Anti-buff user
-                api_updateUser({"stats.buffs.int" : antiBuff})
-
-                // Build on existing message
-                MSG_MODE += "Intelligence"
-              } 
-              else if (doConstitution) {
-                buffs = user.stats.buffs.con
-                if (!user.stats.buffs.con) { buffs = 0 }
-                stat = calculateConstitution()
-                unbuffedStat = stat - buffs
-                antiBuff = LOW_CONSTITUTION_MODE_SETPOINT - unbuffedStat
-
-                // Anti-buff user
-                api_updateUser({"stats.buffs.con" : antiBuff})
-
-                // Build on existing message
-                MSG_MODE += "Constitution"
-              } 
-              else if (doPerception) {
-                buffs = user.stats.buffs.per
-                if (!user.stats.buffs.per) { buffs = 0 }
-                stat = calculatePerception()
-                unbuffedStat = stat - buffs
-                antiBuff = LOW_PERCEPTION_MODE_SETPOINT - unbuffedStat
-
-                // Anti-buff user
-                api_updateUser({"stats.buffs.per" : antiBuff})
-
-                // Build on existing message
-                MSG_MODE += "Perception"
-              } 
-              else { // Send error message of all of the Booleans are false
-                api_sendPrivateMessage({"message" : MSG_LOW_STAT_MODE_ERROR, "toUserId" : USER_ID})
-              }
-
-              // Finish building message
-              MSG_MODE += MSG_LOW_STAT_MODE_END
-
-              // Update these values
-              antiBuffAmount = antiBuff
-              antiBuffUsage++  
-            } 
-            // If anti-buff usage is odd, then user is in Low [Stat] Mode. Therefore, remove them from it
-            else {
-              // Build on existing string
-              MSG_MODE += MSG_NOT_IN_LOW_STAT_MODE_START
-              
-              // Reverse the anti-buff. Build on existing message
-              if (doStrength){
-                api_updateUser({"stats.buffs.str" : LOW_STRENGTH_MODE_SETPOINT - antiBuffAmount})
-                MSG_MODE += "Strength"
-              } 
-              else if (doIntelligence){
-                api_updateUser({"stats.buffs.int" : LOW_INTELLIGENCE_MODE_SETPOINT - antiBuffAmount})
-                MSG_MODE += "Intelligence"
-              } 
-              else if (doConstitution) {
-                api_updateUser({"stats.buffs.con" : LOW_CONSTITUTION_MODE_SETPOINT - antiBuffAmount})
-                MSG_MODE += "Constitution"
-              } 
-              else if (doPerception) {
-                api_updateUser({"stats.buffs.per" : LOW_PERCEPTION_MODE_SETPOINT - antiBuffAmount})
-                MSG_MODE += "Perception"
-              } 
-              else { // Send error message of all of the Booleans are false
-                api_sendPrivateMessage({"message" : MSG_LOW_STAT_MODE_ERROR, "toUserId" : USER_ID})
-              }
-
-              // Finish building message
-              MSG_MODE += MSG_LOW_STAT_MODE_END
-
-              // Unsave anti-buff value, increment counter
-              antiBuffAmount = 0
-              antiBuffUsage++
-            }
-
-            // Things to do irrespective of whether they are entering vs. exiting the Mode
-
-            // Send message (except for when doing Multi)
-              if (!ignoreMessage) {
-                api_sendPrivateMessage({"message" : MSG_MODE, "toUserId" : USER_ID})
-            }
-
-            // Save values to non-volatile memory
-            scriptProperties.setProperty(antiBuffAmountKey, antiBuffAmount)
-            scriptProperties.setProperty(antiBuffUsageKey, antiBuffUsage)
-          }
-        }
 
         // When the Bad Day Mode button is clicked
         function doButtonBadDayMode(constitutionBuffs, stealthedDailies, totalDailies, hp, unbuffedConstitution){
@@ -3424,8 +3055,6 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
       // I want users to be able to toggle in/out of Game Modes irrespective of timestamp
       if (sanitizedAlias == PARTIAL_HEALING_MODE_ALIAS) {
         return 1111 // Partial Healing Mode gets its own case number
-      } else if ( (sanitizedAlias == MULTI_LOW_STAT_MODE_ALIAS) || (sanitizedAlias == LOW_STR_MODE_ALIAS) || (sanitizedAlias == LOW_INT_MODE_ALIAS) || (sanitizedAlias == LOW_CON_MODE_ALIAS) || (sanitizedAlias == LOW_PER_MODE_ALIAS) || (sanitizedAlias == BAD_DAY_MODE_ALIAS) ) {
-        return 1234 // These other modes will affect Partial Healing since they HP (up or down) or XP (up)
       } else {
         // Buttons that can affect HP (up or down) or XP (up)
         if ( (sanitizedAlias == XP_POTION_ALIAS) || (sanitizedAlias == ANTI_HP_POTION_ALIAS) || (sanitizedAlias == HP_FOR_MP_ALIAS) || (sanitizedAlias == BUTTON_1_ALIAS) || (sanitizedAlias == BUTTON_2_ALIAS) || (sanitizedAlias == BUTTON_3_ALIAS) || (sanitizedAlias == BUTTON_4_ALIAS) || (sanitizedAlias == BUTTON_5_ALIAS) || (sanitizedAlias == BACKSTAB_ALIAS) || (sanitizedAlias == HEALING_LIGHT_ALIAS) || (sanitizedAlias == BURST_OF_FLAMES_XP_ONLY_ALIAS) || (sanitizedAlias == BURST_OF_FLAMES_XP_PLUS_DAMAGE_ALIAS) ) {
@@ -4860,50 +4489,12 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
         scriptProperties.setProperty(XP_FOR_MP_KEY, 0)
       }
 
-      function debugResetCountersLowStatMode(){
-        scriptProperties.setProperty(ANTI_BUFF_AMOUNT_STR_KEY , 0)
-        scriptProperties.setProperty(ANTI_BUFF_USAGE_STR_KEY, 0)
-        scriptProperties.setProperty(ANTI_BUFF_AMOUNT_INT_KEY, 0)
-        scriptProperties.setProperty(ANTI_BUFF_USAGE_INT_KEY, 0)
-        scriptProperties.setProperty(ANTI_BUFF_AMOUNT_CON_KEY, 0)
-        scriptProperties.setProperty(ANTI_BUFF_USAGE_CON_KEY, 0)      
-        scriptProperties.setProperty(ANTI_BUFF_AMOUNT_PER_KEY, 0)
-        scriptProperties.setProperty(ANTI_BUFF_USAGE_PER_KEY, 0)
-      }
-
       // Resets saved duel values
       function debugResetDuelValues(){
         resetDuelValues()
       }
 
     // MANUALLY ENTER A MODE
-
-      // LOW CONSTITUTION MODE (AND OTHER STATS)
-
-        // If it didn't trigger at Cron like it was supposed to, you can do so here.
-        function debugAutomaticLowStatMode(){
-          automaticLowStatMode()
-        }
-        
-        function debugToggleLowMultiStatMode(){
-          toggleLowMultiStatMode()
-        }
-
-        function debugToggleLowStrengthMode(){
-          toggleLowStatMode(false, true, false, false, false, false)
-        }
-
-        function debugToggleLowIntelligenceMode(){
-          toggleLowStatMode(false, false, true, false, false, false)
-        }
-
-        function debugToggleLowConstitutionMode(){
-          toggleLowStatMode(false, false, false, true, false, false)
-        }
-
-        function debugToggleLowPerceptionMode(){
-          toggleLowStatMode(false, false, false, false, true, false)
-        }
 
       // PARTIAL HEALING
 
@@ -4934,20 +4525,12 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
         let AntiXpUsage = Number(scriptProperties.getProperty(ANTI_XP_USAGE_KEY))
         let HpForMpUsage = Number(scriptProperties.getProperty(HP_FOR_MP_KEY))
         let XpForMpUsage = Number(scriptProperties.getProperty(XP_FOR_MP_KEY))
-        let antiBuffAmountStr = Number(scriptProperties.getProperty(ANTI_BUFF_AMOUNT_STR_KEY))
-        let antiBuffUsageStr = Number(scriptProperties.getProperty(ANTI_BUFF_USAGE_STR_KEY))
-        let antiBuffAmountInt = Number(scriptProperties.getProperty(ANTI_BUFF_AMOUNT_INT_KEY))
-        let antiBuffUsageInt = Number(scriptProperties.getProperty(ANTI_BUFF_USAGE_INT_KEY))
-        let antiBuffAmountCon = Number(scriptProperties.getProperty(ANTI_BUFF_AMOUNT_CON_KEY))
-        let antiBuffUsageCon = Number(scriptProperties.getProperty(ANTI_BUFF_USAGE_CON_KEY))
-        let antiBuffAmountPer = Number(scriptProperties.getProperty(ANTI_BUFF_AMOUNT_PER_KEY))
-        let antiBuffUsagePer = Number(scriptProperties.getProperty(ANTI_BUFF_USAGE_PER_KEY))
         
         // saving these will make my life easier
         let MSG_JOINER_BEFORE = " is `"
         let MSG_JOINER_AFTER = "`, "
 
-        api_sendPrivateMessageAlways({"message" : "Saved values are as follows: cronCount is `" + cronCount + MSG_JOINER_AFTER  + "xpUsage" + MSG_JOINER_BEFORE + xpUsage + MSG_JOINER_AFTER  + "mpUsage" + MSG_JOINER_BEFORE + mpUsage + "AntiMpUsage" + MSG_JOINER_BEFORE + AntiMpUsage + MSG_JOINER_AFTER + "AntiHpUsage" + MSG_JOINER_BEFORE + AntiHpUsage + MSG_JOINER_AFTER + "AntiXpUsage" + MSG_JOINER_BEFORE + AntiXpUsage + MSG_JOINER_AFTER + "HpForMpUsage" + MSG_JOINER_BEFORE + HpForMpUsage + MSG_JOINER_AFTER + "XpForMpUsage" + MSG_JOINER_BEFORE + XpForMpUsage + MSG_JOINER_AFTER + "antiBuffAmountStr" + MSG_JOINER_BEFORE + antiBuffAmountStr + MSG_JOINER_AFTER + "antiBuffUsageStr" + MSG_JOINER_BEFORE + antiBuffUsageStr + MSG_JOINER_AFTER + "antiBuffAmountInt" + MSG_JOINER_BEFORE + antiBuffAmountInt + MSG_JOINER_AFTER + "antiBuffUsageInt" + MSG_JOINER_BEFORE + antiBuffUsageInt + MSG_JOINER_AFTER + "antiBuffAmountCon" + MSG_JOINER_BEFORE + antiBuffAmountCon + MSG_JOINER_AFTER + "antiBuffUsageCon" + MSG_JOINER_BEFORE + antiBuffUsageCon + MSG_JOINER_AFTER + "antiBuffAmountPer" + MSG_JOINER_BEFORE + antiBuffAmountPer + MSG_JOINER_AFTER + "antiBuffUsagePer" + MSG_JOINER_BEFORE + antiBuffUsagePer + "`", "toUserId" : USER_ID})
+        api_sendPrivateMessageAlways({"message" : "Saved values are as follows: cronCount is `" + cronCount + MSG_JOINER_AFTER  + "xpUsage" + MSG_JOINER_BEFORE + xpUsage + MSG_JOINER_AFTER  + "mpUsage" + MSG_JOINER_BEFORE + mpUsage + "AntiMpUsage" + MSG_JOINER_BEFORE + AntiMpUsage + MSG_JOINER_AFTER + "AntiHpUsage" + MSG_JOINER_BEFORE + AntiHpUsage + MSG_JOINER_AFTER + "AntiXpUsage" + MSG_JOINER_BEFORE + AntiXpUsage + MSG_JOINER_AFTER + "HpForMpUsage" + MSG_JOINER_BEFORE + HpForMpUsage + MSG_JOINER_AFTER + "XpForMpUsage" + MSG_JOINER_BEFORE + XpForMpUsage + "`", "toUserId" : USER_ID})
       }
 
       function debugGetSavedCountersXpAndMpPotion(){
@@ -4985,24 +4568,6 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
         let MSG_JOINER_AFTER = "`, "
         
         api_sendPrivateMessageAlways({"message" : "Saved values are as follows: cronCount is `" + cronCount + MSG_JOINER_AFTER + "HpForMpUsage" + MSG_JOINER_BEFORE + HpForMpUsage + MSG_JOINER_AFTER + "XpForMpUsage" + MSG_JOINER_BEFORE + XpForMpUsage + "`", "toUserId" : USER_ID})
-      }
-
-      function debugGetSavedCountersLowStatMode(){
-        let cronCount = Number(scriptProperties.getProperty(CRON_COUNT_KEY))
-        let antiBuffAmountStr = Number(scriptProperties.getProperty(ANTI_BUFF_AMOUNT_STR_KEY))
-        let antiBuffUsageStr = Number(scriptProperties.getProperty(ANTI_BUFF_USAGE_STR_KEY))
-        let antiBuffAmountInt = Number(scriptProperties.getProperty(ANTI_BUFF_AMOUNT_INT_KEY))
-        let antiBuffUsageInt = Number(scriptProperties.getProperty(ANTI_BUFF_USAGE_INT_KEY))
-        let antiBuffAmountCon = Number(scriptProperties.getProperty(ANTI_BUFF_AMOUNT_CON_KEY))
-        let antiBuffUsageCon = Number(scriptProperties.getProperty(ANTI_BUFF_USAGE_CON_KEY))
-        let antiBuffAmountPer = Number(scriptProperties.getProperty(ANTI_BUFF_AMOUNT_PER_KEY))
-        let antiBuffUsagePer = Number(scriptProperties.getProperty(ANTI_BUFF_USAGE_PER_KEY))
-
-        // saving these will make my life easier
-        let MSG_JOINER_BEFORE = " is `"
-        let MSG_JOINER_AFTER = "`, "
-        
-        api_sendPrivateMessageAlways({"message" : "Saved values are as follows: cronCount is `" + cronCount + MSG_JOINER_AFTER + "antiBuffAmountStr" + MSG_JOINER_BEFORE + antiBuffAmountStr + MSG_JOINER_AFTER + "antiBuffUsageStr" + MSG_JOINER_BEFORE + antiBuffUsageStr + MSG_JOINER_AFTER + "antiBuffAmountInt" + MSG_JOINER_BEFORE + antiBuffAmountInt + MSG_JOINER_AFTER + "antiBuffUsageInt" + MSG_JOINER_BEFORE + antiBuffUsageInt + MSG_JOINER_AFTER + "antiBuffAmountCon" + MSG_JOINER_BEFORE + antiBuffAmountCon + MSG_JOINER_AFTER + "antiBuffUsageCon" + MSG_JOINER_BEFORE + antiBuffUsageCon + MSG_JOINER_AFTER + "antiBuffAmountPer" + MSG_JOINER_BEFORE + antiBuffAmountPer + MSG_JOINER_AFTER + "antiBuffUsagePer" + MSG_JOINER_BEFORE + antiBuffUsagePer + "`", "toUserId" : USER_ID})
       }
 
       // Retrieves saved values and sends them in a private message
@@ -5737,197 +5302,7 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
       scriptProperties.setProperty(TROUBLESHOOTING_KEY, 0)
     }
   
-  // 3C. LOW CONSTITUTION MODE (AND OTHER STATS)
-
-      // Determines which stat is the last one (of Low Multi-Stat Mode), and builds a string accordingly.
-      function buildMultiLowStatStrings(needsSetpointValue, joinerCharacter){
-        // Figure out which stat is the final one. That way, you don't put a commma after it in the string.
-
-        // Initialize Booleans at false
-        var isPerFinal = false
-        var isConFinal = false
-        var isIntFinal = false
-        var isStrFinal = false
-
-        // If Perception is the final stat, it will not have a comma after it
-        if (MULTIPLE_LOW_STAT_MODE_PERCEPTION == 1) {
-          isPerFinal = true
-        } else if (MULTIPLE_LOW_STAT_MODE_CONSTITUTION == 1) { // If not Perception, try Constitution
-          isConFinal = true
-        } else if (MULTIPLE_LOW_STAT_MODE_INTELLIGENCE == 1) { // If not Constitution, try Intelligence
-          isIntFinal = true
-        } else if (MULTIPLE_LOW_STAT_MODE_STRENGTH == 1) { // If not Intelligence, try Strength
-          isStrFinal = true
-        }
-
-        let penultimateStat = determinePenultimateStat(isIntFinal, isConFinal, isPerFinal)
-
-        // Initialize a blank strong
-        var messageString = ""
-
-        // If Strength is one of the stats, add it to the strings.
-        if (MULTIPLE_LOW_STAT_MODE_STRENGTH == 1) {
-          messageString += "STR"
-
-          // This version requires the setpoint as an input, then adds to the string
-          if (needsSetpointValue) { 
-            messageString += LOW_STAT_MODE_NOTES_MID_2 + LOW_STRENGTH_MODE_SETPOINT
-          }
-          
-          // If Strength is not final, add joiner character (usually, slash or comma)
-          if (!isStrFinal) {
-            messageString += joinerCharacter
-
-            // If STR is penultimate for the Setpoint version, then add "and " after
-            if ( (penultimateStat == "STR") && (needsSetpointValue) ) {
-              messageString += "and "
-            }
-          }
-        }
-        // Same but for Intelligence
-        if (MULTIPLE_LOW_STAT_MODE_INTELLIGENCE == 1) {
-          messageString += "INT"
-
-          // This version requires the setpoint as an input, then adds to the string
-          if (needsSetpointValue) { 
-            messageString += LOW_STAT_MODE_NOTES_MID_2 + LOW_INTELLIGENCE_MODE_SETPOINT
-          }        
-
-          // If Intelligence is not final, add joiner character (usually, slash or comma)
-          if (!isIntFinal) {
-            messageString += joinerCharacter
-
-            // If INT is penultimate for the Setpoint version, then add "and " after
-            if ( (penultimateStat == "INT") && (needsSetpointValue) ) {
-              messageString += "and "
-            }
-          }
-        }
-        // Same but for Constitution
-        if (MULTIPLE_LOW_STAT_MODE_CONSTITUTION == 1) {
-          messageString += "CON"
-
-          // This version requires the setpoint as an input, then adds to the string
-          if (needsSetpointValue) { 
-            messageString += LOW_STAT_MODE_NOTES_MID_2 + LOW_CONSTITUTION_MODE_SETPOINT
-          }
-
-          // If Constitution is not final, add joiner character (usually, slash or comma)
-          if (!isConFinal) {
-            messageString += joinerCharacter
-
-            // If CON is penultimate for the Setpoint version, then add "and " after
-            if ( (penultimateStat == "CON") && (needsSetpointValue) ) {
-              messageString += "and "
-            }
-          }
-        }
-        // Same but for Perception
-        if (MULTIPLE_LOW_STAT_MODE_PERCEPTION == 1) {
-          messageString += "PER"
-
-          // This version requires the setpoint as an input, then adds to the string
-          if (needsSetpointValue) { 
-            messageString += LOW_STAT_MODE_NOTES_MID_2 + LOW_PERCEPTION_MODE_SETPOINT
-          }
-
-          // If Perception is not final, add joiner character (usually, slash or comma)
-          if (!isPerFinal) {
-            messageString += joinerCharacter
-          }
-        }
-
-        return messageString
-      }
-
-      function determinePenultimateStat(isIntFinal, isConFinal, isPerFinal){
-        let counter = countNumberOfLowMultiStat() // The count of how many are indicated
-
-        if (counter == 1) { // If there's only one stat, then there can't be a penultimate stat
-          return "none"
-        } else if (isIntFinal) { // If INT is the final stat, then STR should be penultimate
-          return "STR"
-        } else if (isConFinal) { // If CON is the final stat, STR or INT could be penultimate
-          if (counter == 3) { // If counter is 3, then the 3 are STR/INT/CON, making INT penultimate
-            return "INT"
-          } else if (counter == 2) { // If counter is 2, whichever of STR or INT is active is thus penultimate.
-            if (MULTIPLE_LOW_STAT_MODE_INTELLIGENCE == 1) {
-              return "INT"
-            } else if (MULTIPLE_LOW_STAT_MODE_STRENGTH == 1) {
-              return "STR"
-            }
-          }
-        } else if (isPerFinal) { // If PER is final stat, any of the others could be penultimate
-          if (counter == 4) { // If the counter is 4, then CON must be penultimate
-            return "CON"
-          } else {
-            if (MULTIPLE_LOW_STAT_MODE_CONSTITUTION == 1) {
-              return "CON"
-            } else if (MULTIPLE_LOW_STAT_MODE_INTELLIGENCE == 1) {
-              return "INT"
-            } else if (MULTIPLE_LOW_STAT_MODE_STRENGTH == 1) {
-              return "STR"
-            }
-          }
-        }
-      }
-
-      function countNumberOfLowMultiStat(){
-        let counter = 0 // Initialize
-
-        // For each of the four that are indicated, increase the counter by 1
-        if (MULTIPLE_LOW_STAT_MODE_PERCEPTION == 1) {
-          counter++
-        }
-        if (MULTIPLE_LOW_STAT_MODE_CONSTITUTION == 1) {
-          counter++
-        }
-        if (MULTIPLE_LOW_STAT_MODE_INTELLIGENCE == 1) {
-          counter++
-        }
-        if (MULTIPLE_LOW_STAT_MODE_STRENGTH == 1) {
-          counter++
-        }
-        return counter
-      }
-
-      // Determines which stats to do for automatically entering Low Stat Modes at Cron, then enters the Modes.
-      function automaticLowStatMode(){
-        // Determine which stats
-
-        // Initialize Booleans at false
-        let doMulti = false
-        let automaticStr = false
-        let automaticInt = false
-        let automaticCon = false
-        let automaticPer = false
-
-        // Flip Booleans as needed
-        if (AUTOMATIC_LOW_MULTI_STAT == 1){ 
-          doMulti = true
-        }
-        // Automatic Low-Strength happens if 1)  AUTOMATIC_LOW_STRENGTH is flagged, or 2) if AUTOMATIC_LOW_MULTI_STAT is flagged and the Multi-Stat includes Strength
-        if ( (AUTOMATIC_LOW_STRENGTH == 1) || ( (AUTOMATIC_LOW_MULTI_STAT == 1) && (MULTIPLE_LOW_STAT_MODE_STRENGTH == 1) ) ) {
-          automaticStr = true
-        }
-        // Repeat for the other stats
-        if ( (AUTOMATIC_LOW_INTELLIGENCE == 1) || ( (AUTOMATIC_LOW_MULTI_STAT == 1) && (MULTIPLE_LOW_STAT_MODE_INTELLIGENCE == 1) ) ) {
-          automaticInt = true
-        }
-        if ( (AUTOMATIC_LOW_CONSTITUTION == 1) || ( (AUTOMATIC_LOW_MULTI_STAT == 1) && (MULTIPLE_LOW_STAT_MODE_CONSTITUTION == 1) ) ) {
-          automaticCon = true
-        }
-        if ( (AUTOMATIC_LOW_PERCEPTION == 1) || ( (AUTOMATIC_LOW_MULTI_STAT == 1) && (MULTIPLE_LOW_STAT_MODE_PERCEPTION == 1) ) ) {
-          automaticPer = true
-        }
-
-        // Wait 2 seconds  
-        Utilities.sleep(2000)
-        
-        toggleLowStatMode(doMulti, automaticStr, automaticInt, automaticCon, automaticPer, false)
-      }
-  
-  // 3D. TRANSFORM YOURSELF YEAR-ROUND
+  // 3C. TRANSFORM YOURSELF YEAR-ROUND
 
   // Checks to run before transforming
   function checkWhetherToTransform(isSnowball, isSpookySparkles, isShinySeed, isSeafoam, gp){
