@@ -38,7 +38,7 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
 
 // All messages
 const MSG_CONTACT_AUTHOR1 = " contact the author of this script (@mike_the_monk)"
-const MSG_CONTACT_AUTHOR2 = " by posting in the [Aspiring Comrades Guild](https://habitica.com/groups/guild/2ff9822b-27f2-4774-98da-db349b57a38e)."
+const MSG_CONTACT_AUTHOR2 = " by sending him a [private message](https://habitica.com/private-messages?uuid=0034eb14-b4d8-494e-8386-d3f33cff7922) in Habitica."
 const MSG_WIKI_PAGE_STARTING_DUEL = " [wiki page](https://habitica.fandom.com/wiki/Dueling_Script#Starting_your_duel)"
 const MSG_WIKI_PAGE_SCORE = " [wiki page](https://habitica.fandom.com/wiki/Dueling_Script#Checking_your_score)"
 const MSG_WIKI_PAGE_ENDING_DUEL = " [wiki page](https://habitica.fandom.com/wiki/Dueling_Script#Ending_your_duel)"
