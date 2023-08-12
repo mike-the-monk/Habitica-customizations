@@ -12,14 +12,6 @@ const WEB_APP_URL = "PasteGeneratedWebAppUrlHere"
 /* [Users] Required customizations to fill in */
 /* ========================================== */
 
-// Do you want to duel in your party or in a Guild?
-// Choose 0 for party, 1 for Guild
-const DUEL_GROUP_TYPE = 0
-
-// If you chose Guild, follow the instructions on the wiki to get the Guild ID for the one you want to duel in. Paste below.
-// You can find it at the end of the URL for that Guild ("https://habitica.com/groups/guild/ID...")
-const GUILD_ID = "PasteYourGuildIdHere"
-
 /* ========================================== */
 /* [Users] Optional customizations to fill in */
 /* ========================================== */
@@ -202,14 +194,9 @@ const MSG_ERROR_CONSOLE_LOG_FAILED_FINAL_CHECK_USERNAME = "it failed one of the 
 const MSG_ERROR_CONSOLE_LOG_FAILED_FINAL_CHECK_HASH = "it failed one of the final two checks: the 'hash check'. "
 
 function doOneTimeSetup() {
-  // See the correct group ID, whether party or Guild
   var groupIdKey = GROUP_ID_KEY
-  if (DUEL_GROUP_TYPE == 0) { // If party
-    const PARTY_ID = getParty()
-    scriptProperties.setProperty(groupIdKey, PARTY_ID)
-  } else if (DUEL_GROUP_TYPE == 1) { // If guild
-    scriptProperties.setProperty(groupIdKey, GUILD_ID)
-  }
+  const PARTY_ID = getParty()
+  scriptProperties.setProperty(groupIdKey, PARTY_ID)
   
   const GROUP_ID = scriptProperties.getProperty(groupIdKey)
 
@@ -1910,13 +1897,9 @@ function debugResetSavedGroupId(){
   
   // Save the correct group ID, whether party or Guild
   var groupIdKey = GROUP_ID_KEY
-  if (DUEL_GROUP_TYPE == 0) { // If party
-    const PARTY_ID = getParty()
-    scriptProperties.setProperty(groupIdKey, PARTY_ID)
-  } else if (DUEL_GROUP_TYPE == 1) { // If guild
-    scriptProperties.setProperty(groupIdKey, GUILD_ID)
-  }
-  
+  const PARTY_ID = getParty()
+  scriptProperties.setProperty(groupIdKey, PARTY_ID)
+
   // Update the webhook so that it is for the new group ID
   const GROUP_ID = scriptProperties.getProperty(groupIdKey)
 
