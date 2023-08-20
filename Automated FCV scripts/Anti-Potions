@@ -189,7 +189,7 @@ function doPost(e) {
     if ( (timeEnd - timeStart) >= 30000 ) {   
       // Run all the things that run regardless of the potion
       const response = api_getAuthenticatedUserProfile("stats")
-      user = JSON.parse(response).data
+      let user = JSON.parse(response).data
     
       var cronCountKey = CRON_COUNT_KEY
       var AntiMpUsageKey = ANTI_MP_USAGE_KEY
@@ -364,7 +364,7 @@ function api_createNewWebhook(payload) {
 // Sets initial properties that will be used/saved later.
 function initScriptProperties() {
   const responseUser = api_getAuthenticatedUserProfile("stats")
-  user = JSON.parse(responseUser).data
+  let user = JSON.parse(responseUser).data
   let cronCount = user.flags.cronCount
   scriptProperties.setProperty(CRON_COUNT_KEY, cronCount)
 
