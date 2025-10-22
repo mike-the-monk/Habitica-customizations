@@ -359,7 +359,7 @@ function multParseAndEvaluate(hp, xp, mp, gp, inputString) {
   let newGp = gp
   
   // Compute total Intelligence
-  const responseContent = apiFree_getAllAvailableContentObjects()
+  const responseContent = api_getAllAvailableContentObjects()
   content = JSON.parse(responseContent).data
   
   let int = calculateIntelligence()
@@ -593,9 +593,10 @@ function findPercent(trimmedSubstring) {
   return isPercent
 }
 
-function apiFree_getAllAvailableContentObjects() {
+function api_getAllAvailableContentObjects() {
   const params = {
     "method" : "get",
+    "headers" : HEADERS,
     "muteHttpExceptions" : true,
   }
   
