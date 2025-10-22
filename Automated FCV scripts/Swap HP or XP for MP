@@ -179,7 +179,7 @@ function doPost(e) {
       let lvl = user.stats.lvl
     
       // Get equipment stats info
-      const responseContent = apiFree_getAllAvailableContentObjects()
+      const responseContent = api_getAllAvailableContentObjects()
       content = JSON.parse(responseContent).data
     
       // Compute total Intelligence
@@ -395,9 +395,10 @@ function api_getAuthenticatedUserProfile(userFields) {
   return UrlFetchApp.fetch(url, params)
 }
 
-function apiFree_getAllAvailableContentObjects() {
+function api_getAllAvailableContentObjects() {
   const params = {
     "method" : "get",
+    "headers" : HEADERS,
     "muteHttpExceptions" : true,
   }
   
