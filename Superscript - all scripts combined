@@ -1747,7 +1747,7 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
       let lvl = user.stats.lvl
 
       // Get equipment stats info
-      const responseContent = apiFree_getAllAvailableContentObjects()
+      const responseContent = api_getAllAvailableContentObjects()
       content = JSON.parse(responseContent).data
 
       // Calculate total stats
@@ -2037,7 +2037,7 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
       // When the MP Potion button is clicked
       function doButtonMpPotion(lvl, gp, mp, mpDiff, mpUsage, mpUsageKey){
         // Get equipment stats info
-        const responseContent = apiFree_getAllAvailableContentObjects()
+        const responseContent = api_getAllAvailableContentObjects()
         content = JSON.parse(responseContent).data
 
         // If level lock fails, refund the money and send failure message
@@ -4658,7 +4658,7 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
       let newGp = gp
       
       // Compute total Intelligence
-      const responseContent = apiFree_getAllAvailableContentObjects()
+      const responseContent = api_getAllAvailableContentObjects()
       content = JSON.parse(responseContent).data
       
       let int = calculateIntelligence()
