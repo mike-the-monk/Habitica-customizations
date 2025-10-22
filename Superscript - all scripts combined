@@ -3258,9 +3258,10 @@ const scriptProperties = PropertiesService.getScriptProperties() // Constants ca
   // CONTENT
 
     // Gets equipment info
-    function apiFree_getAllAvailableContentObjects() {
+    function api_getAllAvailableContentObjects() {
       const params = {
         "method" : "get",
+        "headers" : HEADERS,
         "muteHttpExceptions" : true,
       }
       
