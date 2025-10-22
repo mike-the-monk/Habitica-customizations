@@ -378,7 +378,7 @@ function doPost(e) {
         let sufficientLevel = checkLevelLock(lvl, LEVEL_LOCK_BUFFS, "skill.")
         if (sufficientLevel){
           // Get equipment stats info
-          const responseContent = apiFree_getAllAvailableContentObjects()
+          const responseContent = api_getAllAvailableContentObjects()
           content = JSON.parse(responseContent).data
           
           // Calculate stats
@@ -700,9 +700,10 @@ function api_sendPrivateMessage(payload) {
   }
 }
 
-function apiFree_getAllAvailableContentObjects() {
+function api_getAllAvailableContentObjects() {
   const params = {
     "method" : "get",
+    "headers" : HEADERS,
     "muteHttpExceptions" : true,
   }
   
