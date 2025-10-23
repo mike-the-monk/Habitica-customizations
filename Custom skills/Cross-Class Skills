@@ -30,7 +30,7 @@ const CREATE_SNEAK_ATTACK = 0 // Deal boss damage based on Perception. 10 MP per
 // Which version of the skill do you want to use? (you can do the same or different for each skill)
 // Choose 2 if you want to set a task value and use it rather than using a specific task.
 // Choose 3 if you want to average the task values of all your Dailies and use that.
-// Choose 4 if you want to select one task and always use that task with this skill.
+// Choose 4 if you want to select one Daily and always use that task with this skill.
 
 const PICKPOCKET_VERSION = 2
 const BACKSTAB_VERSION = 2
@@ -55,7 +55,7 @@ const BURST_OF_FLAMES_TASK_VALUE = 10
 // If you picked version 3 for any of them, you don't have to do anything else in this section.
 
 
-// If you picked version 4 for any of them, find the task ID of the task you want to use and paste below
+// If you picked version 4 for any of them, find the task ID of the Daily you want to use and paste below
 // Instructions for this are found in the wiki page
 
 const PICKPOCKET_TASK_ID = "620dc42a-b258-47a9-84fa-a5c437345a9"
